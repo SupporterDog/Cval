@@ -6,7 +6,8 @@
 #### Project Part 1: Line Tracer with C
 #### Project Part 2: QRcode Recognition with C++
 
-### Team Members 
+
+## Team Members 
 - Member 1. 202011047 김승태
 - Member 2. 202011103 성민승
 - Member 3. 202011203 정은호
