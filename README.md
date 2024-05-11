@@ -3,8 +3,8 @@
 ## Team Name : C_VAL_Jadongcha ( C value based-car )
 
 ## Contents
-#### Project Part 1: Line Tracer with C
-#### Project Part 2: QRcode Recognition with C++
+- #### Project Part 1: Line Tracer with C
+- #### Project Part 2: QRcode Recognition with C++
 
 
 ## Team Members 
