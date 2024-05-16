@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <wiringPi.h>
+#include <wiringPiI2C.h>
+
 #include <unistd.h>
 #include <stdlib.h>
 
