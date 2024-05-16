@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -14,101 +13,91 @@ int file;
 void open_i2c() {
     file = wiringPiI2CSetup(I2C_DEVICE_ADDRESS);
     if (file < 0) {
-        perror("Error opening i2c bus");
-        return;
+        perror("Error opening I2C bus");
+        exit(1);  // 오류 발생 시 프로그램 종료
     }
 }
 
 // 8비트 데이터를 I2C 레지스터에 쓰기
 void write_u8(uint8_t reg, uint8_t data) {
     if (wiringPiI2CWriteReg8(file, reg, data) < 0) {
-        perror("Error writing to i2c device");
-        return;
+        perror("Error writing to I2C device");
     }
 }
 
-// 배열 데이터를 I2C 레지스터에 쓰기
-void write_array(uint8_t reg, uint8_t *data, int len) {
-    if (wiringPiI2CWriteReg8(file, reg, data[0]) < 0) {
-        perror("Error writing to i2c device");
-        return;
-    }
-    if (write(file, data + 1, len - 1) != (len - 1)) {
-        perror("Error writing to i2c device");
-        return;
-    }
+// 모터 설정 함수 (모터 번호: 1~4, 방향: 0(후진), 1(전진), 속도: 0~255)
+void set_motor(uint8_t motor_num, uint8_t direction, uint8_t speed) {
+    uint8_t dir_reg = 0x01 + (motor_num - 1) * 2;  // 모터 방향 레지스터
+    uint8_t speed_reg = 0x02 + (motor_num - 1) * 2; // 모터 속도 레지스터
+
+    write_u8(dir_reg, direction);
+    write_u8(speed_reg, speed);
 }
 
-// 자동차 제어 명령 보내기
-void ctrl_car(uint8_t l_dir, uint8_t l_speed, uint8_t r_dir, uint8_t r_speed) {
-    uint8_t reg = 0x01;
-    uint8_t data[4] = {l_dir, l_speed, r_dir, r_speed};
-    write_array(reg, data, sizeof(data));
+// 자동차 제어 함수
+void control_car(uint8_t m1_speed, uint8_t m1_dir, 
+                 uint8_t m2_speed, uint8_t m2_dir, 
+                 uint8_t m3_speed, uint8_t m3_dir, 
+                 uint8_t m4_speed, uint8_t m4_dir) {
+    set_motor(1, m1_dir, m1_speed);
+    set_motor(2, m2_dir, m2_speed);
+    set_motor(3, m3_dir, m3_speed);
+    set_motor(4, m4_dir, m4_speed);
 }
 
-// 자동차 속도 및 방향 제어
-void control_car(int speed1, int speed2) {
-    uint8_t dir1 = speed1 < 0 ? 0 : 1;
-    uint8_t dir2 = speed2 < 0 ? 0 : 1;
-    ctrl_car(dir1, abs(speed1), dir2, abs(speed2));
+// 자동차 정지 함수
+void car_stop() {
+    control_car(0, 1, 0, 1, 0, 1, 0, 1);  // 모든 모터를 속도 0으로 설정
 }
 
 // 자동차 전진
-void car_run(int speed1, int speed2) {
-    ctrl_car(1, speed1, 1, speed2);
-}
-
-// 자동차 정지
-void car_stop() {
-    uint8_t reg = 0x02;
-    write_u8(reg, 0x00);
+void car_run(uint8_t speed) {
+    control_car(speed, 1, speed, 1, speed, 1, speed, 1);  // 모든 모터 전진
 }
 
 // 자동차 후진
-void car_back(int speed1, int speed2) {
-    ctrl_car(0, speed1, 0, speed2);
+void car_back(uint8_t speed) {
+    control_car(speed, 0, speed, 0, speed, 0, speed, 0);  // 모든 모터 후진
 }
 
 // 자동차 좌회전
-void car_left(int speed1, int speed2) {
-    ctrl_car(0, speed1, 1, speed2);
+void car_left(uint8_t speed) {
+    control_car(0, 0, speed, 1, 0, 0, speed, 1);  // 왼쪽 모터 후진, 오른쪽 모터 전진
 }
 
 // 자동차 우회전
-void car_right(int speed1, int speed2) {
-    ctrl_car(1, speed1, 0, speed2);
+void car_right(uint8_t speed) {
+    control_car(speed, 1, 0, 0, speed, 1, 0, 0);  // 왼쪽 모터 전진, 오른쪽 모터 후진
 }
 
 // 자동차 좌회전 스핀
-void car_spin_left(int speed1, int speed2) {
-    ctrl_car(0, speed1, 1, speed2);
+void car_spin_left(uint8_t speed) {
+    control_car(0, 0, speed, 1, 0, 0, speed, 1);  // 왼쪽 모터 후진, 오른쪽 모터 전진
 }
 
 // 자동차 우회전 스핀
-void car_spin_right(int speed1, int speed2) {
-    ctrl_car(1, speed1, 0, speed2);
-}
-
-// 서보 모터 제어
-void ctrl_servo(uint8_t id, int angle) {
-    uint8_t reg = 0x03;
-    if (angle < 0) {
-        angle = 0;
-    } else if (angle > 180) {
-        angle = 180;
-    }
-    uint8_t data[2] = {id, angle};
-    write_array(reg, data, sizeof(data));
+void car_spin_right(uint8_t speed) {
+    control_car(speed, 1, 0, 0, speed, 1, 0, 0);  // 왼쪽 모터 전진, 오른쪽 모터 후진
 }
 
 int main() {
     open_i2c();
 
-    // 예시 사용법
-    control_car(50, 50); // 양쪽 모터를 속도 50으로 전진
-    sleep(2); // 2초 동안 전진
-    car_stop(); // 자동차 정지
+    // 예시 사용법: 모든 모터를 속도 50으로 전진
+    car_run(50);
+    sleep(2);  // 2초 동안 전진
 
-    close(file); // I2C 버스 닫기
+    // 예시 사용법: 자동차 정지
+    car_stop();
+    sleep(1);  // 1초 동안 정지
+
+    // 예시 사용법: 모든 모터를 속도 50으로 후진
+    car_back(50);
+    sleep(2);  // 2초 동안 후진
+
+    // 예시 사용법: 자동차 정지
+    car_stop();
+
+    close(file);  // I2C 버스 닫기
     return 0;
 }
