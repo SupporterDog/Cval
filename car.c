@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include <unistd.h>
+#include <stdlib.h> // Include this line
 
 #define I2C_DEVICE_ADDRESS 0x16
 #define I2C_BUS "/dev/i2c-1"
