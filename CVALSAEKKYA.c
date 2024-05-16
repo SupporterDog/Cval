@@ -11,7 +11,7 @@ typedef struct {
 
 void get_i2c_device(YB_Pcb_Car* car, int address, int i2c_bus) {
     car->_addr = address;
-    car->_device = wiringPiI2CSetup(car->_addr);
+    car->_device = wiringPiI2CSetup(car->_addr); // 주어진 I2C 주소로 I2C 장치 초기화
     if (car->_device == -1) {
         printf("Failed to initialize I2C device\n");
         exit(1);
@@ -30,7 +30,7 @@ void write_reg(YB_Pcb_Car* car, int reg) {
     }
 }
 
-void write_array(YB_Pcb_Car* car, int reg, int* data, int length) {
+void write_array(YB_Pcb_Car* car, int reg, int* data, int length) { //배열 형태의 데이터를 레지스터 주소에 연속적으로 쓰는 함수
     for (int i = 0; i < length; ++i) {
         if (wiringPiI2CWriteReg8(car->_device, reg + i, data[i]) == -1) {
             printf("write_array I2C error\n");
@@ -39,20 +39,22 @@ void write_array(YB_Pcb_Car* car, int reg, int* data, int length) {
     }
 }
 
-void Ctrl_Car(YB_Pcb_Car* car, int l_dir, int l_speed, int r_dir, int r_speed) {
+void Ctrl_Car(YB_Pcb_Car* car, int* dir, int* speed) {
     int reg = 0x01;
-    int data[4] = { l_dir, l_speed, r_dir, r_speed };
-    write_array(car, reg, data, 4);
+    int data[8] = { dir[0], speed[0], dir[1], speed[1], dir[2], speed[2], dir[3], speed[3] };
+    write_array(car, reg, data, 8);
 }
 
-void Control_Car(YB_Pcb_Car* car, int speed1, int speed2) {
-    int dir1 = speed1 < 0 ? 0 : 1;
-    int dir2 = speed2 < 0 ? 0 : 1;
-    Ctrl_Car(car, dir1, abs(speed1), dir2, abs(speed2));
+void Control_Car(YB_Pcb_Car* car, int* speed) {
+    int dir[4];
+    for (int i = 0; i < 4; ++i) {
+        dir[i] = speed[i] < 0 ? 0 : 1;
+    }
+    Ctrl_Car(car, dir, speed);
 }
 
-void Car_Run(YB_Pcb_Car* car, int speed1, int speed2) {
-    Ctrl_Car(car, 1, speed1, 1, speed2);
+void Car_Run(YB_Pcb_Car* car, int* speed) {
+    Control_Car(car, speed);
 }
 
 void Car_Stop(YB_Pcb_Car* car) {
@@ -60,35 +62,37 @@ void Car_Stop(YB_Pcb_Car* car) {
     write_u8(car, reg, 0x00);
 }
 
-void Car_Back(YB_Pcb_Car* car, int speed1, int speed2) {
-    Ctrl_Car(car, 0, speed1, 0, speed2);
-}
-
-void Car_Left(YB_Pcb_Car* car, int speed1, int speed2) {
-    Ctrl_Car(car, 0, speed1, 1, speed2);
-}
-
-void Car_Right(YB_Pcb_Car* car, int speed1, int speed2) {
-    Ctrl_Car(car, 1, speed1, 0, speed2);
-}
-
-void Car_Spin_Left(YB_Pcb_Car* car, int speed1, int speed2) {
-    Ctrl_Car(car, 0, speed1, 1, speed2);
-}
-
-void Car_Spin_Right(YB_Pcb_Car* car, int speed1, int speed2) {
-    Ctrl_Car(car, 1, speed1, 0, speed2);
-}
-
-void Ctrl_Servo(YB_Pcb_Car* car, int id, int angle) {
-    if (angle < 0) {
-        angle = 0;
-    } else if (angle > 180) {
-        angle = 180;
+void Car_Back(YB_Pcb_Car* car, int* speed) {
+    int dir[4];
+    for (int i = 0; i < 4; ++i) {
+        dir[i] = 0;
     }
+    Ctrl_Car(car, dir, speed);
+}
+
+void Car_Left(YB_Pcb_Car* car, int* speed) {
+    int dir[4] = { 0, 1, 1, 0 };
+    Ctrl_Car(car, dir, speed);
+}
+
+void Car_Right(YB_Pcb_Car* car, int* speed) {
+    int dir[4] = { 1, 0, 0, 1 };
+    Ctrl_Car(car, dir, speed);
+}
+
+void Car_Spin_Left(YB_Pcb_Car* car, int* speed) {
+    int dir[4] = { 0, 1, 0, 1 };
+    Ctrl_Car(car, dir, speed);
+}
+
+void Car_Spin_Right(YB_Pcb_Car* car, int* speed) {
+    int dir[4] = { 1, 0, 1, 0 };
+    Ctrl_Car(car, dir, speed);
+}
+
+void Ctrl_Servo(YB_Pcb_Car* car, int* angle) {
     int reg = 0x03;
-    int data[2] = { id, angle };
-    write_array(car, reg, data, 2);
+    write_array(car, reg, angle, 4);
 }
 
 int main() {
@@ -96,7 +100,9 @@ int main() {
     YB_Pcb_Car car;
     get_i2c_device(&car, 0x16, 1);
 
-    Car_Run(&car, 100, 100);
+    int speed[4] = { 100, 100, 100, 100 };
+
+    Car_Run(&car, speed);
     delay(2000); // 2초 동안 주행
     Car_Stop(&car);
 
