@@ -1,89 +1,150 @@
-#include <stdio.h>
-#include <stdint.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include <softPwm.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 
-// Define GPIO pins for the motor control
-#define LEFT_MOTOR_DIR_PIN 0   // GPIO pin for left motor direction
-#define LEFT_MOTOR_SPEED_PIN 1 // GPIO pin for left motor speed (PWM)
-#define RIGHT_MOTOR_DIR_PIN 2  // GPIO pin for right motor direction
-#define RIGHT_MOTOR_SPEED_PIN 3 // GPIO pin for right motor speed (PWM)
+#define I2C_ADDR 0x16
 
-// Define GPIO pins for servo control
-#define SERVO1_PIN 4
-#define SERVO2_PIN 5
-#define SERVO3_PIN 6
-#define SERVO4_PIN 7
+int i2c_fd;
 
-// Initialize the GPIO pins
-void initGPIO() {
-    wiringPiSetup();
-    
-    // Initialize motor control pins
-    pinMode(LEFT_MOTOR_DIR_PIN, OUTPUT);
-    softPwmCreate(LEFT_MOTOR_SPEED_PIN, 0, 180);
-    pinMode(RIGHT_MOTOR_DIR_PIN, OUTPUT);
-    softPwmCreate(RIGHT_MOTOR_SPEED_PIN, 0, 180);
-    
-    // Initialize servo control pins
-    softPwmCreate(SERVO1_PIN, 0, 180);
-    softPwmCreate(SERVO2_PIN, 0, 180);
-    softPwmCreate(SERVO3_PIN, 0, 180);
-    softPwmCreate(SERVO4_PIN, 0, 180);
-}
-
-// Control the movement of the car
-void controlMovement(int leftDir, int leftSpeed, int rightDir, int rightSpeed) {
-    digitalWrite(LEFT_MOTOR_DIR_PIN, leftDir);
-    softPwmWrite(LEFT_MOTOR_SPEED_PIN, leftSpeed);
-    digitalWrite(RIGHT_MOTOR_DIR_PIN, rightDir);
-    softPwmWrite(RIGHT_MOTOR_SPEED_PIN, rightSpeed);
-}
-
-// Stop all motors
-void stopAllMotors() {
-    softPwmWrite(LEFT_MOTOR_SPEED_PIN, 0);
-    softPwmWrite(RIGHT_MOTOR_SPEED_PIN, 0);
-}
-
-// Control the servo
-void controlServo(int servo, int angle) {
-    switch (servo) {
-        case 1:
-            softPwmWrite(SERVO1_PIN, angle);
-            break;
-        case 2:
-            softPwmWrite(SERVO2_PIN, angle);
-            break;
-        case 3:
-            softPwmWrite(SERVO3_PIN, angle);
-            break;
-        case 4:
-            softPwmWrite(SERVO4_PIN, angle);
-            break;
-        default:
-            printf("Invalid servo number\n");
-            break;
+void write_u8(int reg, int data) {
+    if (wiringPiI2CWriteReg8(i2c_fd, reg, data) < 0) {
+        perror("write_u8 I2C error");
     }
 }
 
+void write_reg(int reg) {
+    if (wiringPiI2CWrite(i2c_fd, reg) < 0) {
+        perror("write_reg I2C error");
+    }
+}
+
+void write_array(int reg, unsigned char* data, int length) {
+    for (int i = 0; i < length; i++) {
+        if (wiringPiI2CWriteReg8(i2c_fd, reg + i, data[i]) < 0) {
+            perror("write_array I2C error");
+            break;
+        }
+    }
+}
+
+void Ctrl_Car(int l_dir, int l_speed, int r_dir, int r_speed) {
+    unsigned char data[4] = { l_dir, l_speed, r_dir, r_speed };
+    write_array(0x01, data, 4);
+}
+
+void Control_Car(int speed1, int speed2) {
+    int dir1 = (speed1 < 0) ? 0 : 1;
+    int dir2 = (speed2 < 0) ? 0 : 1;
+    Ctrl_Car(dir1, abs(speed1), dir2, abs(speed2));
+}
+
+void Car_Run(int speed1, int speed2) {
+    Ctrl_Car(1, speed1, 1, speed2);
+}
+
+void Car_Stop() {
+    write_u8(0x02, 0x00);
+}
+
+void Car_Back(int speed1, int speed2) {
+    Ctrl_Car(0, speed1, 0, speed2);
+}
+
+void Car_Left(int speed1, int speed2) {
+    Ctrl_Car(0, speed1, 1, speed2);
+}
+
+void Car_Right(int speed1, int speed2) {
+    Ctrl_Car(1, speed1, 0, speed2);
+}
+
+void Car_Spin_Left(int speed1, int speed2) {
+    Ctrl_Car(0, speed1, 1, speed2);
+}
+
+void Car_Spin_Right(int speed1, int speed2) {
+    Ctrl_Car(1, speed1, 0, speed2);
+}
+
+void Ctrl_Servo(int id, int angle) {
+    if (angle < 0) angle = 0;
+    if (angle > 180) angle = 180;
+    unsigned char data[2] = { id, angle };
+    write_array(0x03, data, 2);
+}
+
 int main() {
-    // Initialize GPIO
-    initGPIO();
+    if (wiringPiSetup() == -1) {
+        printf("wiringPi setup failed\n");
+        return 1;
+    }
     
-    // Example usage
-    // Control movement: Left motor forward at speed 100, Right motor backward at speed 150
-    controlMovement(1, 100, 0, 150);
-    delay(5000); // Run for 5 seconds
-    
-    // Stop all motors
-    stopAllMotors();
-    delay(2000); // Wait for 2 seconds
-    
-    // Control servo 1 to angle 90
-    controlServo(1, 90);
-    delay(2000); // Wait for 2 seconds
-    
+    i2c_fd = wiringPiI2CSetup(I2C_ADDR);
+    if (i2c_fd == -1) {
+        printf("Failed to initiate I2C communication\n");
+        return 1;
+    }
+
+    // 테스트 코드
+    printf("Car Run...\n");
+    Car_Run(100, 100);
+    delay(2000);
+
+    printf("Car Stop...\n");
+    Car_Stop();
+    delay(2000);
+
+    printf("Car Back...\n");
+    Car_Back(100, 100);
+    delay(2000);
+
+    printf("Car Stop...\n");
+    Car_Stop();
+    delay(2000);
+
+    printf("Car Left...\n");
+    Car_Left(100, 100);
+    delay(2000);
+
+    printf("Car Stop...\n");
+    Car_Stop();
+    delay(2000);
+
+    printf("Car Right...\n");
+    Car_Right(100, 100);
+    delay(2000);
+
+    printf("Car Stop...\n");
+    Car_Stop();
+    delay(2000);
+
+    printf("Car Spin Left...\n");
+    Car_Spin_Left(100, 100);
+    delay(2000);
+
+    printf("Car Stop...\n");
+    Car_Stop();
+    delay(2000);
+
+    printf("Car Spin Right...\n");
+    Car_Spin_Right(100, 100);
+    delay(2000);
+
+    printf("Car Stop...\n");
+    Car_Stop();
+    delay(2000);
+
+    printf("Servo Control...\n");
+    Ctrl_Servo(1, 90);
+    delay(1000);
+    Ctrl_Servo(1, 0);
+    delay(1000);
+    Ctrl_Servo(1, 180);
+    delay(1000);
+
+    printf("All tests completed.\n");
+
     return 0;
 }
