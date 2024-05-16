@@ -1,46 +1,34 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/i2c-dev.h>
+#include <wiringPiI2C.h>
 #include <unistd.h>
-#include <stdlib.h> // Include this line
+#include <stdlib.h>
 
 #define I2C_DEVICE_ADDRESS 0x16
-#define I2C_BUS "/dev/i2c-1"
 
 int file;
 
 void open_i2c() {
-    file = open(I2C_BUS, O_RDWR);
+    file = wiringPiI2CSetup(I2C_DEVICE_ADDRESS);
     if (file < 0) {
         perror("Error opening i2c bus");
-        return;
-    }
-
-    if (ioctl(file, I2C_SLAVE, I2C_DEVICE_ADDRESS) < 0) {
-        perror("Error at ioctl");
         return;
     }
 }
 
 void write_u8(uint8_t reg, uint8_t data) {
-    if (write(file, &reg, sizeof(reg)) != sizeof(reg)) {
-        perror("Error writing to i2c device");
-        return;
-    }
-    if (write(file, &data, sizeof(data)) != sizeof(data)) {
+    if (wiringPiI2CWriteReg8(file, reg, data) < 0) {
         perror("Error writing to i2c device");
         return;
     }
 }
 
 void write_array(uint8_t reg, uint8_t *data, int len) {
-    if (write(file, &reg, sizeof(reg)) != sizeof(reg)) {
+    if (wiringPiI2CWriteReg8(file, reg, data[0]) < 0) {
         perror("Error writing to i2c device");
         return;
     }
-    if (write(file, data, len) != len) {
+    if (write(file, data + 1, len - 1) != (len - 1)) {
         perror("Error writing to i2c device");
         return;
     }
