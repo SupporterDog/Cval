@@ -33,7 +33,7 @@ void write_reg(YB_Pcb_Car* car, int reg) {
 void write_array(YB_Pcb_Car* car, int reg, int* data, int length) {
     for (int i = 0; i < length; ++i) {
         if (wiringPiI2CWriteReg8(car->_device, reg + i, data[i]) == -1) {
-            printf("write_array I2C error\n");
+            printf("write_array I2C error at index %d\n", i);
             return;
         }
     }
@@ -54,19 +54,21 @@ void Car_Stop(YB_Pcb_Car* car) {
 }
 
 void Car_Left(YB_Pcb_Car* car, int* speed) {
-    // 모터 연결 방향에 따라 속도 조정이 필요할 수 있음
     int adjusted_speed[4] = {speed[0], speed[1], -speed[2], -speed[3]};
     Ctrl_Car(car, adjusted_speed);
 }
 
 void Car_Right(YB_Pcb_Car* car, int* speed) {
-    // 모터 연결 방향에 따라 속도 조정이 필요할 수 있음
     int adjusted_speed[4] = {-speed[0], -speed[1], speed[2], speed[3]};
     Ctrl_Car(car, adjusted_speed);
 }
 
 int main() {
-    wiringPiSetup();
+    if (wiringPiSetup() == -1) {
+        printf("wiringPi setup failed\n");
+        return 1;
+    }
+
     YB_Pcb_Car car;
     get_i2c_device(&car, 0x16, 1);
 
