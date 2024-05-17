@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define I2C_ADDR 0x16
-
 typedef struct {
     int _device;
     int _addr;
@@ -20,15 +18,7 @@ void get_i2c_device(YB_Pcb_Car* car, int address) {
     printf("I2C device initialized at address 0x%X\n", car->_addr);
 }
 
-void write_u8(YB_Pcb_Car* car, int reg, int data) {
-    if (wiringPiI2CWriteReg8(car->_device, reg, data) == -1) {
-        printf("write_u8 I2C error\n");
-    } else {
-        printf("write_u8: Data %d written successfully to reg %d\n", data, reg);
-    }
-}
-
-void write_array(YB_Pcb_Car* car, int reg, unsigned char* data, int length) {
+void write_array(YB_Pcb_Car* car, int reg, int* data, int length) {
     for (int i = 0; i < length; ++i) {
         if (wiringPiI2CWriteReg8(car->_device, reg + i, data[i]) == -1) {
             printf("write_array I2C error at index %d\n", i);
@@ -39,34 +29,33 @@ void write_array(YB_Pcb_Car* car, int reg, unsigned char* data, int length) {
     }
 }
 
-void Ctrl_Car(YB_Pcb_Car* car, int l_dir, int l_speed, int r_dir, int r_speed) {
-    unsigned char data[4] = { l_dir, l_speed, r_dir, r_speed };
-    write_array(car, 0x01, data, 4);
+void Ctrl_Car(YB_Pcb_Car* car, int* data) {
+    int reg = 0x01;
+    write_array(car, reg, data, 4);
 }
 
-void Car_Run(YB_Pcb_Car* car, int l_speed, int r_speed) {
-    Ctrl_Car(car, 1, l_speed, 1, r_speed);
+void Car_Run(YB_Pcb_Car* car, int* data) {
+    Ctrl_Car(car, data);
 }
 
 void Car_Stop(YB_Pcb_Car* car) {
-    write_u8(car, 0x02, 0x00);
+    int reg = 0x02;
+    int stop_data = 0x00;
+    if (wiringPiI2CWriteReg8(car->_device, reg, stop_data) == -1) {
+        printf("Car_Stop I2C error\n");
+    } else {
+        printf("Car stopped.\n");
+    }
 }
 
-void Car_Back(YB_Pcb_Car* car, int l_speed, int r_speed) {
-    Ctrl_Car(car, 0, l_speed, 0, r_speed);
+void Car_Left(YB_Pcb_Car* car, int* data) {
+    int adjusted_data[4] = {data[0], data[1], !data[2], data[3]};
+    Ctrl_Car(car, adjusted_data);
 }
 
-void Car_Left(YB_Pcb_Car* car, int speed) {
-    Ctrl_Car(car, 0, speed, 1, speed);
-}
-
-void Car_Right(YB_Pcb_Car* car, int speed) {
-    Ctrl_Car(car, 1, speed, 0, speed);
-}
-
-void Ctrl_Servo(YB_Pcb_Car* car, int servo_id, int angle) {
-    unsigned char data[2] = { servo_id, angle };
-    write_array(car, 0x03, data, 2);
+void Car_Right(YB_Pcb_Car* car, int* data) {
+    int adjusted_data[4] = {!data[0], data[1], data[2], data[3]};
+    Ctrl_Car(car, adjusted_data);
 }
 
 int main() {
@@ -76,49 +65,14 @@ int main() {
     }
 
     YB_Pcb_Car car;
-    get_i2c_device(&car, I2C_ADDR);
+    get_i2c_device(&car, 0x16);
 
-    printf("Running car forward...\n");
-    Car_Run(&car, 100, 100);
+    int run_data[4] = {1, 100, 1, 100}; // 앞 방향으로 100의 속도로 주행
+    printf("Running car...\n");
+    Car_Run(&car, run_data);
     delay(2000); // 2초 동안 주행
-
     printf("Stopping car...\n");
     Car_Stop(&car);
-    delay(2000);
-
-    printf("Running car backward...\n");
-    Car_Back(&car, 100, 100);
-    delay(2000);
-
-    printf("Stopping car...\n");
-    Car_Stop(&car);
-    delay(2000);
-
-    printf("Turning car left...\n");
-    Car_Left(&car, 100);
-    delay(2000);
-
-    printf("Stopping car...\n");
-    Car_Stop(&car);
-    delay(2000);
-
-    printf("Turning car right...\n");
-    Car_Right(&car, 100);
-    delay(2000);
-
-    printf("Stopping car...\n");
-    Car_Stop(&car);
-    delay(2000);
-
-    printf("Controlling servo...\n");
-    Ctrl_Servo(&car, 1, 90);
-    delay(1000);
-    Ctrl_Servo(&car, 1, 0);
-    delay(1000);
-    Ctrl_Servo(&car, 1, 180);
-    delay(1000);
-
-    printf("All tests completed.\n");
 
     return 0;
 }
