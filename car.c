@@ -2,6 +2,7 @@
 #include <wiringPiI2C.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>  // POSIX 라이브러리의 write 함수 포함
 
 #define I2C_ADDR 0x16
 
