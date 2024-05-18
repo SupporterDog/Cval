@@ -124,7 +124,7 @@ void H_H_L_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
 void H_L_L_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     wait_before_stop = 0;
     // 직진 후 오른쪽으로 회전하여 라인 찾기
-    Car_Run(car, 10, 50);
+    Car_Run(car, 50, 50);
     delay(500); // 1000에서 500으로 줄임
     while (left2 != LOW) {
         Car_Spin_Right(car, 50);
@@ -236,7 +236,7 @@ void line_following(YB_Pcb_Car* car) {
             if (temp_buffer[0] == 6) {L_L_L_H_wo(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 8) {Car_Back(car, 25, 25); }
             // 모든 센서가 HIGH인 경우, 라인을 벗어났을 가능성이 높음. 로봇 정지
-            if (wait_before_stop == 7) {
+            if (wait_before_stop == 15) {
                 Car_Stop(car);
                 delay(400);   
             }
