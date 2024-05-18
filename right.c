@@ -7,6 +7,7 @@
 #define I2C_ADDR 0x16
 
 // 라인 트래킹 센서 핀 설정 (WiringPi 번호 체계 사용)
+#define NUM_READINGS 10
 #define SENSOR_RIGHT2 0  // 물리적 핀 11, GPIO 17
 #define SENSOR_RIGHT1 7  // 물리적 핀 7, GPIO 4
 #define SENSOR_LEFT1 2   // 물리적 핀 13, GPIO 27
