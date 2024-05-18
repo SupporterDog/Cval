@@ -103,9 +103,6 @@ void line_following(YB_Pcb_Car* car) {
             delay(500); // 45도 회전
         } else if (left2 == LOW) { // 왼쪽 두 번째 센서가 검은색 라인을 감지
             Car_Back(car, 70, 70); // 후진
-        } else if (left1 == HIGH && left2 == HIGH && right1 == HIGH && right2 == HIGH) { // 모든 센서가 흰색 라인을 감지
-            Car_Spin_Right(car, 70);
-            delay(1000); // 90도 회전
         } else { // 모든 센서가 흰색을 감지
             Car_Stop(car);
         }
