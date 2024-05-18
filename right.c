@@ -18,6 +18,8 @@ typedef struct {
     int _addr;
 } YB_Pcb_Car;
 
+
+
 void get_i2c_device(YB_Pcb_Car* car, int address) {
     car->_addr = address;
     car->_device = wiringPiI2CSetup(car->_addr); // 주어진 I2C 주소로 I2C 장치 초기화
@@ -87,9 +89,8 @@ void line_following(YB_Pcb_Car* car) {
     right2 = read_sensor(SENSOR_RIGHT2);
 
     int sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-
+    int buffer;
     while (1) {
-
         switch (sensor_state) {
             case 0b1001:  // (H L L H) : 앞으로 직진
                 Car_Run(car, 30, 30);
@@ -99,6 +100,7 @@ void line_following(YB_Pcb_Car* car) {
                 right1 = read_sensor(SENSOR_RIGHT1);
                 right2 = read_sensor(SENSOR_RIGHT2);
                 sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                buffer = sensor_state;
                 break;
             case 0b1101:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
                 while (sensor_state== 0b1101) {
@@ -112,6 +114,7 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
                 }
                 break;
             case 0b1000:  // (H H L ): (H L L H ) 될때까지 조금씩 우회전하기
@@ -126,6 +129,7 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
                 }
                 break;
             case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
@@ -140,6 +144,7 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
                 }
                 break;
             case 0b1100:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
@@ -154,6 +159,7 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
                 }
                 break;
             case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
@@ -168,6 +174,8 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
+
                 }
                 break;
             case 0b0001:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
@@ -182,6 +190,7 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
                 }
                 break;
             case 0b0011:  // (L L H H) : 로봇 본체의 몸통 중간 까지 직진후 90도 좌회전하기
@@ -196,6 +205,8 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                buffer = sensor_state;
+
                 }
                 break;
             case 0b1011:  // (H L H H): (H L L H) 될때까지 조금씩 좌회전하기
@@ -210,7 +221,11 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state ==0b1001){
                         break;
                     }
+                    buffer = sensor_state;
                 }
+                break;
+            case 0b1111:
+                sensor_state = buffer;
                 break;
             default:
                 Car_Stop(car);
