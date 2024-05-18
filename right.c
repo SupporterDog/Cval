@@ -96,9 +96,14 @@ void line_following(YB_Pcb_Car* car) {
         switch (sensor_state) {
             case 0b1001:  // (H L L H) : 앞으로 직진
                 Car_Run(car, 30, 30);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                    sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
                 break;
             case 0b1101:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
-                while (sensor_state== 0b1101 or sensor_state =0b1001) {
+                while (sensor_state== 0b1101) {
                     Car_Right(car, 30, 50);
                     delay(50);
                     left1 = read_sensor(SENSOR_LEFT1);
@@ -106,10 +111,12 @@ void line_following(YB_Pcb_Car* car) {
                     right1 = read_sensor(SENSOR_RIGHT1);
                     right2 = read_sensor(SENSOR_RIGHT2);
                     sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                }
+                    if(sensor_state =0b1001){
+                        break;
+                    }
                 break;
-            case 0b1000:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
-                while (sensor_state = 0b1101 or sensor_state = 0b1001) {
+            case 0b1000:  // (H H L ): (H L L H ) 될때까지 조금씩 우회전하기
+                while (sensor_state = 0b1000 ) {
                     Car_Right(car, 30, 50);
                     delay(50);
                     left1 = read_sensor(SENSOR_LEFT1);
@@ -117,10 +124,13 @@ void line_following(YB_Pcb_Car* car) {
                     right1 = read_sensor(SENSOR_RIGHT1);
                     right2 = read_sensor(SENSOR_RIGHT2);
                     sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if(sensor_state =0b1001){
+                        break;
+                    }
                 }
                 break;
             case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
-                while (sensor_state = 0b1110 or sensor_state = 0b1101) {
+                while (sensor_state = 0b1119 ) {
                     Car_Right(car, 30, 50);
                     delay(50);
                     left1 = read_sensor(SENSOR_LEFT1);
@@ -128,16 +138,27 @@ void line_following(YB_Pcb_Car* car) {
                     right1 = read_sensor(SENSOR_RIGHT1);
                     right2 = read_sensor(SENSOR_RIGHT2);
                     sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if( if(sensor_state =0b1001){
+                        break;
+                    }
                 }
                 break;
-            case 0b1100:  // (H H L L) : 로봇 본체의 몸통 중간 까지 직진후 90도 우회전하기
-                Car_Run(car, 50, 50);
-                delay(500);  // 로봇의 몸통 중간까지 직진
-                Car_Right(car, 50, 50);  // 90도 우회전
-                delay(1000);
+            case 0b1100:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
+                while (sensor_state = 0b1100) {
+                    Car_Right(car, 30, 50);
+                    delay(50);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                    sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if( if(sensor_state =0b1001){
+                        break;
+                    }
+                }
                 break;
             case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
-                while (sensor_state = 0b0111 or sensor_state = 0b1001 ) {
+                while (sensor_state = 0b0111 ) {
                     Car_Left(car, 50, 30);
                     delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
@@ -145,10 +166,13 @@ void line_following(YB_Pcb_Car* car) {
                     right1 = read_sensor(SENSOR_RIGHT1);
                     right2 = read_sensor(SENSOR_RIGHT2);
                     sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if(sensor_state =0b1001){
+                        break;
+                    }
                 }
                 break;
             case 0b0001:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
-                while (sensor_state = 0b0111 or sensor_state = 0b1001) {
+                while (sensor_state = 0b0001 ) {
                     Car_Left(car, 50, 30);
                     delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
@@ -156,16 +180,13 @@ void line_following(YB_Pcb_Car* car) {
                     right1 = read_sensor(SENSOR_RIGHT1);
                     right2 = read_sensor(SENSOR_RIGHT2);
                     sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if(sensor_state =0b1001){
+                        break;
+                    }
                 }
                 break;
             case 0b0011:  // (L L H H) : 로봇 본체의 몸통 중간 까지 직진후 90도 좌회전하기
-                Car_Run(car, 50, 50);
-                delay(500);  // 로봇의 몸통 중간까지 직진
-                Car_Left(car, 50, 50);  // 90도 좌회전
-                delay(1000);
-                break;
-            case 0b1011:  // (H L H H): (H L L H) 될때까지 조금씩 좌회전하기
-                while (sensor_state = 0b1011 or sensor_state = 0b1001) {
+                  while (sensor_state = 0b0011 ) {
                     Car_Left(car, 50, 30);
                     delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
@@ -173,6 +194,23 @@ void line_following(YB_Pcb_Car* car) {
                     right1 = read_sensor(SENSOR_RIGHT1);
                     right2 = read_sensor(SENSOR_RIGHT2);
                     sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if(sensor_state =0b1001){
+                        break;
+                    }
+                }
+                break;
+            case 0b1011:  // (H L H H): (H L L H) 될때까지 조금씩 좌회전하기
+                while (sensor_state = 0b1011) {
+                    Car_Left(car, 50, 30);
+                    delay(100);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                    sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                    if(sensor_state =0b1001){
+                        break;
+                    }
                 }
                 break;
             default:
