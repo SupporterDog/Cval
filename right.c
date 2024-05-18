@@ -225,17 +225,12 @@ void line_following(YB_Pcb_Car* car) {
                     buffer = sensor_state;
                 }
                 break;
-            case 0b1111:
+            
+            default:
                 sensor_state = buffer;
                 break;
-            case 0b0000:
-                sensor_state = recovery(sensor_state);
-                break;
-            default:
-                Car_Stop(car);
-                break;
         }
-    delay(100);
+    delay(10);
     }
 }
 
