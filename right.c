@@ -96,7 +96,7 @@ void line_following(YB_Pcb_Car* car) {
         switch (sensor_state) {
             case 0b1001:  // (H L L H) : 앞으로 직진
                 Car_Run(car, 30, 30);
-                delay(50);
+                delay(70);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -106,7 +106,7 @@ void line_following(YB_Pcb_Car* car) {
             case 0b1101:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
                 while (sensor_state== 0b1101) {
                     Car_Right(car, 30, 50);
-                    delay(50);
+                    delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
                     left2 = read_sensor(SENSOR_LEFT2);
                     right1 = read_sensor(SENSOR_RIGHT1);
@@ -119,7 +119,7 @@ void line_following(YB_Pcb_Car* car) {
             case 0b1000:  // (H H L ): (H L L H ) 될때까지 조금씩 우회전하기
                 while (sensor_state = 0b1000 ) {
                     Car_Right(car, 30, 50);
-                    delay(50);
+                    delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
                     left2 = read_sensor(SENSOR_LEFT2);
                     right1 = read_sensor(SENSOR_RIGHT1);
@@ -133,7 +133,7 @@ void line_following(YB_Pcb_Car* car) {
             case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
                 while (sensor_state = 0b1119 ) {
                     Car_Right(car, 30, 50);
-                    delay(50);
+                    delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
                     left2 = read_sensor(SENSOR_LEFT2);
                     right1 = read_sensor(SENSOR_RIGHT1);
@@ -147,7 +147,7 @@ void line_following(YB_Pcb_Car* car) {
             case 0b1100:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
                 while (sensor_state = 0b1100) {
                     Car_Right(car, 30, 50);
-                    delay(50);
+                    delay(100);
                     left1 = read_sensor(SENSOR_LEFT1);
                     left2 = read_sensor(SENSOR_LEFT2);
                     right1 = read_sensor(SENSOR_RIGHT1);
