@@ -289,7 +289,7 @@ void line_following(YB_Pcb_Car* car) {
                 sensor_state = buffer;
                 break;
         }
-    delay(10);
+    delay(5);
     }
 }
 
