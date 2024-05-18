@@ -300,12 +300,15 @@ void line_following(YB_Pcb_Car* car) {
                 break;
             case 0b1111: // (H H H H) : Stop
                 if (num_before_terminate > 4) {
+		    
                     Car_Stop(car);
                     break;
                 }
-                ++num_before_terminate;
-                sensor_state = buffer;
 
+		if(num_before_terminate<=4){
+                	++num_before_terminate;
+                	sensor_state = buffer;
+		}
             default:
                 sensor_state = buffer;
                 break;
