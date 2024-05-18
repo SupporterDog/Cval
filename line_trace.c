@@ -224,7 +224,7 @@ void line_following(YB_Pcb_Car* car) {
             if (temp_buffer[0] == 3) {H_H_H_L_wo(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 4) {H_H_L_H_wo(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 5) {H_L_L_L_wo(left1, left2, right1, right2, car); }
-            if (temp_buffer[0] == 6) {L_L_L_H_wo()left1, left2, right1, right2, car); }
+            if (temp_buffer[0] == 6) {L_L_L_H_wo(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 8) {Car_Run(car, 50, 50); }
             // 모든 센서가 HIGH인 경우, 라인을 벗어났을 가능성이 높음. 로봇 정지
             if (wait_before_stop == 20) {
