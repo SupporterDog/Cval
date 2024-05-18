@@ -12,6 +12,9 @@
 #define SENSOR_LEFT1 2   // 물리적 핀 13, GPIO 27   맨 왼쪽 핀
 #define SENSOR_LEFT2 3   // 물리적 핀 15, GPIO 22   중앙 왼쪽 핀
 
+//global 변수 선언
+int wait_before_stop = 0;
+
 typedef struct {
     int _device;
     int _addr;
@@ -85,6 +88,7 @@ int read_sensor(int pin) {
 }
 
 void L_H_H_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
+    wait_before_stop = 0;
     // 왼쪽으로 회전
     while (left1 != HIGH || left2 != LOW) {
         Car_Spin_Left(car, 50);
@@ -95,12 +99,14 @@ void L_H_H_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     delay(100);
 }
 void H_L_H_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
+    wait_before_stop = 0;
     // 왼쪽으로 회전
     Car_Spin_Left(car, 50);
     delay(10);
 }
 void H_H_H_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 오른쪽으로 회전
+    wait_before_stop = 0;
     while (right1 != HIGH || right2 != LOW) {
         Car_Spin_Right(car, 50);
         right1 = read_sensor(SENSOR_RIGHT1);
@@ -110,11 +116,13 @@ void H_H_H_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     delay(100);
 }
 void H_H_L_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
+    wait_before_stop = 0;
     // 오른쪽으로 회전
     Car_Spin_Right(car, 50);
     delay(100);
 }
 void H_L_L_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
+    wait_before_stop = 0;
     // 직진 후 오른쪽으로 회전하여 라인 찾기
     Car_Run(car, 10, 50);
     delay(500); // 1000에서 500으로 줄임
@@ -126,6 +134,7 @@ void H_L_L_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     delay(100);
 }
 void L_L_L_H(int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
+    wait_before_stop = 0;
     // 직진 후 왼쪽으로 회전하여 라인 찾기
     Car_Run(car, 50, 50);
     delay(500); // 1000에서 500으로 줄임
@@ -190,7 +199,7 @@ void L_L_L_H_wo(int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
 }
 int temp_buffer[1] = {0};
 void line_following(YB_Pcb_Car* car) {
-    int wait_before_stop = 0;
+    
     int left1, left2, right1, right2;
 
     while (1) {
@@ -225,9 +234,9 @@ void line_following(YB_Pcb_Car* car) {
             if (temp_buffer[0] == 4) {H_H_L_H_wo(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 5) {H_L_L_L_wo(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 6) {L_L_L_H_wo(left1, left2, right1, right2, car); }
-            if (temp_buffer[0] == 8) {Car_Back(car, 30, 30); }
+            if (temp_buffer[0] == 8) {Car_Back(car, 25, 25); }
             // 모든 센서가 HIGH인 경우, 라인을 벗어났을 가능성이 높음. 로봇 정지
-            if (wait_before_stop == 35) {
+            if (wait_before_stop == 7) {
                 Car_Stop(car);
                 delay(400);   
             }
