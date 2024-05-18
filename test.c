@@ -92,7 +92,7 @@ void line_following(YB_Pcb_Car* car) {
         left2 = read_sensor(SENSOR_LEFT2);
         right1 = read_sensor(SENSOR_RIGHT1);
         right2 = read_sensor(SENSOR_RIGHT2);
-
+        //sensor left 1 left2 right1 right2
         if (right1 == LOW) { // 오른쪽 첫 번째 센서가 검은색 라인을 감지
             Car_Spin_Right(car, 70);
             delay(500); // 45도 회전
