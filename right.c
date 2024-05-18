@@ -107,6 +107,16 @@ void line_following(YB_Pcb_Car* car) {
                     right2 = read_sensor(SENSOR_RIGHT2);
                 }
                 break;
+            case 0b1000:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
+                while ((left1 == HIGH) && (left2 == HIGH) && (right2 == LOW) && (right1 == HIGH)) {
+                    Car_Right(car, 30, 50);
+                    delay(50);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                }
+                break;
             case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
                 while ((left1 == HIGH) && (left2 == HIGH) && (right2 == HIGH) && (right1 == LOW)) {
                     Car_Right(car, 30, 50);
@@ -124,6 +134,16 @@ void line_following(YB_Pcb_Car* car) {
                 delay(1000);
                 break;
             case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
+                while ((left1 == LOW) && (left2 == HIGH) && (right2 == HIGH) && (right1 == HIGH)) {
+                    Car_Left(car, 50, 30);
+                    delay(100);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                }
+                break;
+            case 0b0001:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
                 while ((left1 == LOW) && (left2 == HIGH) && (right2 == HIGH) && (right1 == HIGH)) {
                     Car_Left(car, 50, 30);
                     delay(100);
