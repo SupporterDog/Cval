@@ -229,7 +229,7 @@ void line_following(YB_Pcb_Car* car) {
                 sensor_state = buffer;
                 break;
             case 0b0000:
-                sensor_state = buffer;
+                sensor_state = recovery(sensor_state);
                 break;
             default:
                 Car_Stop(car);
