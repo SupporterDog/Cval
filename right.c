@@ -216,7 +216,6 @@ void line_following(YB_Pcb_Car* car) {
                 Car_Stop(car);
                 break;
         }
-        delay(10);
     }
 }
 
