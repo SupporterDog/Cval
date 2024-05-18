@@ -83,14 +83,15 @@ int read_sensor(int pin) {
 void line_following(YB_Pcb_Car* car) {
     int left1, left2, right1, right2;
     
-    left1 = read_sensor(SENSOR_LEFT1);
-    left2 = read_sensor(SENSOR_LEFT2);
-    right1 = read_sensor(SENSOR_RIGHT1);
-    right2 = read_sensor(SENSOR_RIGHT2);
-
-    int sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+    
     int buffer;
     while (1) {
+        left1 = read_sensor(SENSOR_LEFT1);
+        left2 = read_sensor(SENSOR_LEFT2);
+        right1 = read_sensor(SENSOR_RIGHT1);
+        right2 = read_sensor(SENSOR_RIGHT2);
+
+        int sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
         switch (sensor_state) {
             case 0b1001:  // (H L L H) : 앞으로 직진
                 Car_Run(car, 30, 30);
