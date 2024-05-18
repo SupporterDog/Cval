@@ -115,6 +115,7 @@ void line_following(YB_Pcb_Car* car) {
                     if(sensor_state =0b1001){
                         break;
                     }
+                }
                 break;
             case 0b1000:  // (H H L ): (H L L H ) 될때까지 조금씩 우회전하기
                 while (sensor_state = 0b1000 ) {
