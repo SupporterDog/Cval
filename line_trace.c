@@ -175,9 +175,9 @@ void line_following(YB_Pcb_Car* car) {
             if (temp_buffer[0] == 6) {L_L_L_H(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 8) {Car_Run(car, 50, 50); wait_before_stop = 0; }
             // 모든 센서가 HIGH인 경우, 라인을 벗어났을 가능성이 높음. 로봇 정지
-            if (wait_before_stop == 20) {
+            if (wait_before_stop == 4) {
                 Car_Stop(car);
-                Delay(58778585);   
+                delay(58778585);   
             }
         } else {
             // 기본 전진
