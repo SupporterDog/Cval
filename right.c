@@ -116,12 +116,47 @@ void line_following(YB_Pcb_Car* car) {
                     right2 = read_sensor(SENSOR_RIGHT2);
                 }
                 break;
-            case 0b1100:  // (H H L L), (H H H L) : 로봇 본체의 몸통 중간 까지 직진후 90도 우회전하기
-            case 0b1110:
+            case 0b1100:  // (H H L L) : 로봇 본체의 몸통 중간 까지 직진후 90도 우회전하기
                 Car_Run(car, 70, 70);
                 delay(500);  // 로봇의 몸통 중간까지 직진
                 Car_Right(car, 70, 70);  // 90도 우회전
                 delay(1000);
+                break;
+            case 0b0110:  // (L H H H): (H L L H ) 될때까지 조금씩 좌회전하기
+                while ((left1 == LOW) && (left2 == HIGH) && (right2 == HIGH) && (right1 == HIGH)) {
+                    Car_Left(car, 70, 50);
+                    delay(100);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                }
+                break;
+            case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
+                while ((left1 == LOW) && (left2 == HIGH) && (right2 == HIGH) && (right1 == HIGH)) {
+                    Car_Left(car, 70, 50);
+                    delay(100);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                }
+                break;
+            case 0b0011:  // (L L H H) : 로봇 본체의 몸통 중간 까지 직진후 90도 좌회전하기
+                Car_Run(car, 70, 70);
+                delay(500);  // 로봇의 몸통 중간까지 직진
+                Car_Left(car, 70, 70);  // 90도 좌회전
+                delay(1000);
+                break;
+            case 0b1011:  // (H L H H): (H L L H) 될때까지 조금씩 좌회전하기
+                while ((left1 == HIGH) && (left2 == LOW) && (right2 == HIGH) && (right1 == HIGH)) {
+                    Car_Left(car, 70, 50);
+                    delay(100);
+                    left1 = read_sensor(SENSOR_LEFT1);
+                    left2 = read_sensor(SENSOR_LEFT2);
+                    right1 = read_sensor(SENSOR_RIGHT1);
+                    right2 = read_sensor(SENSOR_RIGHT2);
+                }
                 break;
             default:
                 Car_Stop(car);
