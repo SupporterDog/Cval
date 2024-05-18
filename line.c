@@ -86,31 +86,26 @@ void line_following(YB_Pcb_Car* car) {
         right2 = read_sensor(SENSOR_RIGHT2);
 
         if (left1 == LOW && left2 == LOW && right1 == LOW && right2 == LOW) { // 모든 센서가 검은색 라인을 감지
-            Car_Spin_Right(car, 75);
-            delay(1000);
-        } else if (left1 == HIGH && right1 == LOW && right2 == LOW) {  // 1X00
+            Car_Run(car, 70, 70); // 직진
+        } else if (left1 == LOW && left2 == LOW) { // 왼쪽 센서들이 검은색 라인을 감지
+            Car_Left(car, 50, 70); // 부드러운 좌회전
+        } else if (right1 == LOW && right2 == LOW) { // 오른쪽 센서들이 검은색 라인을 감지
+            Car_Right(car, 70, 50); // 부드러운 우회전
+        } else if (left1 == LOW) { // 왼쪽 첫 번째 센서가 검은색 라인을 감지
             Car_Spin_Left(car, 70);
-            delay(1000);
-        } else if (left1 == LOW && left2 == LOW && right2 == HIGH) {  // 00X1
+            delay(200); // 약간 왼쪽으로 회전
+        } else if (right1 == LOW) { // 오른쪽 첫 번째 센서가 검은색 라인을 감지
             Car_Spin_Right(car, 70);
-            delay(1000);
-        } else if (left1 == HIGH && left2 == LOW && right2 == HIGH) {  // 10X1
+            delay(200); // 약간 오른쪽으로 회전
+        } else if (left2 == LOW) { // 왼쪽 두 번째 센서가 검은색 라인을 감지
+            Car_Back(car, 70, 70); // 후진
+        } else if (right2 == LOW) { // 오른쪽 두 번째 센서가 검은색 라인을 감지
+            Car_Run(car, 70, 70); // 직진
+        } else if (left1 == HIGH && left2 == HIGH && right1 == HIGH && right2 == HIGH) { // 모든 센서가 흰색 라인을 감지
             Car_Spin_Right(car, 70);
-            delay(1000);
-        } else if (left1 == HIGH && right1 == LOW && right2 == HIGH) {  // 1X01
-            Car_Spin_Right(car, 70);
-            delay(1000);
-        } else if (left1 == LOW && left2 == HIGH && right1 == HIGH && right2 == LOW) {  // 0110
-            Car_Spin_Right(car, 70);
-            delay(1000);
-        } else if (left1 == LOW && left2 == HIGH && right1 == HIGH && right2 == HIGH) {  // 0111
-            Car_Spin_Right(car, 50);
-            delay(1000);
-        } else if (left1 == HIGH && left2 == HIGH && right1 == HIGH && right2 == LOW) {  // 1110
-            Car_Spin_Left(car, 50);
-            delay(1000);
-        } else if (left1 == HIGH && left2 == HIGH && right1 == HIGH && right2 == HIGH) {  // 1111
-            Car_Run(car, 70, 70);
+            delay(1000); // 90도 회전
+        } else { // 모든 센서가 흰색을 감지
+            Car_Stop(car);
         }
         delay(100);
     }
