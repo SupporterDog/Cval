@@ -73,7 +73,12 @@ void Ctrl_Servo(YB_Pcb_Car* car, int servo_id, int angle) {
 }
 
 int read_sensor(int pin) {
-    return digitalRead(pin);
+    int sum = 0;
+    for (int i = 0; i < NUM_READINGS; i++) {
+        sum += digitalRead(pin);
+        delay(10); // 작은 지연을 추가하여 연속 읽기를 방지
+    }
+    return sum / NUM_READINGS; // 평균 값 반환
 }
 
 void line_following(YB_Pcb_Car* car) {
