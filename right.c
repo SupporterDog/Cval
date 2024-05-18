@@ -123,16 +123,6 @@ void line_following(YB_Pcb_Car* car) {
                 Car_Right(car, 70, 70);  // 90도 우회전
                 delay(1000);
                 break;
-            case 0b0110:  // (L H H H): (H L L H ) 될때까지 조금씩 좌회전하기
-                while ((left1 == LOW) && (left2 == HIGH) && (right2 == HIGH) && (right1 == HIGH)) {
-                    Car_Left(car, 70, 50);
-                    delay(100);
-                    left1 = read_sensor(SENSOR_LEFT1);
-                    left2 = read_sensor(SENSOR_LEFT2);
-                    right1 = read_sensor(SENSOR_RIGHT1);
-                    right2 = read_sensor(SENSOR_RIGHT2);
-                }
-                break;
             case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
                 while ((left1 == LOW) && (left2 == HIGH) && (right2 == HIGH) && (right1 == HIGH)) {
                     Car_Left(car, 70, 50);
