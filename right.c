@@ -92,6 +92,7 @@ void line_following(YB_Pcb_Car* car) {
         right2 = read_sensor(SENSOR_RIGHT2);
 
         int sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+        int num_before_terminate = 0;
         switch (sensor_state) {
             case 0b1001:  // (H L L H) : 앞으로 직진
                 Car_Run(car, 30, 30);
@@ -297,6 +298,14 @@ void line_following(YB_Pcb_Car* car) {
                     buffer = sensor_state;
                 }
                 break;
+            case 0b1111: // (H H H H) : Stop
+                if (num_before_terminate > 4) {
+                    Car_Stop(car);
+                    break;
+                }
+                ++num_before_terminate;
+                sensor_state = buffer;
+
             default:
                 sensor_state = buffer;
                 break;
