@@ -84,7 +84,7 @@ int read_sensor(int pin) {
     return digitalRead(pin);
 }
 
-void L_H_H_H (int left1, int left2, int right1, int right2) {
+void L_H_H_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 왼쪽으로 회전
     while (left1 != HIGH || left2 != LOW) {
         Car_Spin_Left(car, 50);
@@ -94,12 +94,12 @@ void L_H_H_H (int left1, int left2, int right1, int right2) {
     }
     delay(100);
 }
-void H_L_H_H (int left1, int left2, int right1, int right2) {
+void H_L_H_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 왼쪽으로 회전
     Car_Spin_Left(car, 50);
     delay(10);
 }
-void H_H_H_L (int left1, int left2, int right1, int right2) {
+void H_H_H_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 오른쪽으로 회전
     while (right1 != HIGH || right2 != LOW) {
         Car_Spin_Right(car, 50);
@@ -109,12 +109,12 @@ void H_H_H_L (int left1, int left2, int right1, int right2) {
     }
     delay(100);
 }
-void H_H_L_H (int left1, int left2, int right1, int right2) {
+void H_H_L_H (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 오른쪽으로 회전
     Car_Spin_Right(car, 50);
     delay(100);
 }
-void H_L_L_L (int left1, int left2, int right1, int right2) {
+void H_L_L_L (int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 직진 후 오른쪽으로 회전하여 라인 찾기
     Car_Run(car, 10, 50);
     delay(500); // 1000에서 500으로 줄임
@@ -125,7 +125,7 @@ void H_L_L_L (int left1, int left2, int right1, int right2) {
     }
     delay(100);
 }
-void L_L_L_H(int left1, int left2, int right1, int right2) {
+void L_L_L_H(int left1, int left2, int right1, int right2, YB_Pcb_Car* car) {
     // 직진 후 왼쪽으로 회전하여 라인 찾기
     Car_Run(car, 50, 50);
     delay(500); // 1000에서 500으로 줄임
@@ -148,35 +148,36 @@ void line_following(YB_Pcb_Car* car) {
         right2 = read_sensor(SENSOR_RIGHT2);
 
         if (left1 == LOW && left2 == HIGH && right2 == HIGH && right1 == HIGH) {
-            L_H_H_H(left1, left2, right1, right2);
+            L_H_H_H(left1, left2, right1, right2, car);
             temp_buffer[0] = 1;
         } else if (left1 == HIGH && left2 == LOW && right2 == HIGH && right1 == HIGH) {
-            H_L_H_H(left1, left2, right1, right2);
+            H_L_H_H(left1, left2, right1, right2, car);
             temp_buffer[0] = 2;
         } else if (left1 == HIGH && left2 == HIGH && right2 == HIGH && right1 == LOW) {
-            H_H_H_L(left1, left2, right1, right2);
+            H_H_H_L(left1, left2, right1, right2, car);
             temp_buffer[0] = 3;
         } else if (left1 == HIGH && left2 == HIGH && right2 == LOW && right1 == HIGH) {
-            H_H_L_H(left1, left2, right1, right2);
+            H_H_L_H(left1, left2, right1, right2, car);
             temp_buffer[0] = 4;
         } else if (left1 == HIGH && left2 == LOW && right2 == LOW && right1 == LOW) {
-            H_L_L_L(left1, left2, right1, right2);
+            H_L_L_L(left1, left2, right1, right2, car);
             temp_buffer[0] = 5;
         } else if (left1 == LOW && left2 == LOW && right2 == LOW && right1 == HIGH) {
-            L_L_L_H(left1,left2, right1, right2);
+            L_L_L_H(left1,left2, right1, right2, car);
             temp_buffer[0] = 6;
         } else if (left1 == HIGH && left2 == HIGH && right2 == HIGH && right1 == HIGH) {
             ++wait_before_stop;
-            if (temp_buffer[0] == 1) {L_H_H_H(left1, left2, right1, right2);}
-            if (temp_buffer[0] == 2) {H_L_H_H(left1, left2, right1, right2); }
-            if (temp_buffer[0] == 3) {H_H_H_L(left1, left2, right1, right2); }
-            if (temp_buffer[0] == 4) {H_H_L_H(left1, left2, right1, right2); }
-            if (temp_buffer[0] == 5) {H_L_L_L(left1, left2, right1, right2); }
-            if (temp_buffer[0] == 6) {L_L_L_H(left1, left2, right1, right2); }
+            if (temp_buffer[0] == 1) {L_H_H_H(left1, left2, right1, right2, car);}
+            if (temp_buffer[0] == 2) {H_L_H_H(left1, left2, right1, right2, car); }
+            if (temp_buffer[0] == 3) {H_H_H_L(left1, left2, right1, right2, car); }
+            if (temp_buffer[0] == 4) {H_H_L_H(left1, left2, right1, right2, car); }
+            if (temp_buffer[0] == 5) {H_L_L_L(left1, left2, right1, right2, car); }
+            if (temp_buffer[0] == 6) {L_L_L_H(left1, left2, right1, right2, car); }
             if (temp_buffer[0] == 8) {Car_Run(car, 50, 50); wait_before_stop = 0; }
             // 모든 센서가 HIGH인 경우, 라인을 벗어났을 가능성이 높음. 로봇 정지
             if (wait_before_stop == 20) {
-                Car_Stop(car);            
+                Car_Stop(car);
+                Delay(58778585);   
             }
         } else {
             // 기본 전진
