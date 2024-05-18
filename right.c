@@ -77,7 +77,7 @@ int read_sensor(int pin) {
     int sum = 0;
     for (int i = 0; i < NUM_READINGS; i++) {
         sum += digitalRead(pin);
-        delay(10); // 작은 지연을 추가하여 연속 읽기를 방지
+        delay(3); // 작은 지연을 추가하여 연속 읽기를 방지
     }
     return sum / NUM_READINGS; // 평균 값 반환
 }
