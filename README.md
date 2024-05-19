@@ -26,7 +26,7 @@
   3. Type "./linetracer" in the command line.
   4. The Car will run successfully.
  
-- ### Project Par 2
+- ### Project Part 2
 - 1. Download Proeject2_QRcode Folder
   2. Type "make" in the command line.
   3. Type "./qrrecognition" in the command line.
