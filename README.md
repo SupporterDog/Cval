@@ -18,3 +18,16 @@
 - ### [Tracking Car 2 Video](https://drive.google.com/file/d/1YvVXOKoGcrfTDAl3ys_hwepGZ8CiBil5/view?usp=drive_link)
 
 - ### [QRcode Recognition Video](https://drive.google.com/file/d/1xBD7BjxsNsIxEcETsCqgyjZ4a6cTil7I/view?usp=drive_link)
+
+## How to excute
+- ### Project Part 1
+- 1. Download Project1_Line_Tracer Folder
+  2. Type "make" in the command line.
+  3. Type "./linetracer" in the command line.
+  4. The Car will run successfully.
+ 
+- ### Project Par 2
+- 1. Download Proeject2_QRcode Folder
+  2. Type "make" in the command line.
+  3. Type "./qrrecognition" in the command line.
+  4. The QRcode will recognized. ( You can see the camera window. )
