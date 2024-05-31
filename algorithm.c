@@ -299,6 +299,15 @@ int* getDirection(Point* road, int path_length) {
     return returnvec;
 }
 
+int* getDirection_for_Mov(int* Dir, int path_length, int recent_dir) {
+    int* returnvec = (int*)malloc(sizeof(int) * (path_length));
+    returnvec[0] = recent_dir;
+    for (int i = 1; i < path_length; ++i) {
+        returnvec[i] = Dir[i - 1]; 
+    }
+    return returnvec;
+}
+
         // Calculate next movements;
         // rspin : LEFT->UP, UP->RIGHT, RIGHT->DOWN, DOWN->LEFT
         // lspin : LEFT->DOWN, UP->LEFT, RIGHT->UP, DOWN->RIGHT,
@@ -388,7 +397,7 @@ int main() {
         Point* my_point = &(Point) { my_x, my_y };
         int count;
 
-        // Use Bangaljook to get reachable points
+        // 상대보다 빨리 접근 가능한 좌표들
         Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);
         printf("All reachable points: ");
         for (int i = 0; i < count; ++i) {
@@ -396,12 +405,12 @@ int main() {
         }
         printf("\n");
 
-        // Find the max score point from reachable points
+        // 맥스 스코어 포인트
         Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count);
 
         printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, DGIST_OBJ.map[(*max_score_point).x][(*max_score_point).y].item.score);
 
-        // Find the best path toward the max score point
+        // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
         int path_length;
         Point* local_optimal_path;
         local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
@@ -410,7 +419,7 @@ int main() {
             printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
         }
 
-        // Find the Directions for given best path
+        // Direction---------------------------------------
         int* Directions;
         Directions = getDirection(local_optimal_path, path_length);
 
@@ -423,15 +432,15 @@ int main() {
             printf("\n");
         }
 
-        // Find the nex Movements for the given best path
-        int* Dirs_for_Movs = (int*)malloc(sizeof(int) * (path_length));
-        Dirs_for_Movs[0] = RECENT_DIRECTION;
-        for (int i = 1; i < path_length; ++i) {
-            Dirs_for_Movs[i] = Directions[i - 1]; 
-        }
+        // Direction for Moves(Add Recent_direction in front of Directions) ----------------------------
+        int* Dirs_for_Movs; 
+        Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_DIRECTION);
+
+        // Find the nex Movements for the given best path --------------------------
         int* Movements;
         Movements = getMovement(Dirs_for_Movs, path_length);
-        // 마지막 대가리 방향 업데이트
+
+        // 마지막 대가리 방향 업데이트 ----------------------------------
         RECENT_DIRECTION = Directions[path_length - 2];
         
         printf("Your Proposed Movements: \n");
@@ -442,12 +451,13 @@ int main() {
             if (Movements[i] == 4) { printf("turn\t"); }
             printf("\n");
         }
-        printf("RECENT DIRECTION : %d [L1 U2 R3 D4]", RECENT_DIRECTION);
+        printf("RECENT DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_DIRECTION);
         printf("\n");        
         printf("\n");
 
         free(reachable_points);
         free(Directions);
+        free(Dirs_for_Movs);
         free(Movements);
     }
 
