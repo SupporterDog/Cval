@@ -299,20 +299,15 @@ int* getDirection(Point* road, int path_length) {
     return returnvec;
 }
 
-int* getDirection_for_Mov(int* Dir, int path_length, int recent_dir) {
+int* getDirection_for_Mov(int* Dir, int path_length, int recent_head_dir) {
     int* returnvec = (int*)malloc(sizeof(int) * (path_length));
-    returnvec[0] = recent_dir;
+    returnvec[0] = recent_head_dir;
     for (int i = 1; i < path_length; ++i) {
         returnvec[i] = Dir[i - 1]; 
     }
     return returnvec;
 }
 
-        // Calculate next movements;
-        // rspin : LEFT->UP, UP->RIGHT, RIGHT->DOWN, DOWN->LEFT
-        // lspin : LEFT->DOWN, UP->LEFT, RIGHT->UP, DOWN->RIGHT,
-        // straight : LEFT->LEFT, UP->UP, RIGHT->RIGHT, DOWN->DOWN
-        // turn : LEFT->RIGHT, UP->DOWN, RIGHT->LEFT, DOWN->UP
 int* getMovement(int* dirs_for_movs, int path_length) {
     int* returnvec = malloc(sizeof(int) * (path_length - 1));
     for (int i = 0; i < path_length - 1; ++i) {
@@ -385,7 +380,7 @@ int main() {
     for (int num = 0; num < 10; ++num) {
 
         // 가장 쵝근 대가리 방향은 up으로 설정
-        int RECENT_DIRECTION = UP;
+        int RECENT_HEAD_DIRECTION = UP;
 
         printf("===========TestCase %d============\n\n", num + 1);
 
@@ -434,14 +429,14 @@ int main() {
 
         // Direction for Moves(Add Recent_direction in front of Directions) ----------------------------
         int* Dirs_for_Movs; 
-        Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_DIRECTION);
+        Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
 
         // Find the nex Movements for the given best path --------------------------
         int* Movements;
         Movements = getMovement(Dirs_for_Movs, path_length);
 
         // 마지막 대가리 방향 업데이트 ----------------------------------
-        RECENT_DIRECTION = Directions[path_length - 2];
+        RECENT_HEAD_DIRECTION = Directions[path_length - 2];
         
         printf("Your Proposed Movements: \n");
         for (int i = 0 ; i < path_length - 1; ++i) {
@@ -451,7 +446,7 @@ int main() {
             if (Movements[i] == 4) { printf("turn\t"); }
             printf("\n");
         }
-        printf("RECENT DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_DIRECTION);
+        printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
         printf("\n");        
         printf("\n");
 
