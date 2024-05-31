@@ -275,7 +275,7 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
 }
 
 int* getDirection(Point* road, int path_length) {
-    int* returnvec = (int*)malloc(path_length * sizeof(int));
+    int* returnvec = (int*)malloc((path_length - 1) * sizeof(int));
     if (returnvec == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
@@ -284,16 +284,16 @@ int* getDirection(Point* road, int path_length) {
         Point currpoint = road[i];
         Point nextpoint = road[i + 1];
         if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y + 1) {
-            returnvec[i] = UP;
-        }
-        else if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y - 1) {
-            returnvec[i] = DOWN;
-        }
-        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
             returnvec[i] = RIGHT;
         }
-        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x - 1) {
+        else if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y - 1) {
             returnvec[i] = LEFT;
+        }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
+            returnvec[i] = DOWN;
+        }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x - 1) {
+            returnvec[i] = UP;
         }
     }
     return returnvec;
@@ -422,7 +422,6 @@ int main() {
             if (Directions[i] == 4) { printf("DOWN\t"); }
             printf("\n");
         }
-        printf("\n");
 
         // Find the nex Movements for the given best path
         int* Dirs_for_Movs = (int*)malloc(sizeof(int) * (path_length));
@@ -443,9 +442,9 @@ int main() {
             if (Movements[i] == 4) { printf("turn\t"); }
             printf("\n");
         }
-        printf("RECENT DIRECTION": %d", RECENT_DIRECTION);
+        printf("RECENT DIRECTION : %d", RECENT_DIRECTION);
         printf("\n");        
-
+        printf("\n");
 
         free(reachable_points);
         free(Directions);
