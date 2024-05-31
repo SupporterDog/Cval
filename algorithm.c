@@ -359,9 +359,6 @@ int main() {
 
     srand(time(NULL));
 
-    // 가장 쵝근 대가리 방향은 up으로 설정
-    int RECENT_DIRECTION = UP;
-
     // Initialize the DGIST_OBJ map with some example scores
     for (int i = 0; i < MAP_ROW; ++i) {
         for (int j = 0; j < MAP_COL; ++j) {
@@ -377,6 +374,9 @@ int main() {
         printf("%c", '\n');
     }
     for (int num = 0; num < 10; ++num) {
+
+        // 가장 쵝근 대가리 방향은 up으로 설정
+        int RECENT_DIRECTION = UP;
 
         printf("===========TestCase %d============\n\n", num + 1);
 
@@ -432,7 +432,9 @@ int main() {
         }
         int* Movements;
         Movements = getMovement(Dirs_for_Movs, path_length);
-
+        // 마지막 대가리 방향 업데이트
+        RECENT_DIRECTION = Movements[-1];
+        
         printf("Your Proposed Movements: \n");
         for (int i = 0 ; i < path_length - 1; ++i) {
             if (Movements[i] == 1) { printf("l_spin\t"); }
