@@ -6,7 +6,6 @@
 #include <time.h>
 
 #define MAX_CLIENTS 2
-
 #define _MAP_ROW 4
 #define _MAP_COL 4
 #define MAP_ROW (_MAP_ROW + 1)
@@ -18,6 +17,11 @@
 #define UP 2
 #define RIGHT 3
 #define DOWN 4
+
+#define l_spin 1
+#define straight 2
+#define r_spin 3
+#define turn 4
 
 const int MAX_SCORE = 4; // Item max score
 const int SETTING_PERIOD = 20; //Boradcast & Item generation period
@@ -280,16 +284,54 @@ int* getDirection(Point* road, int path_length) {
         Point currpoint = road[i];
         Point nextpoint = road[i + 1];
         if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y + 1) {
-            returnvec[i] = RIGHT;
+            returnvec[i] = UP;
         }
         else if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y - 1) {
-            returnvec[i] = LEFT;
-        }
-        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
             returnvec[i] = DOWN;
         }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
+            returnvec[i] = RIGHT;
+        }
         else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x - 1) {
-            returnvec[i] = UP;
+            returnvec[i] = LEFT;
+        }
+    }
+    return returnvec;
+}
+
+        // Calculate next movements;
+        // rspin : LEFT->UP, UP->RIGHT, RIGHT->DOWN, DOWN->LEFT
+        // lspin : LEFT->DOWN, UP->LEFT, RIGHT->UP, DOWN->RIGHT,
+        // straight : LEFT->LEFT, UP->UP, RIGHT->RIGHT, DOWN->DOWN
+        // turn : LEFT->RIGHT, UP->DOWN, RIGHT->LEFT, DOWN->UP
+int* getMovement(int* dirs_for_movs, int path_length) {
+    int* returnvec = malloc(sizeof(int) * (path_length - 1));
+    for (int i = 0; i < path_length - 1; ++i) {
+        int firstdir = dirs_for_movs[i];
+        int seconddir = dirs_for_movs[i + 1];
+        if (firstdir == LEFT) {
+            if (seconddir == UP) { returnvec[i] = r_spin; }
+            else if (seconddir == DOWN) { returnvec[i] = l_spin; }
+            else if (seconddir == LEFT) { returnvec[i] = straight; }
+            else if (seconddir == RIGHT) { returnvec[i] = turn; }
+        }
+        else if (firstdir == UP) {
+            if (seconddir == UP) { returnvec[i] = straight; }
+            else if (seconddir == DOWN) { returnvec[i] = turn; }
+            else if (seconddir == LEFT) { returnvec[i] = l_spin; }
+            else if (seconddir == RIGHT) { returnvec[i] = r_spin; }
+        }
+        else if (firstdir == RIGHT) {
+            if (seconddir == UP) { returnvec[i] = l_spin; }
+            else if (seconddir == DOWN) { returnvec[i] = r_spin; }
+            else if (seconddir == LEFT) { returnvec[i] = turn; }
+            else if (seconddir == RIGHT) { returnvec[i] = straight; }
+        }
+        else if (firstdir == DOWN) {
+            if (seconddir == UP) { returnvec[i] = turn; }
+            else if (seconddir == DOWN) { returnvec[i] = straight; }
+            else if (seconddir == LEFT) { returnvec[i] = r_spin; }
+            else if (seconddir == RIGHT) { returnvec[i] = l_spin; }
         }
     }
     return returnvec;
@@ -316,6 +358,9 @@ bool SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
 int main() {
 
     srand(time(NULL));
+
+    // 가장 쵝근 대가리 방향은 up으로 설정
+    int RECENT_DIRECTION = UP;
 
     // Initialize the DGIST_OBJ map with some example scores
     for (int i = 0; i < MAP_ROW; ++i) {
@@ -365,7 +410,7 @@ int main() {
             printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
         }
 
-        // Find the Deirections for given best path
+        // Find the Directions for given best path
         int* Directions;
         Directions = getDirection(local_optimal_path, path_length);
 
@@ -378,8 +423,30 @@ int main() {
             printf("\n");
         }
         printf("\n");
+
+        // Find the nex Movements for the given best path
+        int* Dirs_for_Movs = (int*)malloc(sizeof(int) * (path_length));
+        Dirs_for_Movs[0] = RECENT_DIRECTION;
+        for (int i = 1; i < path_length; ++i) {
+            Dirs_for_Movs[i] = Directions[i - 1]; 
+        }
+        int* Movements;
+        Movements = getMovement(Dirs_for_Movs, path_length);
+
+        printf("Your Proposed Movements: \n");
+        for (int i = 0 ; i < path_length - 1; ++i) {
+            if (Movements[i] == 1) { printf("l_spin\t"); }
+            if (Movements[i] == 2) { printf("straight\t"); }
+            if (Movements[i] == 3) { printf("r_spin\t"); }
+            if (Movements[i] == 4) { printf("turn\t"); }
+            printf("\n");
+        }
+        printf("\n");        
+
+
         free(reachable_points);
         free(Directions);
+        free(Movements);
     }
 
     return 0;
