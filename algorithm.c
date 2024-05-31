@@ -169,7 +169,8 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
 
         // 점수가 4면 해당 지점을 반환
         if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
-            return currpoint;
+            if ( currpoint->x == StartPoint->x && currpoint->y == StartPoint->y ) {}
+            else { return currpoint; }
         }
 
         // 현재 점수가 최고 점수보다 크면 갱신
