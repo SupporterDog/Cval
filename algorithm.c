@@ -270,10 +270,14 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
 }
 
 int* getDirection(Point* road, int path_length) {
-    int* returnvec;
-    for (int i = 0; i < path_length; ++i) {
-        Point nextpoint = road[i + 1];
+    int* returnvec = (int*)malloc(path_length * sizeof(int));
+    if (returnvec == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < path_length - 1; ++i) {
         Point currpoint = road[i];
+        Point nextpoint = road[i + 1];
         if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y + 1) {
             returnvec[i] = UP;
         }
@@ -288,7 +292,6 @@ int* getDirection(Point* road, int path_length) {
         }
     }
     return returnvec;
-
 }
 
 
@@ -375,6 +378,7 @@ int main() {
         }
         printf("\n");
         free(reachable_points);
+        free(Directions);
     }
 
     return 0;
