@@ -433,7 +433,7 @@ int main() {
         int* Movements;
         Movements = getMovement(Dirs_for_Movs, path_length);
         // 마지막 대가리 방향 업데이트
-        RECENT_DIRECTION = Movements[-1];
+        RECENT_DIRECTION = Directions[-1];
         
         printf("Your Proposed Movements: \n");
         for (int i = 0 ; i < path_length - 1; ++i) {
@@ -443,6 +443,7 @@ int main() {
             if (Movements[i] == 4) { printf("turn\t"); }
             printf("\n");
         }
+        printf("RECENT DIRECTION": %d", RECENT_DIRECTION);
         printf("\n");        
 
 
