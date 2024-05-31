@@ -280,16 +280,16 @@ int* getDirection(Point* road, int path_length) {
         Point currpoint = road[i];
         Point nextpoint = road[i + 1];
         if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y + 1) {
-            returnvec[i] = UP;
-        }
-        else if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y - 1) {
-            returnvec[i] = DOWN;
-        }
-        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
             returnvec[i] = RIGHT;
         }
-        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x - 1) {
+        else if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y - 1) {
             returnvec[i] = LEFT;
+        }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
+            returnvec[i] = DOWN;
+        }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x - 1) {
+            returnvec[i] = UP;
         }
     }
     return returnvec;
