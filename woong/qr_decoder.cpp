@@ -4,9 +4,8 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
-#include <zbar.h>
 #include <iostream>
-#include <cstring>
+#include <string>
 
 extern "C" {
     const char* decodeQRCodeFromCamera() {
@@ -19,6 +18,7 @@ extern "C" {
 
             cv::Mat frame;
             std::string qrData;
+            cv::QRCodeDetector qrDecoder;
 
             while (true) {
                 cap >> frame; // 카메라에서 프레임 캡처
@@ -26,24 +26,11 @@ extern "C" {
                     throw std::runtime_error("프레임을 캡처할 수 없습니다.");
                 }
 
-                // 그레이스케일로 변환
-                cv::Mat gray;
-                cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
-
-                // ZBar 스캐너 초기화
-                zbar::ImageScanner scanner;
-                scanner.set_config(zbar::ZBAR_NONE, zbar::ZBAR_CFG_ENABLE, 1);
-
-                // OpenCV 이미지를 ZBar 이미지로 변환
-                zbar::Image zbarImage(gray.cols, gray.rows, "Y800", gray.data, gray.cols * gray.rows);
-
-                // QR 코드 스캔
-                int n = scanner.scan(zbarImage);
-                if (n > 0) {
-                    for (auto symbol = zbarImage.symbol_begin(); symbol != zbarImage.symbol_end(); ++symbol) {
-                        qrData = symbol->get_data();
-                        break; // 첫 번째 QR 코드 데이터만 반환
-                    }
+                // QR 코드 디코딩
+                cv::Mat bbox, rectifiedImage;
+                qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
+                
+                if (!qrData.empty()) {
                     break; // QR 코드가 인식되면 루프 종료
                 }
 
