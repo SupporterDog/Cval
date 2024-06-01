@@ -112,6 +112,9 @@ typedef struct {
     int distance;
 } QueueNode;
 
+extern int met_Node;
+extern int path_length;
+extern int* pMovements;
 
 bool isValid(Point p);
 
