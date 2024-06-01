@@ -51,12 +51,5 @@ int main(int argc, char *argv[]) {//MAIN THREAD
     //pthread_t run_thread;
     //pthread_create(&run_thread,NULL,threadFunction,NULL);
 
-
-
-
-
-    
-
-
     return 0;
 }
