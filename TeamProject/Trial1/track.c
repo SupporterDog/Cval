@@ -317,7 +317,7 @@ void* threadFunction(void* arg) {
         line_following(&car);
         pthread_mutex_unlock(&lock);
 
-        usleep(5000000);
+        usleep(500000);
     }
 
     return NULL;
