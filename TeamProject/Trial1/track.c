@@ -323,7 +323,7 @@ void* threadFunction(void* arg) {
         line_following(&car);
         pthread_mutex_unlock(&lock);
 
-        sleep(1);
+        //sleep(1);
     }
 
     return NULL;
