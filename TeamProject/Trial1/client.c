@@ -26,7 +26,12 @@ void* receiveUpdates(void* arg) {
 void updateGlobalVariables(DGIST* dgist,int my_sock) {
     pthread_mutex_lock(&lock);
     //DGIST객체 업데이트
-    updatedDgist=dgist;
+    // 깊은 복사
+    if (updatedDgist == NULL) {
+        updatedDgist = malloc(sizeof(DGIST));
+    }
+    memcpy(updatedDgist, dgist, sizeof(DGIST));
+	
     client_info client;
 
     printf("==========PRINT PLYAERS==========\n");
