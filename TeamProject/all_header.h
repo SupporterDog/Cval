@@ -7,36 +7,42 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <unistd.h> 
-//For calpath
+//========================ALGO INCLUDE================================
 #include <stdbool.h>
 #include <netinet/in.h>
-
-#define MAX_QUEUE_SIZE (MAP_ROW * MAP_COL)
-
-// 상수 정의
+//========================SERVER DEFINE===============================
 #define MAX_CLIENTS 2
 #define _MAP_ROW 4
 #define _MAP_COL 4
 #define MAP_ROW (_MAP_ROW + 1)
 #define MAP_COL (_MAP_COL + 1)
 #define MAP_SIZE (MAP_COL * MAP_ROW)
-
-#define LEFT 1
-#define UP 2
-#define RIGHT 3
-#define DOWN 4
-
-#define l_spin 1
-#define straight 2
-#define r_spin 3
-#define turn 4
-
 const int MAX_SCORE = 4; // Item max score
 const int SETTING_PERIOD = 20; // Broadcast & Item generation period
 const int INITIAL_ITEM = 10; // Initial number of item
 const int INITIAL_BOMB = 4; // The number of bomb for each user
 const int SCORE_DEDUCTION = 2; // The amount of score deduction due to bomb
-
+//=========================CAR RUN INCLUDES============================
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
+//========================ALGO DEFINES=================================
+#define MAX_QUEUE_SIZE (MAP_ROW * MAP_COL)
+#define LEFT 1
+#define UP 2
+#define RIGHT 3
+#define DOWN 4
+#define l_spin 1
+#define straight 2
+#define r_spin 3
+#define turn 4
+//=====================CAR RUN DEFFINES==================================
+#define I2C_ADDR 0x16
+#define NUM_READINGS 10
+#define SENSOR_RIGHT2 0  
+#define SENSOR_RIGHT1 7  
+#define SENSOR_LEFT1 2   
+#define SENSOR_LEFT2 3   
+//===================================STRUCTS OF SERVER================================
 // 클라이언트 정보 구조체 정의
 typedef struct {
     int socket;
@@ -86,6 +92,22 @@ typedef struct {
     enum Action action;
 } ClientAction;
 
+
+//========================QR QODE DECODER :: update XY======================================
+extern string QR_XY;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+    void* decodeQRCodeThread(void* arg);
+
+#ifdef __cplusplus
+}
+#endif
+
+//===========================CLIENT :: update DGIST========================================
+
 // 함수 원형 정의
 void* receiveUpdates(void* arg);
 
@@ -94,13 +116,10 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
 
 extern int sock;
 extern pthread_mutex_t lock;
-// 업데이트할 global DGIST object 변수 선언
 extern DGIST* updatedDgist;
 
-
+//==========================ALGORITHM :: update path=========================================
 bool do_we_set_trap = false;
-
-
 DGIST DGIST_OBJ;
 
 typedef struct {
@@ -140,5 +159,12 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length);
 bool SetBomb_Checker(Point* currpoint, Point* opponentpoint);
 
 void* Run_Algorithm(void* arg);
+//===============================CAR RUN :: RUN A CAR============================================
+typedef struct {
+    int _device;
+    int _addr;
+} YB_Pcb_Car;
+
+
 
 #endif // ALL_HEADER_H
