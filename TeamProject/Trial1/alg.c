@@ -283,7 +283,7 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
 }
 
 void* Run_Algorithm(void* arg) {
-    usleep(50000000);
+    usleep(10000000);
     my_index = (updatedDgist->players[0].socket == sock) ? 0 : 1;
     // 맨 처음에 놓는 위치를 정해 놓는다
     int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
@@ -320,7 +320,7 @@ void* Run_Algorithm(void* arg) {
             free(Dirs_for_Movs);
         }
         pthread_mutex_unlock(&lock);
-        usleep(5000000);
+        usleep(500000);
     }
     return NULL;
 }
