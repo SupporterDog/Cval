@@ -324,6 +324,7 @@ void* Run_Algorithm(void* arg) {
             free(Dirs_for_Movs);
         }
         pthread_mutex_unlock(&lock);
+        // sleep(1)
     }
     return NULL;
 }
