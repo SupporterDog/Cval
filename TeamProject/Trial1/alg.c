@@ -283,18 +283,13 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
 }
 
 void* Run_Algorithm(void* arg) {
-    time_t start_time = time(NULL); // 스레드 시작 시간
+    usleep(50000000);
     my_index = (updatedDgist->players[0].socket == sock) ? 0 : 1;
     // 맨 처음에 놓는 위치를 정해 놓는다
     int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
     Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
     int buffer[2] = {-1,-1};
     while (1) {
-        // 현재 시간과 시작 시간을 비교하여 시간 초과 확인
-        if (difftime(time(NULL), start_time) > THREAD_TIMEOUT) {
-            printf("Thread timeout! Exiting...\n");
-            pthread_exit(NULL); // 스레드 종료
-        }
         
         int my_x; int my_y; int opp_x; int opp_y;
         my_x = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row; 
@@ -325,7 +320,7 @@ void* Run_Algorithm(void* arg) {
             free(Dirs_for_Movs);
         }
         pthread_mutex_unlock(&lock);
-        // sleep(1)
+        usleep(5000000);
     }
     return NULL;
 }
