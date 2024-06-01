@@ -4,13 +4,12 @@
 #include <string.h>
 
 const int MAX_SCORE = 4; // Item max score
-const int SETTING_PERIOD = 20; // Boradcast & Item generation period
-const int INITIAL_ITEM = 10; // Initial number of item
-const int INITIAL_BOMB = 4; // The number of bomb for each user
-const int SCORE_DEDUCTION = 2; // The amount of score deduction due to bomb
+const int SETTING_PERIOD = 20; //Boradcast & Item generation period
+const int INITIAL_ITEM = 10; //Initial number of item
+const int INITIAL_BOMB = 4; //The number of bomb for each user
+const int SCORE_DEDUCTION = 2; //The amount of score deduction due to bomb
 
 bool do_we_set_trap = false;
-
 DGIST DGIST_OBJ;
 
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count) {
@@ -54,6 +53,7 @@ Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count) {
         int x = all_points[i].x;
         int y = all_points[i].y;
         int part = (y >= geeoolgii * (x - bangal_x) + bangal_y) ? 1 : -1;
+        // 현재 위치는 포함시키지 않는다
         if (part == my_part && (x != my_x || y != my_y)) {
             return_points[(*count)++] = all_points[i];
         }
@@ -72,6 +72,8 @@ bool isValid(Point p, Point* points, int count) {
     return false;
 }
 
+// StartPoint로부터 BFS 를 통해 points 배열에 있는 포인트 struct 중 가까운 점부터 차례대로 방문하여 주어진 지점의 점수가 4면 해당 지점을 즉시 반환하고 
+// 그렇지 않으면 최고 점수를 가진 지점을 반환하는 함수
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
     bool visited[MAP_ROW][MAP_COL] = { false };
@@ -88,16 +90,19 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
         QueueNode current = queue[front++];
         Point* currpoint = &(current.point);
 
+        // 점수가 4면 해당 지점을 반환
         if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
             if ( currpoint->x == StartPoint->x && currpoint->y == StartPoint->y ) {}
             else { return currpoint; }
         }
 
+        // 현재 점수가 최고 점수보다 크면 갱신
         if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score > currmaxscore) {
             returnpoint = currpoint;
             currmaxscore = DGIST_OBJ.map[currpoint->x][currpoint->y].item.score;
         }
 
+        // 다음 지점을 큐에 추가
         for (int i = 0; i < 4; ++i) {
             Point nextpoint = { currpoint->x + directions[i].x, currpoint->y + directions[i].y };
             if (isValid(nextpoint, points, count) && !visited[nextpoint.x][nextpoint.y]) {
@@ -106,23 +111,28 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
             }
         }
     }
+    // 점수가 4인 게 없다면 최대 점수를 가진 포인트를 반환한다
     return returnpoint;
 }
 
+
+//포인터 복사
 void copy_path(Path* dest, Path* src) {
     dest->length = src->length;
     dest->score = src->score;
     memcpy(dest->points, src->points, src->length * sizeof(Point));
 }
-
+//최적의 경로 탐색해서 best_path에 저장
 void find_paths(int row_moves, int column_moves, Path* path, int current_score, Path* best_path, int start_x, int start_y) {
     int max_score = -10;
     if (row_moves == 0 && column_moves == 0) {
+        // 경로가 완성된 경우
         if (current_score > max_score) {
             max_score = current_score;
             copy_path(best_path, path);
         }
     }
+    //x방향 양의 이동
     if (row_moves > 0) {
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x + 1, (*path).points[(*path).length - 1].y };
         (*path).length++;
@@ -131,6 +141,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).length--;
         start_x--;
     }
+    //y방향 양의 이동
     if (column_moves > 0) {
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y + 1 };
         (*path).length++;
@@ -139,62 +150,136 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).length--;
         start_y--;
     }
+    //x방향 음의 이동
+    if (row_moves < 0) {
+        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x - 1, (*path).points[(*path).length - 1].y };
+        (*path).length++;
+        start_x--;
+        find_paths(row_moves + 1, column_moves, path, current_score + DGIST_OBJ.map[start_x][start_y].item.score, best_path, start_x, start_y);
+        (*path).length--;
+        start_x++;
+    }
+    //y방향 음의 이동
+    if (column_moves < 0) {
+        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y - 1 };
+        (*path).length++;
+        start_y--;
+        find_paths(row_moves, column_moves + 1, path, current_score + DGIST_OBJ.map[start_x][start_y].item.score, best_path, start_x, start_y);
+        (*path).length--;
+        start_y++;
+    }
 }
 
 Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
-    int row_moves = (*EndPoint).x - (*StartPoint).x;
-    int column_moves = (*EndPoint).y - (*StartPoint).y;
-    Path path, best_path;
-    path.length = 1;
-    path.score = DGIST_OBJ.map[(*StartPoint).x][(*StartPoint).y].item.score;
-    path.points[0] = *StartPoint;
-
-    find_paths(row_moves, column_moves, &path, path.score, &best_path, (*StartPoint).x, (*StartPoint).y);
-
-    Point* return_points = (Point*)malloc(best_path.length * sizeof(Point));
-    memcpy(return_points, best_path.points, best_path.length * sizeof(Point));
+    int start_x = (*StartPoint).x;
+    int start_y = (*StartPoint).y;
+    int end_x = (*EndPoint).x;
+    int end_y = (*EndPoint).y;
+    int row_move = end_x - start_x;
+    int column_move = end_y - start_y;
+    Path best_path;
+    Path initial_path;
+    initial_path.length = 1;
+    initial_path.points[0] = *StartPoint;
+    initial_path.score = 0;
+    //경로 찾아서 best_path에 저장
+    find_paths(row_move, column_move, &initial_path, 0, &best_path, start_x, start_y);
     *path_length = best_path.length;
-    return return_points;
+    //best_path의 정보를 Point*로 변환
+    Point* highest = (Point*)malloc((abs(row_move) + abs(column_move) + 1) * sizeof(Point));
+    for (int i = 0; i < abs(row_move) + abs(column_move) + 1;i++) {
+        highest[i] = best_path.points[i];
+    }
+    return highest;
 }
 
 int* getDirection(Point* road, int path_length) {
-    int* Dir = (int*)malloc((path_length - 1) * sizeof(int));
-    for (int i = 1; i < path_length; ++i) {
-        if (road[i].x - road[i-1].x == 1) Dir[i-1] = DOWN;
-        if (road[i].x - road[i-1].x == -1) Dir[i-1] = UP;
-        if (road[i].y - road[i-1].y == 1) Dir[i-1] = RIGHT;
-        if (road[i].y - road[i-1].y == -1) Dir[i-1] = LEFT;
+    int* returnvec = (int*)malloc((path_length - 1) * sizeof(int));
+    if (returnvec == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
     }
-    return Dir;
+    for (int i = 0; i < path_length - 1; ++i) {
+        Point currpoint = road[i];
+        Point nextpoint = road[i + 1];
+        if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y + 1) {
+            returnvec[i] = RIGHT;
+        }
+        else if (currpoint.x == nextpoint.x && nextpoint.y == currpoint.y - 1) {
+            returnvec[i] = LEFT;
+        }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x + 1) {
+            returnvec[i] = DOWN;
+        }
+        else if (currpoint.y == nextpoint.y && nextpoint.x == currpoint.x - 1) {
+            returnvec[i] = UP;
+        }
+    }
+    return returnvec;
 }
 
 int* getDirection_for_Mov(int* Dir, int path_length, int recent_head_dir) {
-    int* dirs_for_movs = (int*)malloc(path_length * sizeof(int));
-    for (int i = 0; i < path_length - 1; ++i) {
-        int turn = Dir[i] - recent_head_dir;
-        if (turn == -3 || turn == 1) dirs_for_movs[i] = r_spin;
-        else if (turn == 3 || turn == -1) dirs_for_movs[i] = l_spin;
-        else dirs_for_movs[i] = straight;
-        recent_head_dir = Dir[i];
+    int* returnvec = (int*)malloc(sizeof(int) * (path_length));
+    returnvec[0] = recent_head_dir;
+    for (int i = 1; i < path_length; ++i) {
+        returnvec[i] = Dir[i - 1]; 
     }
-    dirs_for_movs[path_length - 1] = turn;
-    return dirs_for_movs;
+    return returnvec;
 }
 
 int* getMovement(int* dirs_for_movs, int path_length) {
-    int* movs = (int*)malloc(path_length * sizeof(int));
-    for (int i = 0; i < path_length; ++i) {
-        if (dirs_for_movs[i] == l_spin) movs[i] = 1;
-        else if (dirs_for_movs[i] == straight) movs[i] = 2;
-        else if (dirs_for_movs[i] == r_spin) movs[i] = 3;
+    int* returnvec = malloc(sizeof(int) * (path_length - 1));
+    for (int i = 0; i < path_length - 1; ++i) {
+        int firstdir = dirs_for_movs[i];
+        int seconddir = dirs_for_movs[i + 1];
+        if (firstdir == LEFT) {
+            if (seconddir == UP) { returnvec[i] = r_spin; }
+            else if (seconddir == DOWN) { returnvec[i] = l_spin; }
+            else if (seconddir == LEFT) { returnvec[i] = straight; }
+            else if (seconddir == RIGHT) { returnvec[i] = turn; }
+        }
+        else if (firstdir == UP) {
+            if (seconddir == UP) { returnvec[i] = straight; }
+            else if (seconddir == DOWN) { returnvec[i] = turn; }
+            else if (seconddir == LEFT) { returnvec[i] = l_spin; }
+            else if (seconddir == RIGHT) { returnvec[i] = r_spin; }
+        }
+        else if (firstdir == RIGHT) {
+            if (seconddir == UP) { returnvec[i] = l_spin; }
+            else if (seconddir == DOWN) { returnvec[i] = r_spin; }
+            else if (seconddir == LEFT) { returnvec[i] = turn; }
+            else if (seconddir == RIGHT) { returnvec[i] = straight; }
+        }
+        else if (firstdir == DOWN) {
+            if (seconddir == UP) { returnvec[i] = turn; }
+            else if (seconddir == DOWN) { returnvec[i] = straight; }
+            else if (seconddir == LEFT) { returnvec[i] = r_spin; }
+            else if (seconddir == RIGHT) { returnvec[i] = l_spin; }
+        }
     }
-    return movs;
+    return returnvec;
 }
 
+
+// 내 포인트와 상대 포인트, 내가 다음에 갈 포인트를 바탕으로 폭탄을 세팅할지 말지를 알 수 있다.
 int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
-    int returnvalue = 0;
-    if (abs(currpoint->x - opponentpoint->x) + abs(currpoint->y - opponentpoint->y) == 1) {
-        returnvalue = 1;
+    
+    Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
+    for (int i = 0; i < 4; ++i ) {
+        Point* nextpoint = &(Point) {currpoint->x + directions[i].x, currpoint->y + directions[i].y};
+        if (DGIST_OBJ.map[(*nextpoint).x][(*nextpoint).y].item.score == 4) {
+            if (i == 0 || i == 2) {
+                if ((*currpoint).x == (*nextpoint).x && (*nextpoint).x == (*opponentpoint).x && (*opponentpoint).y - (*currpoint).y == (*currpoint).y - (*nextpoint).y) {
+                    return 1;
+                }
+            }
+            if (i == 1 || i == 3) {
+                if ((*currpoint).y == (*nextpoint).y && (*nextpoint).y == (*opponentpoint).y && (*opponentpoint).x - (*currpoint).x == (*currpoint).x - (*nextpoint).x) {
+                    return 1;
+                }
+            }
+        }
     }
-    return returnvalue;
+    return 0;
+
 }
