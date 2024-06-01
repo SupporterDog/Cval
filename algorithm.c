@@ -343,19 +343,26 @@ int* getMovement(int* dirs_for_movs, int path_length) {
 
 
 // 내 포인트와 상대 포인트, 내가 다음에 갈 포인트를 바탕으로 폭탄을 세팅할지 말지를 알 수 있다.
-bool SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
-    bool returnbool = false;
-    // 다음 포인트가 뭔지 알아야 함
-    Point* nextpoint;
-    if (DGIST_OBJ.map[(*nextpoint).x][(*nextpoint).y].item.score == 4) {
-        if ((*currpoint).x == (*nextpoint).x && (*nextpoint).x == (*opponentpoint).x && (*opponentpoint).y - (*currpoint).y == (*currpoint).y - (*nextpoint).y) {
-            returnbool = true;
-        }
-        else if ((*currpoint).y == (*nextpoint).y && (*nextpoint).y == (*opponentpoint).y && (*opponentpoint).x - (*currpoint).x == (*currpoint).x - (*nextpoint).x) {
-            returnbool = true;
+int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
+    
+    Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
+    for (int i = 0; i < 4; ++i ) {
+        Point* nextpoint = &(Point) {currpoint->x + directions[i].x, currpoint->y + directions[i].y};
+        if (DGIST_OBJ.map[(*nextpoint).x][(*nextpoint).y].item.score == 4) {
+            if (i == 0 || i == 2) {
+                if ((*currpoint).x == (*nextpoint).x && (*nextpoint).x == (*opponentpoint).x && (*opponentpoint).y - (*currpoint).y == (*currpoint).y - (*nextpoint).y) {
+                    return 1;
+                }
+            }
+            if (i == 1 || i == 3) {
+                if ((*currpoint).y == (*nextpoint).y && (*nextpoint).y == (*opponentpoint).y && (*opponentpoint).x - (*currpoint).x == (*currpoint).x - (*nextpoint).x) {
+                    return 1;
+                }
+            }
         }
     }
-    return returnbool;
+    return 0;
+
 }
 
 
@@ -379,9 +386,6 @@ int main() {
     }
     for (int num = 0; num < 10; ++num) {
 
-        // 가장 쵝근 대가리 방향은 up으로 설정
-        int RECENT_HEAD_DIRECTION = UP;
-
         printf("===========TestCase %d============\n\n", num + 1);
 
         int opp_x = rand() % (MAP_COL), opp_y = rand() % (MAP_ROW); // Example opponent coordinates
@@ -391,6 +395,9 @@ int main() {
         printf("My Location: (%d,%d) %c", my_x, my_y, '\n');
         Point* my_point = &(Point) { my_x, my_y };
         int count;
+
+        // 가장 쵝근 대가리 방향 설정
+        int RECENT_HEAD_DIRECTION = (my_x == 0) ? DOWN : UP;
 
         // 상대보다 빨리 접근 가능한 좌표들
         Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);
@@ -434,9 +441,6 @@ int main() {
         // Find the nex Movements for the given best path --------------------------
         int* Movements;
         Movements = getMovement(Dirs_for_Movs, path_length);
-
-        // 마지막 대가리 방향 업데이트 ----------------------------------
-        RECENT_HEAD_DIRECTION = Directions[path_length - 2];
         
         printf("Your Proposed Movements: \n");
         for (int i = 0 ; i < path_length - 1; ++i) {
@@ -446,6 +450,9 @@ int main() {
             if (Movements[i] == 4) { printf("turn\t"); }
             printf("\n");
         }
+
+        // 마지막 대가리 방향 업데이트 ----------------------------------
+        RECENT_HEAD_DIRECTION = Directions[path_length - 2];
         printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
         printf("\n");        
         printf("\n");
