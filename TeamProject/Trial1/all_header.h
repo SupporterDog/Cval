@@ -8,7 +8,6 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <unistd.h> 
-#include <time.h>
 //========================ALGO INCLUDE================================
 #include <stdbool.h>
 #include <netinet/in.h>
