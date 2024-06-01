@@ -22,12 +22,8 @@
             cv::Mat frame;
             std::string qrData;
             cv::QRCodeDetector qrDecoder;
-            time_t start_time = time(NULL);
             while (true) {
-                if (difftime(time(NULL), start_time) > THREAD_TIMEOUT) {
-                    printf("Thread timeout! Extiting...\n");
-                    pthread_exit(NULL);
-                }
+
                 cap >> frame; // 카메라에서 프레임 캡처
                 if (frame.empty()) {
                     throw std::runtime_error("프레임을 캡처할 수 없습니다.");
@@ -49,7 +45,7 @@
                 // cv::imshow("QR Code Scanner", frame);
                 // if (cv::waitKey(30) >= 0) break; // 아무 키나 누르면 종료
 
-                //usleep(300000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
+                usleep(500000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
                 //sleep(1)
             }
         } catch (const std::exception& e) {
