@@ -1,7 +1,13 @@
 #ifndef CLIENT_H
 #define CLIENT_H
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <arpa/inet.h>
+#include <pthread.h>
+#include <arpa/inet.h>
+#include <unistd.h> 
 
 // 상수 정의
 #define MAX_CLIENTS 2
@@ -67,6 +73,13 @@ typedef struct {
 } ClientAction;
 
 // 함수 원형 정의
-void* updateGlobalVariables(DGIST* dgist);
+void* receiveUpdates(void* arg);
+
+void updateGlobalVariables(DGIST* dgist,int my_sock);
 void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
+
+extern int sock;
+extern pthread_mutex_t lock;
+// 업데이트할 global DGIST object 변수 선언
+extern DGIST* updatedDgist;
 #endif // CLIENT_H
