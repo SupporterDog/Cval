@@ -39,17 +39,17 @@ int main(int argc, char *argv[]) {//MAIN THREAD
     pthread_create(&qr_thread,NULL,decodeQRCodeThread,NULL);
 
     //============THREAD1 FOR RECEIVING DATA FROM SERVER: update DGIST--> MAP and ENEMY=============
-    //pthread_t recv_thread;
-    //pthread_create(&recv_thread, NULL, receiveUpdates, NULL);
+    pthread_t recv_thread;
+    pthread_create(&recv_thread, NULL, receiveUpdates, NULL);
     
     //===========Thread3 for claculating MAX_POINT and PATH=========================================
-    //pthread_t alg_thread;
-    //pthread_create(&alg_thread,NULL,Run_Algorithm,NULL);
+    pthread_t alg_thread;
+    pthread_create(&alg_thread,NULL,Run_Algorithm,NULL);
 
 
     //============THread2 for CAR_RUN===============================================================
-    //pthread_t run_thread;
-    //pthread_create(&run_thread,NULL,threadFunction,NULL);
+    pthread_t run_thread;
+    pthread_create(&run_thread,NULL,threadFunction,NULL);
 
     return 0;
 }
