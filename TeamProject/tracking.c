@@ -132,6 +132,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     met_Node++;
     if (met_Node == path_length) {
         free(pMovements);
+        met_Node = 0;
     }
 
 }
