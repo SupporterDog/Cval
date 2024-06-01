@@ -296,7 +296,6 @@ void line_following(YB_Pcb_Car* car) {
 // 스레드에서 실행할 함수
 void* threadFunction(void* arg) {
     // 전달받은 인자를 필요한 형태로 캐스팅
-    time_t start_time = time(NULL); // 스레드 시작 시간
     int* data = (int*)arg;
     if (wiringPiSetup() == -1) {
         printf("wiringPi setup failed\n");
@@ -313,17 +312,12 @@ void* threadFunction(void* arg) {
     Car_Stop(&car);
     delay(10000);
     while (1) {
-        // 현재 시간과 시작 시간을 비교하여 시간 초과 확인
-        if (difftime(time(NULL), start_time) > THREAD_TIMEOUT) {
-            printf("Thread timeout! Exiting...\n");
-            pthread_exit(NULL); // 스레드 종료
-        }
         pthread_mutex_lock(&lock);
         printf("Thread is running with data: %d\n", *data);
         line_following(&car);
         pthread_mutex_unlock(&lock);
 
-        //sleep(1);
+        usleep(5000000);
     }
 
     return NULL;
