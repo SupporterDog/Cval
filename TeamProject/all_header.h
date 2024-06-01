@@ -1,5 +1,5 @@
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef ALL_HEADER_H
+#define ALL_HEADER_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +7,11 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <unistd.h> 
+//For calpath
+#include <stdbool.h>
+#include <netinet/in.h>
+
+#define MAX_QUEUE_SIZE (MAP_ROW * MAP_COL)
 
 // 상수 정의
 #define MAX_CLIENTS 2
@@ -15,6 +20,16 @@
 #define MAP_ROW (_MAP_ROW + 1)
 #define MAP_COL (_MAP_COL + 1)
 #define MAP_SIZE (MAP_COL * MAP_ROW)
+
+#define LEFT 1
+#define UP 2
+#define RIGHT 3
+#define DOWN 4
+
+#define l_spin 1
+#define straight 2
+#define r_spin 3
+#define turn 4
 
 const int MAX_SCORE = 4; // Item max score
 const int SETTING_PERIOD = 20; // Broadcast & Item generation period
@@ -83,14 +98,6 @@ extern pthread_mutex_t lock;
 extern DGIST* updatedDgist;
 
 
-
-//For calpath
-#include <stdbool.h>
-#include <netinet/in.h>
-
-#define MAX_QUEUE_SIZE (MAP_ROW * MAP_COL)
-
-
 bool do_we_set_trap = false;
 
 
@@ -112,6 +119,7 @@ typedef struct {
     int distance;
 } QueueNode;
 
+extern int my_index;
 extern int met_Node;
 extern int path_length;
 extern int* pMovements;
@@ -131,4 +139,6 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length);
 
 bool SetBomb_Checker(Point* currpoint, Point* opponentpoint);
 
-#endif // CLIENT_H
+void* Run_Algorithm(void* arg);
+
+#endif // ALL_HEADER_H
