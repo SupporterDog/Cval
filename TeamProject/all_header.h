@@ -43,7 +43,7 @@ const int SCORE_DEDUCTION = 2; // The amount of score deduction due to bomb
 #define SENSOR_RIGHT1 7  
 #define SENSOR_LEFT1 2   
 #define SENSOR_LEFT2 3   
-//===================================STRUCTS OF SERVER================================
+//=====================STRUCTS OF SERVER================================
 // 클라이언트 정보 구조체 정의
 typedef struct {
     int socket;
@@ -93,8 +93,11 @@ typedef struct {
     enum Action action;
 } ClientAction;
 
+//=========================THREADING========================================
+//------------------variables---------------------
+extern pthread_mutex_t lock; 
 
-//========================QR QODE DECODER :: update XY======================================
+//========================QR QODE DECODER :: update XY========================
 extern string QR_XY;
 
 #ifdef __cplusplus
@@ -108,19 +111,19 @@ extern "C" {
 #endif
 
 //===========================CLIENT :: update DGIST========================================
-//VARIABLES
+//--------------------------VARIABLES--------------------------
 extern int sock;
-extern pthread_mutex_t lock;
 extern DGIST* updatedDgist;
-//FUNCTIONS
+//-------------------------FUNCTIONS--------------------------
 void* receiveUpdates(void* arg); // THREAD FUNCTION: use (FUN)updateGlobalVariables
 void updateGlobalVariables(DGIST* dgist,int my_sock);
 void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
+
 //==========================ALGORITHM :: update path=========================================
-//VARIABLES
+//-------------------------VARIABLES--------------------------
 bool do_we_set_trap = false;
 DGIST DGIST_OBJ;
-//STURCTS
+//-------------------------STURCTS---------------------------
 typedef struct {
     int x;
     int y;
@@ -140,7 +143,7 @@ extern int my_index;
 extern int met_Node;
 extern int path_length;
 extern int* pMovements;
-//FUNCTIONS
+//-----------------------FUNCTIONS-------------------------
 bool isValid(Point p);
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count);
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count);
@@ -149,15 +152,16 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
 Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length);
 bool SetBomb_Checker(Point* currpoint, Point* opponentpoint);
 void* Run_Algorithm(void* arg);//THREAD FUNCTION : FINDING PATH
-//===============================CAR RUN :: RUN A CAR============================================
-//VARIABLES
 
-//STRUCTS
+//===============================CAR RUN :: RUN A CAR============================================
+//----------------------VARIABLES--------------------------
+
+//----------------------STRUCTS----------------------
 typedef struct {
     int _device;
     int _addr;
 } YB_Pcb_Car;
-
+//--------------------FUNCTIONS-----------------------
 
 
 #endif // ALL_HEADER_H
