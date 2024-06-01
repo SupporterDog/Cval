@@ -1,5 +1,6 @@
 #ifndef ALL_HEADER_H
 #define ALL_HEADER_H
+//======================TOTAL INCLUDE================================
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -100,28 +101,26 @@ extern string QR_XY;
 extern "C" {
 #endif
 
-    void* decodeQRCodeThread(void* arg);
+    void* decodeQRCodeThread(void* arg);//THREAD FUNCTION: READING QR
 
 #ifdef __cplusplus
 }
 #endif
 
 //===========================CLIENT :: update DGIST========================================
-
-// 함수 원형 정의
-void* receiveUpdates(void* arg);
-
-void updateGlobalVariables(DGIST* dgist,int my_sock);
-void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
-
+//VARIABLES
 extern int sock;
 extern pthread_mutex_t lock;
 extern DGIST* updatedDgist;
-
+//FUNCTIONS
+void* receiveUpdates(void* arg); // THREAD FUNCTION: use (FUN)updateGlobalVariables
+void updateGlobalVariables(DGIST* dgist,int my_sock);
+void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
 //==========================ALGORITHM :: update path=========================================
+//VARIABLES
 bool do_we_set_trap = false;
 DGIST DGIST_OBJ;
-
+//STURCTS
 typedef struct {
     int x;
     int y;
@@ -137,29 +136,23 @@ typedef struct {
     Point point;
     int distance;
 } QueueNode;
-
 extern int my_index;
 extern int met_Node;
 extern int path_length;
 extern int* pMovements;
-
+//FUNCTIONS
 bool isValid(Point p);
-
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count);
-
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count);
-
 void copy_path(Path* dest, Path* src);
-
-
 void find_paths(int row_moves, int column_moves, Path* path, int current_score, Path* best_path, int start_x, int start_y);
-
 Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length);
-
 bool SetBomb_Checker(Point* currpoint, Point* opponentpoint);
-
-void* Run_Algorithm(void* arg);
+void* Run_Algorithm(void* arg);//THREAD FUNCTION : FINDING PATH
 //===============================CAR RUN :: RUN A CAR============================================
+//VARIABLES
+
+//STRUCTS
 typedef struct {
     int _device;
     int _addr;
