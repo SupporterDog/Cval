@@ -290,7 +290,6 @@ void* Run_Algorithm(void* arg) {
     Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
     int buffer[2] = {-1,-1};
     while (1) {
-        pthread_mutex_lock(&lock);
         // 현재 시간과 시작 시간을 비교하여 시간 초과 확인
         if (difftime(time(NULL), start_time) > THREAD_TIMEOUT) {
             printf("Thread timeout! Exiting...\n");
@@ -302,6 +301,8 @@ void* Run_Algorithm(void* arg) {
         my_y = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col;
         opp_x = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row;
         opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
+        
+        pthread_mutex_lock(&lock);
         Point* my_point = &(Point) {my_x, my_y};
 
         if (my_x == max_score_point->x && my_y == max_score_point->y && !(buffer[0] == my_x && buffer[1] == my_y)) {
