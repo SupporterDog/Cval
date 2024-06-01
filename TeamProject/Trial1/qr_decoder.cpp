@@ -36,6 +36,7 @@
 
                 if (!qrData.empty()) {
                     pthread_mutex_lock(&lock);
+                    printf(sock);
                     printf(qrData.c_str());
                     // 디코딩된 QR 코드 데이터를 처리
                     sendClientAction(sock, &lock, qrData.c_str(), 0);
