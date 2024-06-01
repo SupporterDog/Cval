@@ -6,10 +6,10 @@ CFLAGS = -Wall
 LDFLAGS = -lwiringPi
 
 # 타겟 파일명
-TARGET = track
+TARGET = main
 
 # 소스 파일
-SRCS = alg.c track.c
+SRCS = alg.c track.c main.c
 
 # 오브젝트 파일
 OBJS = $(SRCS:.c=.o)
