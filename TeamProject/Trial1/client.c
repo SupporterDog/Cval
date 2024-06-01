@@ -4,7 +4,13 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 void* receiveUpdates(void* arg) {
     DGIST dgist;
+    time_t start_time = time(NULL);
     while (1) {
+        // 현재 시간과 시작 시간을 비교하여 시간 초과 확인
+        if (difftime(time(NULL), start_time) > THREAD_TIMEOUT) {
+            printf("Thread timeout! Exiting...\n");
+            pthread_exit(NULL); // 스레드 종료
+        }
         pthread_mutex_lock(&lock);
         if (recv(sock, &dgist, sizeof(DGIST), 0) <= 0) {
             printf("Connection closed by server.\n");
@@ -15,7 +21,7 @@ void* receiveUpdates(void* arg) {
 
         // 글로벌 변수 업데이트
         updateGlobalVariables(&dgist,sock);
-        usleep(300000);
+        sleep(1);
     }
     return NULL;
 }
