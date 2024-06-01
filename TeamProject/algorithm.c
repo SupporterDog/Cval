@@ -383,20 +383,16 @@ int main() {
     Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count);
     // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
     int path_length;
-    Point* local_optimal_path;
-    local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
+    Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
     // Direction---------------------------------------
-    int* Directions;
-    Directions = getDirection(local_optimal_path, path_length);
+    int* Directions = getDirection(local_optimal_path, path_length);
     // Direction for Moves(Add Recent_direction in front of Directions) ----------------------------
-    int* Dirs_for_Movs; 
-    Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
+    int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
     // Find the nex Movements for the given best path --------------------------
-    int* Movements;
-    Movements = getMovement(Dirs_for_Movs, path_length);
+    int* Movements =  getMovement(Dirs_for_Movs, path_length);
     // 마지막 대가리 방향 업데이트 ----------------------------------
     RECENT_HEAD_DIRECTION = Directions[path_length - 2];
-    
+
     free(reachable_points);
     free(Directions);
     free(Dirs_for_Movs);
