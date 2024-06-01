@@ -1,36 +1,39 @@
-# 컴파일러와 플래그 설정
-CXX = g++
+# 컴파일러 설정
 CC = gcc
-CXXFLAGS = -Wall -lpthread `pkg-config --cflags --libs opencv2`
-CFLAGS = -Wall
+CXX = g++
 
-# 타겟 이름
-TARGET = main
+# 컴파일 옵션
+CFLAGS = -Wall -Wextra -Werror -g -O1
+LDFLAGS = -lpthread -lwiringPi `pkg-config --libs opencv4`
 
-# 소스 파일
-C_SOURCES = main.c alg.c track.c client.c
-CPP_SOURCES = qr_decoder.cpp
+# 타겟 파일명
+TARGET = my_program
 
-# 오브젝트 파일
-C_OBJECTS = $(C_SOURCES:.c=.o)
-CPP_OBJECTS = $(CPP_SOURCES:.cpp=.o)
+# 소스 파일 목록
+CSRCS = alg.c main.c track.c
+CPPSRCS = qr_decoder.cpp
+
+# 오브젝트 파일 목록
+COBJS = $(CSRCS:.c=.o)
+CPPOBJS = $(CPPSRCS:.cpp=.o)
 
 # 기본 타겟
 all: $(TARGET)
 
-# 타겟 생성 규칙
-$(TARGET): $(C_OBJECTS) $(CPP_OBJECTS)
-	$(CXX) -o $@ $^ $(CXXFLAGS)
+# 타겟 빌드 규칙
+$(TARGET): $(COBJS) $(CPPOBJS)
+	$(CXX) -o $@ $(COBJS) $(CPPOBJS) $(LDFLAGS)
 
-# 개별 오브젝트 파일 생성 규칙
+# 오브젝트 파일 빌드 규칙
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 %.o: %.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+	$(CXX) -c -o $@ $< $(CFLAGS) `pkg-config --cflags opencv4`
 
 # 클린 규칙
 clean:
-	rm -f $(TARGET) $(C_OBJECTS) $(CPP_OBJECTS)
+	rm -f $(TARGET) $(COBJS) $(CPPOBJS)
 
-.PHONY: all clean
+# 포스 클린 규칙
+.PHONY: clean
