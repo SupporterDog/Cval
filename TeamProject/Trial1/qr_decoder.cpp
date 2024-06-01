@@ -9,9 +9,9 @@
 #include <string>
 
 // 스레드에서 실행할 함수
-extern "C" {
+
     int sock;
-    
+    pthread_mutex_t lock;
     void* decodeQRCodeThread(void* arg) {
         try {
             // OpenCV를 사용하여 카메라 캡처 초기화
@@ -53,5 +53,3 @@ extern "C" {
         }
         return NULL;
     }
-
-}
