@@ -368,100 +368,39 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
 
 int main() {
 
-    srand(time(NULL));
+    int opp_x; 
+    int opp_y;
+    int my_x;
+    int my_y;
 
-    // Initialize the DGIST_OBJ map with some example scores
-    for (int i = 0; i < MAP_ROW; ++i) {
-        for (int j = 0; j < MAP_COL; ++j) {
-            DGIST_OBJ.map[i][j].item.score = rand() % (MAX_SCORE + 1); // Random score between 0 and MAX_SCORE
-        }
-    }
-    // This is how MAP LOOKS LIKE!!
-    printf("Your map looks like this!! %c", '\n');
-    for (int i = 0; i < MAP_ROW; ++i) {
-        for (int j = 0; j < MAP_COL; ++j) {
-            printf("%d ", DGIST_OBJ.map[i][j].item.score);
-        }
-        printf("%c", '\n');
-    }
-    for (int num = 0; num < 10; ++num) {
-
-        printf("===========TestCase %d============\n\n", num + 1);
-
-        int opp_x = rand() % (MAP_COL), opp_y = rand() % (MAP_ROW); // Example opponent coordinates
-        printf("Opponent Location: (%d,%d) %c", opp_x, opp_y, '\n');
-        int my_x = rand() % (MAP_COL), my_y = rand() % (MAP_ROW); // Example my coordinates
+    Point* my_point;
+    int count;
+    // 가장 쵝근 대가리 방향 설정
+    int RECENT_HEAD_DIRECTION;
+    // 상대보다 빨리 접근 가능한 좌표들
+    Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);
+    // 맥스 스코어 포인트
+    Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count);
+    // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
+    int path_length;
+    Point* local_optimal_path;
+    local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
+    // Direction---------------------------------------
+    int* Directions;
+    Directions = getDirection(local_optimal_path, path_length);
+    // Direction for Moves(Add Recent_direction in front of Directions) ----------------------------
+    int* Dirs_for_Movs; 
+    Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
+    // Find the nex Movements for the given best path --------------------------
+    int* Movements;
+    Movements = getMovement(Dirs_for_Movs, path_length);
+    // 마지막 대가리 방향 업데이트 ----------------------------------
+    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
     
-        printf("My Location: (%d,%d) %c", my_x, my_y, '\n');
-        Point* my_point = &(Point) { my_x, my_y };
-        int count;
-
-        // 가장 쵝근 대가리 방향 설정
-        int RECENT_HEAD_DIRECTION = (my_x == 0) ? DOWN : UP;
-
-        // 상대보다 빨리 접근 가능한 좌표들
-        Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);
-        printf("All reachable points: ");
-        for (int i = 0; i < count; ++i) {
-            printf("(%d,%d), ", reachable_points[i].x, reachable_points[i].y);
-        }
-        printf("\n");
-
-        // 맥스 스코어 포인트
-        Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count);
-
-        printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, DGIST_OBJ.map[(*max_score_point).x][(*max_score_point).y].item.score);
-
-        // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
-        int path_length;
-        Point* local_optimal_path;
-        local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
-        printf("Local optimal path: of length %d \n", path_length);
-        for (int i = 0; i < path_length; ++i) {
-            printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
-        }
-
-        // Direction---------------------------------------
-        int* Directions;
-        Directions = getDirection(local_optimal_path, path_length);
-
-        printf("Directions to go:\n");
-        for (int i = 0 ; i < path_length - 1; ++i) {
-            if (Directions[i] == 1) { printf("LEFT\t"); }
-            if (Directions[i] == 2) { printf("UP\t"); }
-            if (Directions[i] == 3) { printf("RIGHT\t"); }
-            if (Directions[i] == 4) { printf("DOWN\t"); }
-            printf("\n");
-        }
-
-        // Direction for Moves(Add Recent_direction in front of Directions) ----------------------------
-        int* Dirs_for_Movs; 
-        Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
-
-        // Find the nex Movements for the given best path --------------------------
-        int* Movements;
-        Movements = getMovement(Dirs_for_Movs, path_length);
-        
-        printf("Your Proposed Movements: \n");
-        for (int i = 0 ; i < path_length - 1; ++i) {
-            if (Movements[i] == 1) { printf("l_spin\t"); }
-            if (Movements[i] == 2) { printf("straight\t"); }
-            if (Movements[i] == 3) { printf("r_spin\t"); }
-            if (Movements[i] == 4) { printf("turn\t"); }
-            printf("\n");
-        }
-
-        // 마지막 대가리 방향 업데이트 ----------------------------------
-        RECENT_HEAD_DIRECTION = Directions[path_length - 2];
-        printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
-        printf("\n");        
-        printf("\n");
-
-        free(reachable_points);
-        free(Directions);
-        free(Dirs_for_Movs);
-        free(Movements);
-    }
+    free(reachable_points);
+    free(Directions);
+    free(Dirs_for_Movs);
+    free(Movements);
 
     return 0;
 }
