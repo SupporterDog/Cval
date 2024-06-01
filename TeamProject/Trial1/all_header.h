@@ -11,6 +11,8 @@
 //========================ALGO INCLUDE================================
 #include <stdbool.h>
 #include <netinet/in.h>
+//========================CLIENT DEFINE===============================
+#define THREAD_TIMEOUT 0.5
 //========================SERVER DEFINE===============================
 #define MAX_CLIENTS 2
 #define _MAP_ROW 4
