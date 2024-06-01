@@ -46,7 +46,6 @@ int main(int argc, char *argv[]) {//MAIN THREAD
     pthread_t alg_thread;
     pthread_create(&alg_thread,NULL,Run_Algorithm,NULL);
 
-
     //============THread2 for CAR_RUN===============================================================
     pthread_t run_thread;
     pthread_create(&run_thread,NULL,threadFunction,NULL);
