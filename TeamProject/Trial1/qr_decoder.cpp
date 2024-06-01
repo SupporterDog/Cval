@@ -13,7 +13,6 @@ extern "C" {
     int sock;
     
     void* decodeQRCodeThread(void* arg) {
-        while(1){
         try {
             // OpenCV를 사용하여 카메라 캡처 초기화
             cv::VideoCapture cap(0); // 0은 기본 카메라를 의미합니다.
@@ -51,7 +50,6 @@ extern "C" {
             }
         } catch (const std::exception& e) {
             std::cerr << "Exception: " << e.what() << std::endl;
-        }
         }
         return NULL;
     }
