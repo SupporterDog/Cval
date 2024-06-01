@@ -21,7 +21,7 @@ void* receiveUpdates(void* arg) {
 
         // 글로벌 변수 업데이트
         updateGlobalVariables(&dgist,sock);
-        sleep(1);
+        //sleep(1);
     }
     return NULL;
 }
