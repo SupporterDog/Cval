@@ -33,11 +33,14 @@
                 cv::Mat bbox, rectifiedImage;
                 qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
 
-                if (!qrData.empty()) {
+                std::string before_xy=" ";
+                if (!qrData.empty() and qrData!=before_xy) {
                     printf(qrData.c_str());
                     // 디코딩된 QR 코드 데이터를 처리
+                    before_xy=qrData;
                     sendClientAction(sock, &lock, qrData.c_str(), 0);
                 }
+
 
                 // 프레임을 화면에 표시 (옵션)
                 // cv::imshow("QR Code Scanner", frame);
