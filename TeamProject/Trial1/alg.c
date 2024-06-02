@@ -310,7 +310,11 @@ void* Run_Algorithm(void* arg) {
                     int count = 0;
                     // 상대보다 빨리 접근 가능한 좌표들
                     Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count); 
-                    printf("Bangaljook Done,,,\n");
+                    printf("All reachable points: ");
+                    for (int i = 0; i < count; ++i) {
+                        printf("(%d,%d), ", reachable_points[i].x, reachable_points[i].y);
+                    }
+                    printf("\n");
                     // 맥스 스코어 포인트
                     max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
                     printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
