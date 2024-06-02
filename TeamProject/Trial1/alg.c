@@ -5,9 +5,9 @@ bool do_we_set_trap = false;
 int sock;
 pthread_mutex_t lock;
 DGIST* updatedDgist;
-int my_index;
-int path_length;
-int* pMovements;
+int my_index = 0;
+int path_length =0;
+int* pMovements = NULL;
 int met_Node;
 
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count) {
@@ -89,15 +89,15 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
         Point* currpoint = &(current.point);
 
         // 점수가 4면 해당 지점을 반환
-        if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
+        if (updatedDgist->map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
             if ( currpoint->x == StartPoint->x && currpoint->y == StartPoint->y ) {}
             else { return currpoint; }
         }
 
         // 현재 점수가 최고 점수보다 크면 갱신
-        if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score > currmaxscore) {
+        if (updatedDgist->map[currpoint->x][currpoint->y].item.score > currmaxscore) {
             returnpoint = currpoint;
-            currmaxscore = DGIST_OBJ.map[currpoint->x][currpoint->y].item.score;
+            currmaxscore = updatedDgist->map[currpoint->x][currpoint->y].item.score;
         }
 
         // 다음 지점을 큐에 추가
@@ -135,7 +135,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x + 1, (*path).points[(*path).length - 1].y };
         (*path).length++;
         start_x++;
-        find_paths(row_moves - 1, column_moves, path, current_score + DGIST_OBJ.map[start_x][start_y].item.score, best_path, start_x, start_y);
+        find_paths(row_moves - 1, column_moves, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
         start_x--;
     }
@@ -144,7 +144,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y + 1 };
         (*path).length++;
         start_y++;
-        find_paths(row_moves, column_moves - 1, path, current_score + DGIST_OBJ.map[start_x][start_y].item.score, best_path, start_x, start_y);
+        find_paths(row_moves, column_moves - 1, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
         start_y--;
     }
@@ -153,7 +153,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x - 1, (*path).points[(*path).length - 1].y };
         (*path).length++;
         start_x--;
-        find_paths(row_moves + 1, column_moves, path, current_score + DGIST_OBJ.map[start_x][start_y].item.score, best_path, start_x, start_y);
+        find_paths(row_moves + 1, column_moves, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
         start_x++;
     }
@@ -162,7 +162,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y - 1 };
         (*path).length++;
         start_y--;
-        find_paths(row_moves, column_moves + 1, path, current_score + DGIST_OBJ.map[start_x][start_y].item.score, best_path, start_x, start_y);
+        find_paths(row_moves, column_moves + 1, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
         start_y++;
     }
@@ -265,7 +265,7 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
     Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
     for (int i = 0; i < 4; ++i ) {
         Point* nextpoint = &(Point) {currpoint->x + directions[i].x, currpoint->y + directions[i].y};
-        if (DGIST_OBJ.map[(*nextpoint).x][(*nextpoint).y].item.score == 4) {
+        if (updatedDgist->map[(*nextpoint).x][(*nextpoint).y].item.score == 4) {
             if (i == 0 || i == 2) {
                 if ((*currpoint).x == (*nextpoint).x && (*nextpoint).x == (*opponentpoint).x && (*opponentpoint).y - (*currpoint).y == (*currpoint).y - (*nextpoint).y) {
                     return 1;
@@ -284,20 +284,20 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
 
 void* Run_Algorithm(void* arg) {
     if (updatedDgist != NULL) {
+        pthread_mutex_lock(&lock);
         my_index = (updatedDgist->players[0].socket == sock) ? 0 : 1;
         // 맨 처음에 놓는 위치를 정해 놓는다
         int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
         Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
+        pthread_mutex_unlock(&lock);
         int buffer[2] = {-1,-1};
         while (1) {
-        
+            pthread_mutex_lock(&lock);
             int my_x; int my_y; int opp_x; int opp_y;
             my_x = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row; 
             my_y = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col;
             opp_x = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row;
             opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
-        
-            pthread_mutex_lock(&lock);
             Point* my_point = &(Point) {my_x, my_y};
 
             if (my_x == max_score_point->x && my_y == max_score_point->y && !(buffer[0] == my_x && buffer[1] == my_y)) {
@@ -322,6 +322,6 @@ void* Run_Algorithm(void* arg) {
             pthread_mutex_unlock(&lock);
             usleep(500000);
         }
-    }
+    } 
     return NULL;
 }
