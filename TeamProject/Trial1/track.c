@@ -322,6 +322,7 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1111: // (H H H H) : Stop
+            printf("HHHH detected.\n");
             if (num_before_terminate > 4) {
 
                 Car_Stop(car);
@@ -349,26 +350,35 @@ void* threadFunction(void* arg) {
         printf("wiringPi setup failed\n");
         return NULL;
     }
+    printf("WiringPi Car Setup Finished.\n");
 
     pinMode(SENSOR_LEFT1, INPUT);
     pinMode(SENSOR_LEFT2, INPUT);
     pinMode(SENSOR_RIGHT1, INPUT);
     pinMode(SENSOR_RIGHT2, INPUT);
 
+    printf("Sensors pinMode finished.\n");
+    
     YB_Pcb_Car car;
     get_i2c_device(&car, I2C_ADDR);
 
-    
+    printf("get_i2c_device finished.\n");
+
+    printf("Car will stop for 10 seconds.\n");
     Car_Stop(&car);
     delay(10000);
+    printf("Starting car....\n");
     while(1){
         if(pMovements != NULL){
+            printf("pMovement is NOT NULL now. Car started.\n");
             while (1) {
             printf("Thread is running with data: %d\n", *data);
             line_following(&car);
             usleep(500000);
             }
         
+        }else{
+            printf("pMovement is NULL now.\n");
         }
     }
     
