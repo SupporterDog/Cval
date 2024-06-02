@@ -35,7 +35,7 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
 	
     client_info client;
 
-    printf("==========PRINT PLYAERS==========\n");
+    printf("=========RECIEVED NEW INFORMATION!!==========\n");
 	for(int i=0; i < MAX_CLIENTS; i++){
 		client = updatedDgist->players[i];
 		printf("++++++++++Player %d++++++++++\n",i+1);
@@ -70,7 +70,7 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
 
     // 뮤텍스 잠금
     pthread_mutex_lock(lock);
-
+    printf("=========SENDING INFORMATION TO SERVER==========\n");
     // 서버로 데이터 전송
     if (send(sock, &clientAction, sizeof(ClientAction), 0) <= 0) {
         printf("Failed to send action to server.\n");
