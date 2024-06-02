@@ -84,7 +84,7 @@ int main() {
     YB_Pcb_Car car;
     get_i2c_device(&car, I2C_ADDR);
 
-    Car_Stop(car);
+    Car_Stop(&car);
     delay(1000);
 
     printf("All tests completed.\n");
