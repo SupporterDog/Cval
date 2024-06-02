@@ -113,6 +113,7 @@ extern DGIST* updatedDgist;
 //-------------------------FUNCTIONS--------------------------
 void* receiveUpdates(void* arg); // THREAD FUNCTION: use (FUN)updateGlobalVariables
 void updateGlobalVariables(DGIST* dgist,int my_sock);
+void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
 
 //==========================ALGORITHM :: update path=========================================
 //-------------------------VARIABLES--------------------------
@@ -145,6 +146,9 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count);
 void copy_path(Path* dest, Path* src);
 void find_paths(int row_moves, int column_moves, Path* path, int current_score, Path* best_path, int start_x, int start_y);
 Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length);
+int* getDirection(Point* road, int path_length);
+int* getDirection_for_Mov(int* Dir, int path_length, int recent_head_dir);
+int* getMovement(int* dirs_for_movs, int path_length);
 int SetBomb_Checker(Point* currpoint, Point* opponentpoint);
 void* Run_Algorithm(void* arg);//THREAD FUNCTION : FINDING PATH
 
