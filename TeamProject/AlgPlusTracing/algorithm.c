@@ -1,16 +1,14 @@
 #include "all_header.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-const int MAX_SCORE = 4; // Item max score
-const int SETTING_PERIOD = 20; //Boradcast & Item generation period
-const int INITIAL_ITEM = 10; //Initial number of item
-const int INITIAL_BOMB = 4; //The number of bomb for each user
-const int SCORE_DEDUCTION = 2; //The amount of score deduction due to bomb
-
+static const int MAX_SCORE = 4; // Item max score
 bool do_we_set_trap = false;
-DGIST DGIST_OBJ;
+int sock;
+pthread_mutex_t lock;
+DGIST* updatedDgist;
+int my_index;
+int path_length;
+int* pMovements;
+int met_Node;
 
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count) {
     static Point all_points[25] = {
@@ -281,4 +279,6 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
         }
     }
     return 0;
+
 }
+
