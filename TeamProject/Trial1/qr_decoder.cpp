@@ -34,11 +34,9 @@
                 qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
 
                 if (!qrData.empty()) {
-                    pthread_mutex_lock(&lock);
                     printf(qrData.c_str());
                     // 디코딩된 QR 코드 데이터를 처리
                     sendClientAction(sock, &lock, qrData.c_str(), 0);
-                    pthread_mutex_unlock(&lock);
                 }
 
                 // 프레임을 화면에 표시 (옵션)
