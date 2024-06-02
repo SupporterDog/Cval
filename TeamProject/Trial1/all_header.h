@@ -11,8 +11,10 @@
 //========================ALGO INCLUDE================================
 #include <stdbool.h>
 #include <netinet/in.h>
+//=========================CAR RUN INCLUDES============================
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
 //========================CLIENT DEFINE===============================
-#define THREAD_TIMEOUT 0.5
 //========================SERVER DEFINE===============================
 #define MAX_CLIENTS 2
 #define _MAP_ROW 4
@@ -20,9 +22,7 @@
 #define MAP_ROW (_MAP_ROW + 1)
 #define MAP_COL (_MAP_COL + 1)
 #define MAP_SIZE (MAP_COL * MAP_ROW);
-//=========================CAR RUN INCLUDES============================
-#include <wiringPi.h>
-#include <wiringPiI2C.h>
+
 //========================ALGO DEFINES=================================
 #define MAX_QUEUE_SIZE (MAP_ROW * MAP_COL)
 #define LEFT 1
@@ -113,12 +113,14 @@ extern DGIST* updatedDgist;
 //-------------------------FUNCTIONS--------------------------
 void* receiveUpdates(void* arg); // THREAD FUNCTION: use (FUN)updateGlobalVariables
 void updateGlobalVariables(DGIST* dgist,int my_sock);
-void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
 
 //==========================ALGORITHM :: update path=========================================
 //-------------------------VARIABLES--------------------------
 extern bool do_we_set_trap;
-DGIST DGIST_OBJ;
+extern int my_index;
+extern int met_Node;
+extern int path_length;
+extern int* pMovements;
 //-------------------------STURCTS---------------------------
 typedef struct {
     int x;
@@ -135,10 +137,7 @@ typedef struct {
     Point point;
     int distance;
 } QueueNode;
-extern int my_index;
-extern int met_Node;
-extern int path_length;
-extern int* pMovements;
+
 //-----------------------FUNCTIONS-------------------------
 bool isValid(Point p, Point* points, int count);
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count);
@@ -167,7 +166,6 @@ void Car_Stop(YB_Pcb_Car* car);
 void Car_Back(YB_Pcb_Car* car, int l_speed, int r_speed);
 void Car_Left(YB_Pcb_Car* car, int l_speed, int r_speed);
 void Car_Right(YB_Pcb_Car* car, int l_speed, int r_speed);
-void Ctrl_Servo(YB_Pcb_Car* car, int servo_id, int angle);
 int read_sensor(int pin);
 void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control);
 void line_following(YB_Pcb_Car* car);
