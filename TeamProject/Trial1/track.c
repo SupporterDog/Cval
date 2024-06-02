@@ -361,7 +361,7 @@ void* threadFunction(void* arg) {
     
     Car_Stop(&car);
     delay(10000);
-    if(pMovement != NULL){
+    if(pMovements != NULL){
         while (1) {
         printf("Thread is running with data: %d\n", *data);
         line_following(&car);
