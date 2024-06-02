@@ -375,8 +375,6 @@ void* threadFunction(void* arg) {
             usleep(500000);
             }
         
-        }else{
-            printf("pMovement is NULL now.\n");
         }
     }
     
