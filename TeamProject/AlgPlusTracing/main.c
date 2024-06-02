@@ -1,7 +1,7 @@
 #include "all_header.h"
 
 int main() {
-
+    int RECENT_HEAD_DIRECTION = UP;
     int my_x = 4; int my_y = 4;
     int opp_x = 2; int opp_y = 3;
     int count = 0;
@@ -24,7 +24,7 @@ int main() {
         printf("(%d) \t", pMovements[i]);
     }
     printf("\n");
-    int RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
     printf("Recent head direction: %d \n", RECENT_HEAD_DIRECTION);
     met_Node = 0;
 
