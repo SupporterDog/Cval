@@ -304,7 +304,7 @@ void* Run_Algorithm(void* arg) {
                 opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
                 Point* my_point = &(Point) {my_x, my_y};
 
-                if (my_x == max_score_point->x && my_y == max_score_point->y )) {
+                if (my_x == max_score_point->x && my_y == max_score_point->y ) {
                     printf("Arrived at Max Score Point! Ready to Make Movement! Making,,,\n");
                     //buffer[0] = my_x; buffer[1] = my_y;
                     int count = 0;
