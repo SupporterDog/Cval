@@ -345,7 +345,6 @@ void line_following(YB_Pcb_Car* car) {
 // 스레드에서 실행할 함수
 void* threadFunction(void* arg) {
     
-    int* data = (int*)arg;
     if (wiringPiSetup() == -1) {
         printf("wiringPi setup failed\n");
         return NULL;
@@ -372,7 +371,6 @@ void* threadFunction(void* arg) {
         if(pMovements != NULL){
             printf("pMovement is NOT NULL now. Car started.\n");
             while (1) {
-            printf("Thread is running with data: %d\n", *data);
             line_following(&car);
             usleep(500000);
             }
