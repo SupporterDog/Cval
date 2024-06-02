@@ -293,7 +293,7 @@ void* Run_Algorithm(void* arg) {
             int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
             Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
             pthread_mutex_unlock(&lock);
-            int buffer[2] = {-1,-1};
+            //int buffer[2] = {-1,-1};
             while (1) {
                 printf("You haven't arrived at MaxScorePoint yet\n");
                 pthread_mutex_lock(&lock);
@@ -304,9 +304,9 @@ void* Run_Algorithm(void* arg) {
                 opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
                 Point* my_point = &(Point) {my_x, my_y};
 
-                if (my_x == max_score_point->x && my_y == max_score_point->y && !(buffer[0] == my_x && buffer[1] == my_y)) {
+                if (my_x == max_score_point->x && my_y == max_score_point->y )) {
                     printf("Arrived at Max Score Point! Ready to Make Movement! Making,,,\n");
-                    buffer[0] = my_x; buffer[1] = my_y;
+                    //buffer[0] = my_x; buffer[1] = my_y;
                     int count = 0;
                     // 상대보다 빨리 접근 가능한 좌표들
                     Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count); 
