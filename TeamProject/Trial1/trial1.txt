@@ -1,1 +1,34 @@
+make
+gcc -c -o client.o client.c -Wall
+client.c:4:1: warning: data definition has no type or storage class
+ updatedDgist = NULL;
+ ^~~~~~~~~~~~
+client.c:4:1: warning: type defaults to 'int' in declaration of 'updatedDgist' [-Wimplicit-int]
+client.c:4:1: error: conflicting types for 'updatedDgist'
+In file included from client.c:1:
+all_header.h:112:15: note: previous declaration of 'updatedDgist' was here
+ extern DGIST* updatedDgist;
+               ^~~~~~~~~~~~
+client.c:4:16: warning: initialization of 'int' from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+ updatedDgist = NULL;
+                ^~~~
+client.c: In function 'updateGlobalVariables':
+client.c:31:22: warning: comparison between pointer and integer
+     if (updatedDgist == NULL) {
+                      ^~
+client.c:32:22: warning: assignment to 'int' from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+         updatedDgist = malloc(sizeof(DGIST));
+                      ^
+client.c:34:12: warning: passing argument 1 of 'memcpy' makes pointer from integer without a cast [-Wint-conversion]
+     memcpy(updatedDgist, dgist, sizeof(DGIST));
+            ^~~~~~~~~~~~
+In file included from all_header.h:6,
+                 from client.c:1:
+/usr/include/string.h:42:14: note: expected 'void * restrict' but argument is of type 'int'
+ extern void *memcpy (void *__restrict __dest, const void *__restrict __src,
+              ^~~~~~
+client.c:40:24: error: invalid type argument of '->' (have 'int')
+   client = updatedDgist->players[i];
+                        ^~
+make: *** [Makefile:32: client.o] Error 1
 
