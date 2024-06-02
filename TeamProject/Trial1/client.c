@@ -1,6 +1,7 @@
 #include "all_header.h"
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+updatedDgist = NULL;
 
 void* receiveUpdates(void* arg) {
     DGIST dgist;
