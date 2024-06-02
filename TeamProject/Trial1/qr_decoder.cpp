@@ -22,6 +22,8 @@
             cv::Mat frame;
             std::string qrData;
             cv::QRCodeDetector qrDecoder;
+            std::string before_xy=" ";
+
             while (true) {
 
                 cap >> frame; // 카메라에서 프레임 캡처
@@ -33,7 +35,6 @@
                 cv::Mat bbox, rectifiedImage;
                 qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
 
-                std::string before_xy=" ";
                 if (!qrData.empty() and qrData!=before_xy) {
                     printf(qrData.c_str());
                     // 디코딩된 QR 코드 데이터를 처리
