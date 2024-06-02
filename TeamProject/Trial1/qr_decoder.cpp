@@ -36,7 +36,11 @@
                 qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
 
                 if (!qrData.empty() and qrData!=before_xy) {
+                    printf("SCANNING QR CODE: ");
                     printf(qrData.c_str());
+                    printf("  BEFORE QR CODE: ");
+                    printf(before_xy);
+                    printf("\n");
                     // 디코딩된 QR 코드 데이터를 처리
                     before_xy=qrData;
                     sendClientAction(sock, &lock, qrData.c_str(), 0);
