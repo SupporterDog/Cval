@@ -1,12 +1,14 @@
 #include "all_header.h"
 
 int main() {
-    int RECENT_HEAD_DIRECTION = UP;
+
     int my_x = 4; int my_y = 4;
-    int opp_x = 1; int opp_y = 1;
+    int opp_x = 2; int opp_y = 3;
     int count = 0;
+    Point* my_point = &(Point) { my_x, my_y };
+    Point* opp_point = &(Point) { opp_x, opp_y };
     Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);  
-    Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
+    Point* max_score_point = Find_MaxScorePoint(my_point, reachable_points, count); 
     printf("Max Point : row (%d), col (%d)", max_score_point->x, max_score_point->y);
     Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
     printf("Optimal Path: ");
@@ -17,12 +19,12 @@ int main() {
     int* Directions = getDirection(local_optimal_path, path_length);
     int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
     pMovements =  getMovement(Dirs_for_Movs, path_length);
-    printf("Your moves: [[ls:1, s:2, rs:3, t:4]] \n");
+    printf("Your moves: \n");
     for (int i = 0; i < path_length - 1; ++i) {
         printf("(%d) \t", pMovements[i]);
     }
     printf("\n");
-    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+    int RECENT_HEAD_DIRECTION = Directions[path_length - 2];
     printf("Recent head direction: %d \n", RECENT_HEAD_DIRECTION);
     met_Node = 0;
 
