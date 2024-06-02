@@ -6,17 +6,31 @@ int main() {
     int opp_x = 2; int opp_y = 3;
     int count = 0;
     Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);  
-    max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count);  
+    Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
+    printf("Max Point : row (%d), col (%d)", max_score_point->x, max_score_point->y);
     Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
+    printf("Optimal Path: ");
+    for (int i = 0; i < path_length; ++i) {
+        printf("(row: %d, col: %d) \t", local_optimal_path[i].x, local_optimal_path[i].y);
+    }
+    printf("\n");
     int* Directions = getDirection(local_optimal_path, path_length);
     int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
     pMovements =  getMovement(Dirs_for_Movs, path_length);
-    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+    printf("Your moves: \n");
+    for (int i = 0; i < path_length - 1; ++i) {
+        printf("(%d) \t", pMovements[i]);
+    }
+    printf("\n");
+    int RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+    printf("Recent head direction: %d \n", RECENT_HEAD_DIRECTION);
     met_Node = 0;
 
     free(reachable_points);
     free(Directions);
     free(Dirs_for_Movs);
+
+    printf("Now Let's Check if the Car Actually Moves Well....");
 
     YB_Pcb_Car car;
     get_i2c_device(&car, I2C_ADDR);
