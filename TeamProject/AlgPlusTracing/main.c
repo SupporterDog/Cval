@@ -17,7 +17,7 @@ int main() {
     int* Directions = getDirection(local_optimal_path, path_length);
     int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
     pMovements =  getMovement(Dirs_for_Movs, path_length);
-    printf("Your moves: \n");
+    printf("Your moves: [[ls:1, s:2, rs:3, t:4]] \n");
     for (int i = 0; i < path_length - 1; ++i) {
         printf("(%d) \t", pMovements[i]);
     }
