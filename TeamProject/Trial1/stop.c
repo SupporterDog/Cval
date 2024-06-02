@@ -1,345 +1,48 @@
-#include "all_header.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
 
-static int control = straight;
-pthread_mutex_t lock;
-int met_Node = 0;
-int path_length;
-int* pMovements;
+// I2C 장치 경로 (일반적으로 /dev/i2c-1)
+#define I2C_DEVICE_PATH "/dev/i2c-1"
+// I2C 장치 주소
+#define I2C_DEVICE_ADDR 0x16
 
-void get_i2c_device(YB_Pcb_Car* car, int address) {
-    car->_addr = address;
-    car->_device = wiringPiI2CSetup(car->_addr);
-    if (car->_device == -1) {
-        printf("Failed to initialize I2C device\n");
-        exit(1);
-    }
-    printf("I2C device initialized at address 0x%X\n", car->_addr);
-}
+// i2cset 명령어에 해당하는 함수
+void i2cset_command(int fd, int reg, int value) {
+    unsigned char data[2];
+    data[0] = reg;
+    data[1] = value;
 
-void write_array(YB_Pcb_Car* car, int reg, unsigned char* data, int length) {
-    unsigned char buffer[length + 1];
-    buffer[0] = reg;
-    for (int i = 0; i < length; ++i) {
-        buffer[i + 1] = data[i];
+    if (ioctl(fd, I2C_SLAVE, I2C_DEVICE_ADDR) < 0) {
+        perror("ioctl failed to select device");
+        exit(EXIT_FAILURE);
     }
-    if (write(car->_device, buffer, length + 1) != length + 1) {
-        printf("write_array I2C error\n");
-    }
-    else {
-        printf("write_array: Data written to reg %d\n", reg);
+
+    if (write(fd, data, 2) != 2) {
+        perror("write failed");
+        exit(EXIT_FAILURE);
     }
 }
 
-void Ctrl_Car(YB_Pcb_Car* car, int l_dir, int l_speed, int r_dir, int r_speed) {
-    printf("Ctrl_Car called with l_dir: %d, l_speed: %d, r_dir: %d, r_speed: %d\n", l_dir, l_speed, r_dir, r_speed);
-    unsigned char data[4] = { l_dir, l_speed, r_dir, r_speed };
-    write_array(car, 0x01, data, 4);
-}
+int main() {
+    int fd;
 
-void Car_Run(YB_Pcb_Car* car, int l_speed, int r_speed) {
-    Ctrl_Car(car, 1, l_speed, 1, r_speed);
-}
-
-void Car_Stop(YB_Pcb_Car* car) {
-    unsigned char data[4] = { 0, 0, 0, 0 };
-    write_array(car, 0x01, data, 4);
-}
-
-void Car_Back(YB_Pcb_Car* car, int l_speed, int r_speed) {
-    Ctrl_Car(car, 0, l_speed, 0, r_speed);
-}
-
-void Car_Left(YB_Pcb_Car* car, int l_speed, int r_speed) {
-    Ctrl_Car(car, 0, l_speed, 1, r_speed);
-}
-
-void Car_Right(YB_Pcb_Car* car, int l_speed, int r_speed) {
-    Ctrl_Car(car, 1, l_speed, 0, r_speed);
-}
-
-int read_sensor(int pin) {
-
-    return  digitalRead(pin);
-}
-
-void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
-    if (control == straight) {
-        Car_Run(car, 60, 60);
-        delay(150);
+    // I2C 장치 열기
+    if ((fd = open(I2C_DEVICE_PATH, O_RDWR)) < 0) {
+        perror("Failed to open the i2c bus");
+        exit(EXIT_FAILURE);
     }
-    else if (control == r_spin) {
-        Car_Run(car, 60, 60);
-        delay(150);
-        Car_Right(car, 60, 60);
-        delay(500);
-        while ((*sensor_state & 0b0100) != 0b0100) {
-            Car_Right(car, 60, 60);
-            *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
-            delay(10);
-        }
-        delay(5);
-    }
-    else if (control == l_spin) {
-        Car_Run(car, 60, 60);
-        delay(150);
-        Car_Left(car, 60, 60);
-        delay(500);
-        while ((*sensor_state & 0b0010) != 0b0010) {
-            Car_Left(car, 60, 60);
-            *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
-            delay(10);
-        }
-        delay(5);
-    }
-    else {
-        Car_Run(car, 60, 60);
-        delay(150);
-        Car_Right(car, 60, 60);
-        delay(1500);
-        while ((*sensor_state & 0b0100) != 0b0100) {
-            Car_Right(car, 60, 60);
-            *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
-            delay(10);
-        }
-        delay(5);
-    }
-    pthread_mutex_lock(&lock);
-    met_Node++;
-    if (met_Node == path_length-1) {
-        free(pMovements);
-        pMovements = NULL;
-    }
-    pthread_mutex_unlock(&lock);
+
+    // i2cset 명령어 실행
+    i2cset_command(fd, 0x01, 0x01);
+    i2cset_command(fd, 0x01, 0x32);
+    i2cset_command(fd, 0x01, 0x32);
+
+    // I2C 장치 닫기
+    close(fd);
+
+    return 0;
 }
-
-void line_following(YB_Pcb_Car* car) {
-    int left1, left2, right1, right2;
-
-
-    int buffer;
-    while (1) {
-        left1 = read_sensor(SENSOR_LEFT1);
-        left2 = read_sensor(SENSOR_LEFT2);
-        right1 = read_sensor(SENSOR_RIGHT1);
-        right2 = read_sensor(SENSOR_RIGHT2);
-        int sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-        int num_before_terminate = 0;
-        switch (sensor_state) {
-        case 0b0000:  // (H L L L): 전진 후 다른 
-            while (sensor_state == 0b0000) {
-                if(pMovements != NULL){
-                    pthread_mutex_lock(&lock);
-                    control = pMovements[met_Node];
-                    pthread_mutex_unlock(&lock);
-                    perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
-                    delay(100);
-                    Car_Stop(car);
-                    delay(300);
-                }
-                
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1000) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b1001:  // (H L L H) : 앞으로 직진
-            printf("hllh\n");
-
-            Car_Run(car, 70, 70);
-            delay(5);
-            left1 = read_sensor(SENSOR_LEFT1);
-            left2 = read_sensor(SENSOR_LEFT2);
-            right1 = read_sensor(SENSOR_RIGHT1);
-            right2 = read_sensor(SENSOR_RIGHT2);
-            sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-            buffer = sensor_state;
-            break;
-        case 0b1101:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
-            printf("hhlh\n");
-            while (sensor_state == 0b1101) {
-                Car_Right(car, 60, 60);
-                delay(5);
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b1000:  // (H L L L): 전진 후 다른 것
-            printf("hlll\n");
-            while (sensor_state == 0b1000) {
-                if(pMovements != NULL){
-                    pthread_mutex_lock(&lock);
-                    control = pMovements[met_Node];
-                    pthread_mutex_unlock(&lock);
-                    perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
-                    delay(100);
-                    Car_Stop(car);
-                    delay(300);
-                }
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
-            while (sensor_state == 0b1110) {
-                Car_Right(car, 60, 60);
-                delay(5);
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b1100:  // (H H L L): (H H L H) 될때까지 조금씩 우회전하기
-            while (sensor_state == 0b1100) {
-                if(pMovements != NULL){
-                    pthread_mutex_lock(&lock);
-                    control = pMovements[met_Node];
-                    pthread_mutex_unlock(&lock);
-                    perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
-                    delay(100);
-                    Car_Stop(car);
-                    delay(300);
-                }
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
-            while (sensor_state == 0b0111) {
-                Car_Left(car, 60, 60);
-                delay(5);
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-
-            }
-            break;
-        case 0b0001:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
-            while (sensor_state == 0b0001) {
-                if(pMovements != NULL){
-                    pthread_mutex_lock(&lock);
-                    control = pMovements[met_Node];
-                    pthread_mutex_unlock(&lock);
-                    perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
-                    delay(100);
-                    Car_Stop(car);
-                    delay(300);
-                }
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b0011:
-            while (sensor_state == 0b0011) {
-                if(pMovements != NULL){
-                    pthread_mutex_lock(&lock);
-                    control = pMovements[met_Node];
-                    pthread_mutex_unlock(&lock);
-                    perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
-                    delay(100);
-                    Car_Stop(car);
-                    delay(300);
-                }
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b1011:  // (H L H H): (H L L H) 될때까지 조금씩 좌회전하기
-            while (sensor_state == 0b1011) {
-                Car_Left(car, 60, 60);
-                delay(5);
-                left1 = read_sensor(SENSOR_LEFT1);
-                left2 = read_sensor(SENSOR_LEFT2);
-                right1 = read_sensor(SENSOR_RIGHT1);
-                right2 = read_sensor(SENSOR_RIGHT2);
-                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
-                if (sensor_state == 0b1001) {
-                    break;
-                }
-                buffer = sensor_state;
-            }
-            break;
-        case 0b1111: // (H H H H) : Stop
-            printf("HHHH detected.\n");
-            if (num_before_terminate > 4) {
-
-                Car_Stop(car);
-                break;
-            }
-
-            if (num_before_terminate <= 4) {
-                ++num_before_terminate;
-                sensor_state = buffer;
-                break;
-            }
-        default:
-            sensor_state = buffer;
-            break;
-        }
-        delay(5);
-    }
-}
-
-int main()
