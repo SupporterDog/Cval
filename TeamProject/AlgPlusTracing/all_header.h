@@ -97,19 +97,6 @@ typedef struct {
 //------------------variables---------------------
 extern pthread_mutex_t lock; 
 
-//========================QR QODE DECODER :: update XY========================
-extern string QR_XY;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    void* decodeQRCodeThread(void* arg);//THREAD FUNCTION: READING QR
-
-#ifdef __cplusplus
-}
-#endif
-
 //===========================CLIENT :: update DGIST========================================
 //--------------------------VARIABLES--------------------------
 extern int sock;
