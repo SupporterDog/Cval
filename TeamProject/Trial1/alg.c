@@ -295,7 +295,7 @@ void* Run_Algorithm(void* arg) {
             pthread_mutex_unlock(&lock);
             int buffer[2] = {-1,-1};
             while (1) {
-                printf("Engage: My point, Enemy point Locating,,,!"\n);
+                printf("Engage: My point, Enemy point Locating,,,!\n");
                 pthread_mutex_lock(&lock);
                 int my_x; int my_y; int opp_x; int opp_y;
                 my_x = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row; 
@@ -313,7 +313,7 @@ void* Run_Algorithm(void* arg) {
                     printf("Bangaljook Done,,,\n");
                     // 맥스 스코어 포인트
                     max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
-                    printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist.map[(*max_score_point).x][(*max_score_point).y].item.score);
+                    printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
                     // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
                     Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
                     printf("Local optimal path: of length %d \n", path_length);
@@ -334,10 +334,10 @@ void* Run_Algorithm(void* arg) {
                     pMovements =  getMovement(Dirs_for_Movs, path_length);
                     printf("Your Proposed Movements: \n");
                     for (int i = 0 ; i < path_length - 1; ++i) {
-                        if (Movements[i] == 1) { printf("l_spin\t"); }
-                        if (Movements[i] == 2) { printf("straight\t"); }
-                        if (Movements[i] == 3) { printf("r_spin\t"); }
-                        if (Movements[i] == 4) { printf("turn\t"); }
+                        if (pMovements[i] == 1) { printf("l_spin\t"); }
+                        if (pMovements[i] == 2) { printf("straight\t"); }
+                        if (pMovements[i] == 3) { printf("r_spin\t"); }
+                        if (pMovements[i] == 4) { printf("turn\t"); }
                         printf("\n");
                     }
                     RECENT_HEAD_DIRECTION = Directions[path_length - 2];
