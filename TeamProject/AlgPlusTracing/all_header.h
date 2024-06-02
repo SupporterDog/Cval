@@ -11,18 +11,15 @@
 //========================ALGO INCLUDE================================
 #include <stdbool.h>
 #include <netinet/in.h>
+//========================CLIENT DEFINE===============================
+#define THREAD_TIMEOUT 0.5
 //========================SERVER DEFINE===============================
 #define MAX_CLIENTS 2
 #define _MAP_ROW 4
 #define _MAP_COL 4
 #define MAP_ROW (_MAP_ROW + 1)
 #define MAP_COL (_MAP_COL + 1)
-#define MAP_SIZE (MAP_COL * MAP_ROW)
-const int MAX_SCORE = 4; // Item max score
-const int SETTING_PERIOD = 20; // Broadcast & Item generation period
-const int INITIAL_ITEM = 10; // Initial number of item
-const int INITIAL_BOMB = 4; // The number of bomb for each user
-const int SCORE_DEDUCTION = 2; // The amount of score deduction due to bomb
+#define MAP_SIZE (MAP_COL * MAP_ROW);
 //=========================CAR RUN INCLUDES============================
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
@@ -94,26 +91,18 @@ typedef struct {
 } ClientAction;
 
 //=========================THREADING========================================
-//------------------variables---------------------
-extern pthread_mutex_t lock; 
 
 //===========================CLIENT :: update DGIST========================================
 //--------------------------VARIABLES--------------------------
-extern int sock;
 extern DGIST* updatedDgist;
 //-------------------------FUNCTIONS--------------------------
 void* receiveUpdates(void* arg); // THREAD FUNCTION: use (FUN)updateGlobalVariables
 void updateGlobalVariables(DGIST* dgist,int my_sock);
-void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
 
 //==========================ALGORITHM :: update path=========================================
 //-------------------------VARIABLES--------------------------
-bool do_we_set_trap;
+extern bool do_we_set_trap;
 DGIST DGIST_OBJ;
-extern int my_index;
-extern int met_Node;
-extern int path_length;
-extern int* pMovements;
 //-------------------------STURCTS---------------------------
 typedef struct {
     int x;
@@ -130,26 +119,38 @@ typedef struct {
     Point point;
     int distance;
 } QueueNode;
-
+extern int my_index;
+extern int met_Node;
+extern int path_length;
+extern int* pMovements;
 //-----------------------FUNCTIONS-------------------------
-bool isValid(Point p);
+bool isValid(Point p, Point* points, int count);
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count);
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count);
 void copy_path(Path* dest, Path* src);
 void find_paths(int row_moves, int column_moves, Path* path, int current_score, Path* best_path, int start_x, int start_y);
 Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length);
-bool SetBomb_Checker(Point* currpoint, Point* opponentpoint);
+int SetBomb_Checker(Point* currpoint, Point* opponentpoint);
 void* Run_Algorithm(void* arg);//THREAD FUNCTION : FINDING PATH
 
 //===============================CAR RUN :: RUN A CAR============================================
-//----------------------VARIABLES--------------------------
-
 //----------------------STRUCTS----------------------
 typedef struct {
     int _device;
     int _addr;
 } YB_Pcb_Car;
 //--------------------FUNCTIONS-----------------------
-
-
+void get_i2c_device(YB_Pcb_Car* car, int address);
+void write_array(YB_Pcb_Car* car, int reg, unsigned char* data, int length);
+void Ctrl_Car(YB_Pcb_Car* car, int l_dir, int l_speed, int r_dir, int r_speed);
+void Car_Run(YB_Pcb_Car* car, int l_speed, int r_speed);
+void Car_Stop(YB_Pcb_Car* car);
+void Car_Back(YB_Pcb_Car* car, int l_speed, int r_speed);
+void Car_Left(YB_Pcb_Car* car, int l_speed, int r_speed);
+void Car_Right(YB_Pcb_Car* car, int l_speed, int r_speed);
+void Ctrl_Servo(YB_Pcb_Car* car, int servo_id, int angle);
+int read_sensor(int pin);
+void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control);
+void line_following(YB_Pcb_Car* car);
+void* threadFunction(void* arg);
 #endif // ALL_HEADER_H
