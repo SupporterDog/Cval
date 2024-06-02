@@ -121,8 +121,12 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
 
 //==========================ALGORITHM :: update path=========================================
 //-------------------------VARIABLES--------------------------
-bool do_we_set_trap = false;
+bool do_we_set_trap;
 DGIST DGIST_OBJ;
+extern int my_index;
+extern int met_Node;
+extern int path_length;
+extern int* pMovements;
 //-------------------------STURCTS---------------------------
 typedef struct {
     int x;
@@ -139,10 +143,7 @@ typedef struct {
     Point point;
     int distance;
 } QueueNode;
-extern int my_index;
-extern int met_Node;
-extern int path_length;
-extern int* pMovements;
+
 //-----------------------FUNCTIONS-------------------------
 bool isValid(Point p);
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count);
