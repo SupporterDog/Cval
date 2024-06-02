@@ -292,33 +292,3 @@ void line_following(YB_Pcb_Car* car) {
         delay(5);
     }
 }
-
-// 스레드에서 실행할 함수
-void* threadFunction(void* arg) {
-    // 전달받은 인자를 필요한 형태로 캐스팅
-    int* data = (int*)arg;
-    if (wiringPiSetup() == -1) {
-        printf("wiringPi setup failed\n");
-        return NULL;
-    }
-
-    pinMode(SENSOR_LEFT1, INPUT);
-    pinMode(SENSOR_LEFT2, INPUT);
-    pinMode(SENSOR_RIGHT1, INPUT);
-    pinMode(SENSOR_RIGHT2, INPUT);
-
-    YB_Pcb_Car car;
-    get_i2c_device(&car, I2C_ADDR);
-    Car_Stop(&car);
-    delay(10000);
-    while (1) {
-        pthread_mutex_lock(&lock);
-        printf("Thread is running with data: %d\n", *data);
-        line_following(&car);
-        pthread_mutex_unlock(&lock);
-
-        usleep(500000);
-    }
-
-    return NULL;
-}
