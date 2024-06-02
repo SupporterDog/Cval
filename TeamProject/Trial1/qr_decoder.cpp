@@ -39,7 +39,7 @@
                     printf("SCANNING QR CODE: ");
                     printf(qrData.c_str());
                     printf("  BEFORE QR CODE: ");
-                    printf(before_xy);
+                    printf(before_xy.c_str());
                     printf("\n");
                     // 디코딩된 QR 코드 데이터를 처리
                     before_xy=qrData;
