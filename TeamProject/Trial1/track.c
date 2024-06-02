@@ -322,7 +322,6 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1111: // (H H H H) : Stop
-            printf("HHHH detected.\n");
             if (num_before_terminate > 4) {
 
                 Car_Stop(car);
