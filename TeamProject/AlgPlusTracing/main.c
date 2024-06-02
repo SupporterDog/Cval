@@ -1,9 +1,9 @@
 #include "all_header.h"
 
 int main() {
-
+    int RECENT_HEAD_DIRECTION = UP;
     int my_x = 4; int my_y = 4;
-    int opp_x = 2; int opp_y = 3;
+    int opp_x = 1; int opp_y = 1;
     int count = 0;
     Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count);  
     Point* max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
@@ -22,7 +22,7 @@ int main() {
         printf("(%d) \t", pMovements[i]);
     }
     printf("\n");
-    int RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
     printf("Recent head direction: %d \n", RECENT_HEAD_DIRECTION);
     met_Node = 0;
 
