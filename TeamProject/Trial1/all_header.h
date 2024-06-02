@@ -91,21 +91,6 @@ typedef struct {
 } ClientAction;
 
 //=========================THREADING========================================
-//------------------variables---------------------
-//========================QR QODE DECODER :: update XY========================
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    extern int sock;
-    extern pthread_mutex_t lock; 
-    void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action);
-
-    void* decodeQRCodeThread(void* arg);//THREAD FUNCTION: READING QR
-
-#ifdef __cplusplus
-}
-#endif
 
 //===========================CLIENT :: update DGIST========================================
 //--------------------------VARIABLES--------------------------
