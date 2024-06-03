@@ -6,20 +6,18 @@ DGIST* updatedDgist = NULL;
 void* receiveUpdates(void* arg) {
     DGIST dgist;
     while (1) {
-        pthread_mutex_lock(&lock);
         if (recv(sock, &dgist, sizeof(DGIST), 0) <= 0) {
             printf("Connection closed by server.\n");
             close(sock);
             exit(0);
         }
-        pthread_mutex_unlock(&lock);
 
         // 글로벌 변수 업데이트
 	int me_index = (dgist.players[0].socket == sock) ? 0 : 1;
         printf("my Index: %d\n",me_index);
         updateGlobalVariables(&dgist,sock);
         
-        usleep(500000);
+        usleep(100000);
     }
     return NULL;
 }
