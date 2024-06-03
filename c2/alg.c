@@ -98,11 +98,11 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
 
         // 현재 점수가 최고 점수보다 크면 갱신
         if (updatedDgist->map[currpoint->x][currpoint->y].item.score > currmaxscore) {
-            returnpoint = currpoint;
+            memcpy(returnPoint, currentPoint, sizeof(Point));
             currmaxscore = updatedDgist->map[currpoint->x][currpoint->y].item.score;
         }
 
-        // 다음 지점을 큐에 추가
+        // 다음 지점을 큐에 추가    
         for (int i = 0; i < 4; ++i) {
             Point nextpoint = { currpoint->x + directions[i].x, currpoint->y + directions[i].y };
             if (isValid(nextpoint, points, count) && !visited[nextpoint.x][nextpoint.y]) {
@@ -180,7 +180,7 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
     Path best_path;
     Path initial_path;
     initial_path.length = 1;
-    initial_path.points[0] = {*StartPoint.x, *StartPoint.y};
+    initial_path.points[0] = (Point){ StartPoint->x, StartPoint->y };
     initial_path.score = 0;
     //경로 찾아서 best_path에 저장
     find_paths(row_move, column_move, &initial_path, 0, &best_path, start_x, start_y);
