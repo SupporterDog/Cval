@@ -37,7 +37,7 @@
 
                 // QR 코드 디코딩
                 cv::Mat bbox, rectifiedImage;
-                qrData = qrDecoder.detectAndDecode(resized, bbox, rectifiedImage);
+                qrData = qrDecoder.detectAndDecode(dysize, bbox, rectifiedImage);
 
                 if (!qrData.empty() and qrData!=before_xy) {
                     printf("SCANNING QR CODE: ");
