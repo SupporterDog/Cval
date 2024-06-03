@@ -370,8 +370,8 @@ void* Run_Algorithm(void* arg) {
                     free(reachable_points);
                     free(Directions);
                     free(Dirs_for_Movs);
-                    free(local_optimal_path);
-                    free(max_score_point);
+                    //free(local_optimal_path);
+                    //free(max_score_point);
                     printf("now max point6 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                 }
                 pthread_mutex_unlock(&lock);
