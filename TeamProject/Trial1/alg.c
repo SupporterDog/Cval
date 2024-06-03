@@ -75,7 +75,7 @@ bool isValid(Point p, Point* points, int count) {
 // 그렇지 않으면 최고 점수를 가진 지점을 반환하는 함수
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
-    bool visited[MAP_ROW][MAP_COL] = { false };
+    bool visited[MAP_ROW+1][MAP_COL+1] = { false };
     QueueNode queue[MAX_QUEUE_SIZE];
     int front = 0, rear = 0;
 
