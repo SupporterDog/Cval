@@ -6,7 +6,7 @@ int met_Node = 0;
 int path_length;
 int* pMovements;
 int trial = 0;
-int cal_trial = 0;
+int evolution_trial = 0;
 int spin_trial = 0;
 int evolution = 0;
 
@@ -85,7 +85,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         }
         delay(5);
         spin_trial = 0;
-        
+
     }
     else if (control == l_spin) {
         Car_Run(car, 60, 60);
@@ -114,6 +114,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(5);
         spin_trial++;
         if (spin_trial > 3) {
+            printf("EVOLUTION");
             evolution = 1;
         }
     }
@@ -122,12 +123,12 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(200);
         Car_Stop(car);
         delay(300);
-        cal_trial++;
+        evolution_trial++;
     }
     pthread_mutex_lock(&lock);
-    if (cal_trial == 3) {
+    if (evolution_trial >2) {
         evolution = 1;
-        cal_trial = 0;
+        evolution_trial = 0;
         free(pMovements);
         pMovements = NULL;
     }
@@ -173,12 +174,12 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
-                    cal_trial++;
+                    evolution_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if (cal_trial == 3) {
+                if (evolution_trial == 3) {
                     evolution = 1;
-                    cal_trial = 0;
+                    evolution_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
 
@@ -232,12 +233,12 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
-                    cal_trial++;
+                    evolution_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if (cal_trial == 3) {
+                if (evolution_trial == 3) {
                     evolution = 1;
-                    cal_trial = 0;
+                    evolution_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
@@ -279,12 +280,12 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
-                    cal_trial++;
+                    evolution_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if (cal_trial == 3) {
+                if (evolution_trial == 3) {
                     evolution = 1;
-                    cal_trial = 0;
+                    evolution_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
@@ -327,12 +328,12 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
-                    cal_trial++;
+                    evolution_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if (cal_trial == 3) {
+                if (evolution_trial == 3) {
                     evolution = 1;
-                    cal_trial = 0;
+                    evolution_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
@@ -359,12 +360,12 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
-                    cal_trial++;
+                    evolution_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if (cal_trial == 3) {
+                if (evolution_trial == 3) {
                     evolution = 1;
-                    cal_trial = 0;
+                    evolution_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
@@ -690,26 +691,26 @@ void* threadFunction(void* arg) {
             while (1) {
                 line_following(&car);
                 usleep(500000);
-                if(evolution == 1){
+                if (evolution == 1) {
                     break;
                 }
             }
-            
+
 
         }
-        if(evolution == 1){
+        if (evolution == 1) {
             break;
         }
         usleep(500000);
     }
 
+    
     while (1) {
-        while (1) {
-            second_phase_following(&car);
-            usleep(500000);
-        }
-
+        second_phase_following(&car);
+        usleep(500000);
     }
     usleep(500000);
     return NULL;
-}
+ }
+    
+
