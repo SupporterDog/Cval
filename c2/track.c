@@ -168,7 +168,7 @@ void line_following(YB_Pcb_Car* car) {
                 Car_Run(car, 30, 30);
                 delay(5);
                 trial++;
-            }if else(trial == 150){
+            }else if(trial == 150){
                 Car_Stop(car);
                 delay(600);
             }
