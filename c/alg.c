@@ -82,7 +82,7 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     queue[rear++] = (QueueNode){ *StartPoint, 0 };
     visited[(*StartPoint).x][(*StartPoint).y] = true;
 
-    Point* returnpoint = NULL;
+    Point* returnpoint = (Point*)malloc(sizeof(Point)); 
     int currmaxscore = -1;
 
     while (front < rear) {
@@ -370,6 +370,8 @@ void* Run_Algorithm(void* arg) {
                     free(reachable_points);
                     free(Directions);
                     free(Dirs_for_Movs);
+                    free(local_optimal_path);
+                    free(max_score_point);
                     printf("now max point6 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                 }
                 pthread_mutex_unlock(&lock);
