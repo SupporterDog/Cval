@@ -180,7 +180,7 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1000:  // (H L L L): 전진 후 다른 것
-            printf("hlll\n");
+        
             while (sensor_state == 0b1000) {
                 if(pMovements != NULL){
                     pthread_mutex_lock(&lock);
