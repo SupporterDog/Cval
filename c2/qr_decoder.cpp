@@ -62,7 +62,6 @@ void* decodeQRCodeThread(void* arg) {
             // cv::imshow("QR Code Scanner", frame);
             // if (cv::waitKey(30) >= 0) break; // 아무 키나 누르면 종료
 
-            usleep(30000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
         }
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
