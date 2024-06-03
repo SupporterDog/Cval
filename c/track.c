@@ -163,7 +163,7 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            Car_Run(car, 60, 60);
+            Car_Run(car, 50, 50);
             delay(5);
             trial++;
             left1 = read_sensor(SENSOR_LEFT1);
@@ -216,7 +216,7 @@ void line_following(YB_Pcb_Car* car) {
             break;
         case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
             while (sensor_state == 0b1110) {
-                Car_Right(car, 60, 60);
+                Car_Right(car, 55, 55);
                 delay(5);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
