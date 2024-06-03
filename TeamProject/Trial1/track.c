@@ -26,12 +26,12 @@ void write_array(YB_Pcb_Car* car, int reg, unsigned char* data, int length) {
         printf("write_array I2C error\n");
     }
     else {
-        printf("write_array: Data written to reg %d\n", reg);
+        //printf("write_array: Data written to reg %d\n", reg);
     }
 }
 
 void Ctrl_Car(YB_Pcb_Car* car, int l_dir, int l_speed, int r_dir, int r_speed) {
-    printf("Ctrl_Car called with l_dir: %d, l_speed: %d, r_dir: %d, r_speed: %d\n", l_dir, l_speed, r_dir, r_speed);
+    //printf("Ctrl_Car called with l_dir: %d, l_speed: %d, r_dir: %d, r_speed: %d\n", l_dir, l_speed, r_dir, r_speed);
     unsigned char data[4] = { l_dir, l_speed, r_dir, r_speed };
     write_array(car, 0x01, data, 4);
 }
