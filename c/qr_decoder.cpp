@@ -18,7 +18,15 @@
             if (!cap.isOpened()) {
                 throw std::runtime_error("카메라를 열 수 없습니다.");
             }
+            cap.set(cv::CAP_PROP_FRAME_WIDTH,320);
+            cap.set(cv::CAP_PROP_FRAME_HEIGHT,240);
+            cap.set(cv::CAP_PROP_FPS,120);
+            cap.set(cv::CAP_PROP_BRIGHTNESS,40);
+            cap.set(cv::CAP_PROP_CONTRAST, 50);
+            cap.set(cv::CAP_PROP_EXPOSURE,156);
 
+            
+            
             cv::Mat frame;
             std::string qrData;
             cv::QRCodeDetector qrDecoder;
@@ -32,12 +40,10 @@
                 }
 
 
-                cv::Mat blurred;
-                cv::GaussianBlur(trap, blurred, cv::Size(5, 5), 0);
-
+                
                 // QR 코드 디코딩
                 cv::Mat bbox, rectifiedImage;
-                qrData = qrDecoder.detectAndDecode(dysize, bbox, rectifiedImage);
+                qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
 
                 if (!qrData.empty() and qrData!=before_xy) {
                     printf("SCANNING QR CODE: ");
