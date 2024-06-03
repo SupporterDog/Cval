@@ -31,9 +31,18 @@
                     throw std::runtime_error("프레임을 캡처할 수 없습니다.");
                 }
 
+                cv:Mat gray;
+                cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+
+                cv::Mat blurred;
+                cv::GaussianBlur(gray, blurred, cv::Size(5, 5), 0);
+
+                cv::Mat resized;
+                cv::resize(blurred, resized, cv::Size(). 2, 2, cv::rectifiedImage);
+
                 // QR 코드 디코딩
                 cv::Mat bbox, rectifiedImage;
-                qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
+                qrData = qrDecoder.detectAndDecode(resized, bbox, rectifiedImage);
 
                 if (!qrData.empty() and qrData!=before_xy) {
                     printf("SCANNING QR CODE: ");
