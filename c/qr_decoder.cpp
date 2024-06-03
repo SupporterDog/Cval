@@ -21,8 +21,8 @@
             cap.set(cv::CAP_PROP_FRAME_WIDTH,320);
             cap.set(cv::CAP_PROP_FRAME_HEIGHT,240);
             cap.set(cv::CAP_PROP_FPS,120);
-            cap.set(cv::CAP_PROP_BRIGHTNESS,40);
-            cap.set(cv::CAP_PROP_CONTRAST, 50);
+            cap.set(cv::CAP_PROP_BRIGHTNESS,50);
+            cap.set(cv::CAP_PROP_CONTRAST, 70);
             cap.set(cv::CAP_PROP_EXPOSURE,156);
 
             
