@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <wiringPi.h>       // wiringPi 라이브러리 포함
 #include <wiringPiI2C.h>    // wiringPi I2C 라이브러리 포함
 
@@ -34,7 +35,6 @@ void write_array(YB_Pcb_Car* car, int reg, unsigned char* data, int length) {
 }
 
 void Ctrl_Servo(YB_Pcb_Car* car, int servo_id, int angle) {
-    printf("Ctrl_Servo called with servo_id: %d, angle: %d\n", servo_id, angle);
     unsigned char data[2] = { servo_id, angle };
     write_array(car, 0x03, data, 2);
 }
@@ -46,12 +46,15 @@ int main() {
 
     int servo_id = 1;  // 제어할 서보 모터의 ID
     while (1) {
-        Ctrl_Servo(&car, servo_id, 60); // 왼쪽 (30도 기준)
+        Ctrl_Servo(&car, servo_id, 30); // 왼쪽 (30도 기준)
         delay(1000); // 1000ms 대기
-        Ctrl_Servo(&car, servo_id, 90); // 앞쪽 (0도 기준)
+        Ctrl_Servo(&car, servo_id, 45); // 앞쪽 (0도 기준)
         delay(1000); // 1000ms 대기
-        Ctrl_Servo(&car, servo_id, 120); // 오른쪽 (-30도 기준)
+        Ctrl_Servo(&car, servo_id, 60); // 오른쪽 (-30도 기준)
         delay(1000); // 1000ms 대기
+	Ctrl_Servo(&car, servo_id, 45); // 앞쪽 (0도 기준)
+        delay(1000); // 1000ms 대기
+
     }
 
     return 0;
