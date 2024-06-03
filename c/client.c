@@ -6,14 +6,17 @@ DGIST* updatedDgist = NULL;
 void* receiveUpdates(void* arg) {
     DGIST dgist;
     while (1) {
+	pthread_mutex_lock(&lock);
+
         if (recv(sock, updatedDgist, sizeof(DGIST), 0) <= 0) {
 		int a=1;
         }
+    	pthread_mutex_unlock(&lock);
 
         // 글로벌 변수 업데이트
-	int me_index = (dgist.players[0].socket == sock) ? 0 : 1;	
-	printf("Server socket: %d my socket: %d\n",dgist.players[0].socket,sock);
-        printf("my Index: %d\n",me_index);
+	//int me_index = (dgist.players[0].socket == sock) ? 0 : 1;	
+	//printf("Server socket: %d my socket: %d\n",dgist.players[0].socket,sock);
+        //printf("my Index: %d\n",me_index);
         //updateGlobalVariables(&dgist,sock);
         
         //usleep(50000); Get Out of here
