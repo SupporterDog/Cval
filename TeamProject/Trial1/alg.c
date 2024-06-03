@@ -9,6 +9,7 @@ int my_index = 0;
 int path_length =0;
 int* pMovements = NULL;
 int met_Node;
+int start_row;
 
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count) {
     static Point all_points[25] = {
@@ -310,7 +311,7 @@ void* Run_Algorithm(void* arg) {
                     opp_x = my_x; opp_y = my_y;
                 }
                 if (my_x == -1 && my_y == -1) {
-                    my_x = 0; my_y = 0;   
+                    my_x = start_row; my_y = start_row;   
                 }
                 Point* my_point = &(Point) {my_x, my_y};
 
