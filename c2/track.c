@@ -76,9 +76,9 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(150);
         Car_Right(car, 60, 60);
         delay(500);
-        while ((*sensor_state & 0b0100) != 0b0100) {
+        while ((sensor_state & 0b0100) != 0b0100) {
             Car_Right(car, 40, 40);
-            *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+            sensor_state = sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
             delay(10);
         }
         delay(5);
@@ -88,9 +88,9 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(150);
         Car_Left(car, 60, 60);
         delay(500);
-        while ((*sensor_state & 0b0010) != 0b0010) {
+        while ((sensor_state & 0b0010) != 0b0010) {
             Car_Left(car, 40, 40);
-            *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+            sensor_state = sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
             delay(10);
         }
 
@@ -101,9 +101,9 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(150);
         Car_Right(car, 60, 60);
         delay(1800);
-        while ((*sensor_state & 0b0100) != 0b0100) {
+        while ((sensor_state & 0b0100) != 0b0100) {
             Car_Right(car, 40, 40);
-            *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+            sensor_state = sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
             delay(10);
         }
 
@@ -426,9 +426,9 @@ void AI_line_following(YB_Pcb_Car* car) {
                     delay(150);
                     Car_Right(car, 60, 60);
                     delay(500);
-                    while ((*sensor_state & 0b0100) != 0b0100) {
+                    while ((sensor_state & 0b0100) != 0b0100) {
                         Car_Right(car, 40, 40);
-                        *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+                        sensor_state = sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
                         delay(10);
                     }
                     delay(5);
@@ -439,9 +439,9 @@ void AI_line_following(YB_Pcb_Car* car) {
                     delay(150);
                     Car_Left(car, 60, 60);
                     delay(500);
-                    while ((*sensor_state & 0b0010) != 0b0010) {
+                    while ((sensor_state & 0b0010) != 0b0010) {
                         Car_Left(car, 40, 40);
-                        *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+                        sensor_state = sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
                         delay(10);
                     }
 
@@ -491,9 +491,9 @@ void AI_line_following(YB_Pcb_Car* car) {
                 delay(150);
                 Car_Right(car, 60, 60);
                 delay(500);
-                while ((*sensor_state & 0b0100) != 0b0100) {
+                while ((sensor_state & 0b0100) != 0b0100) {
                     Car_Right(car, 40, 40);
-                    *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+                    sensor_state = sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
                     delay(10);
                 }
                 delay(5);
@@ -530,9 +530,9 @@ void AI_line_following(YB_Pcb_Car* car) {
                 delay(150);
                 Car_Right(car, 60, 60);
                 delay(500);
-                while ((*sensor_state & 0b0100) != 0b0100) {
+                while ((sensor_state & 0b0100) != 0b0100) {
                     Car_Right(car, 40, 40);
-                    *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+                    sensor_state = sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
                     delay(10);
                 }
                 delay(5);
@@ -569,9 +569,9 @@ void AI_line_following(YB_Pcb_Car* car) {
                 delay(150);
                 Car_Left(car, 60, 60);
                 delay(500);
-                while ((*sensor_state & 0b0010) != 0b0010) {
+                while ((sensor_state & 0b0010) != 0b0010) {
                     Car_Left(car, 40, 40);
-                    *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+                    sensor_state = sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
                     delay(10);
                 }
 
@@ -595,9 +595,9 @@ void AI_line_following(YB_Pcb_Car* car) {
                 delay(150);
                 Car_Left(car, 60, 60);
                 delay(500);
-                while ((*sensor_state & 0b0010) != 0b0010) {
+                while ((sensor_state & 0b0010) != 0b0010) {
                     Car_Left(car, 40, 40);
-                    *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+                    sensor_state = sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
                     delay(10);
                 }
 
