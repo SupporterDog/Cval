@@ -15,11 +15,10 @@ void* receiveUpdates(void* arg) {
         pthread_mutex_unlock(&lock);
 
         // 글로벌 변수 업데이트
-	  int me_index = (dgist.players[0].socket == sock) ? 0 : 1;
-        // 글로벌 변수 업데이트
-        if(dgist.players[me_index].row>=0 && dgist.players[me_index].col>=0){
-            updateGlobalVariables(&dgist,sock);
-        }
+	int me_index = (dgist.players[0].socket == sock) ? 0 : 1;
+        printf("my Index: %d\n",me_index);
+        updateGlobalVariables(&dgist,sock);
+        
         usleep(500000);
     }
     return NULL;
