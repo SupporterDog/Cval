@@ -164,13 +164,13 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            if (trial < 50) {
+            if (trial < 100) {
                 Car_Run(car, 35, 35);
                 delay(5);
                 trial++;
             }else if (trial == 50) {
                 Car_Stop(car);
-                delay(300);
+                delay(500);
                 trial++;
             }
             else {
