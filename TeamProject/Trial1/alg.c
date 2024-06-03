@@ -330,7 +330,7 @@ void* Run_Algorithm(void* arg) {
                     max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
                     printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
                     // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
-                    Point* temp_maxpoint;
+                    Point* temp_maxpoint = (Point*)malloc(sizeof(Point));
                     temp_maxpoint->x = max_score_point->x; temp_maxpoint->y = max_score_point->y;
                     Point* local_optimal_path = find_best_road(my_point, temp_maxpoint, &path_length);
                     printf("Local optimal path: of length %d \n", path_length);
