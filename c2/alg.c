@@ -175,8 +175,8 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
     int start_y = (*StartPoint).y;
     int end_x = (*EndPoint).x;
     int end_y = (*EndPoint).y;
-    int row_move = end_x - start_x;
-    int column_move = end_y - start_y;
+    int row_move = end_y - start_y;
+    int column_move = end_x - start_x;
     Path best_path;
     Path initial_path;
     initial_path.length = 1;
