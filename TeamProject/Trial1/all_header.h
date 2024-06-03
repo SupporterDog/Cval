@@ -118,6 +118,7 @@ void updateGlobalVariables(DGIST* dgist,int my_sock);
 //-------------------------VARIABLES--------------------------
 extern bool do_we_set_trap;
 extern int my_index;
+extern int start_row;
 extern int met_Node;
 extern int path_length;
 extern int* pMovements;
