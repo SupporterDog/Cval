@@ -332,10 +332,12 @@ void* Run_Algorithm(void* arg) {
                     // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
                     Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
                     printf("Local optimal path: of length %d \n", path_length);
+                    printf("now max point1 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     for (int i = 0; i < path_length; ++i) {
                         printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
                     }
                     int* Directions = getDirection(local_optimal_path, path_length);
+                    printf("now max point2 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     printf("Directions to go:\n");
                     for (int i = 0 ; i < path_length - 1; ++i) {
                         if (Directions[i] == 1) { printf("LEFT\t"); }
@@ -346,7 +348,9 @@ void* Run_Algorithm(void* arg) {
                     }
 
                     int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
+                    printf("now max point3 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     pMovements =  getMovement(Dirs_for_Movs, path_length);
+                    printf("now max point4 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     printf("Your Proposed Movements: \n");
                     for (int i = 0 ; i < path_length - 1; ++i) {
                         if (pMovements[i] == 1) { printf("l_spin\t"); }
@@ -356,6 +360,7 @@ void* Run_Algorithm(void* arg) {
                         printf("\n");
                     }
                     RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+                    printf("now max point5 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
                     printf("\n");
                     printf("\n");
@@ -364,6 +369,7 @@ void* Run_Algorithm(void* arg) {
                     free(reachable_points);
                     free(Directions);
                     free(Dirs_for_Movs);
+                    printf("now max point6 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                 }
                 pthread_mutex_unlock(&lock);
                 usleep(100000);  
