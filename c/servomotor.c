@@ -38,14 +38,20 @@ void* servo(void* arg) {
     get_i2c_device_two(&car, I2C_ADDR);
  // 제어할 서보 모터의 ID
     while (1) {
+        Ctrl_Servo(&car, 15); // 왼쪽 (30도 기준)
+        delay(250);
         Ctrl_Servo(&car, 30); // 왼쪽 (30도 기준)
-        delay(500); // 1000ms 대기
+        delay(250);
         Ctrl_Servo(&car, 45); // 앞쪽 (0도 기준)
-        delay(500); // 1000ms 대기
+        delay(250); 
         Ctrl_Servo(&car, 60); // 오른쪽 (-30도 기준)
-        delay(500); // 1000ms 대기
+        delay(250); 
+        Ctrl_Servo(&car, 75); // 왼쪽 (30도 기준)
+        delay(250);
+        Ctrl_Servo(&car, 60); // 왼쪽 (30도 기준)
+        delay(250);
         Ctrl_Servo(&car, 45); // 앞쪽 (0도 기준)
-        delay(500); // 1000ms 대기
+        delay(250); 
 
     }
 
