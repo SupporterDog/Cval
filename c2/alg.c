@@ -218,9 +218,9 @@ int* getDirection(Point* road, int path_length) {
     return returnvec;
 }
 
-int* getDirection_for_Mov(int* Dir, int path_length, int final_head_dir) {
+int* getDirection_for_Mov(int* Dir, int path_length, int recent_head_dir) {
     int* returnvec = (int*)malloc(sizeof(int) * (path_length));
-    returnvec[0] = final_head_dir;
+    returnvec[0] = recent_head_dir;
     for (int i = 1; i < path_length; ++i) {
         returnvec[i] = Dir[i - 1]; 
     }
@@ -292,8 +292,8 @@ void* Run_Algorithm(void* arg) {
             pthread_mutex_lock(&lock);
             
             // 맨 처음에 놓는 위치를 정해 놓는다
-            int FINAL_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? RIGHT : UP;
-            printf("Initial Final Head Direction: %d [L1 U2 R3 D4]\n", FINAL_HEAD_DIRECTION);
+            int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? RIGHT : UP;
+            printf("Initial Final Head Direction: %d [L1 U2 R3 D4]\n", RECENT_HEAD_DIRECTION);
             Point max_score_point = {start_row, start_row}; // Changed to stack allocation
             printf("Initial max point: (%d,%d)\n", max_score_point.x, max_score_point.y);
             pthread_mutex_unlock(&lock);
@@ -364,9 +364,9 @@ void* Run_Algorithm(void* arg) {
                         if (pMovements[i] == 4) { printf("turn\t"); }
                         printf("\n");
                     }
-                    FINAL_HEAD_DIRECTION = Directions[path_length - 2];
+                    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
                     //printf("now max point5 : (%d,%d)\n", max_score_point.x, max_score_point.y);
-                    printf("FINAL HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", FINAL_HEAD_DIRECTION);
+                    printf("FINAL HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
                     printf("\n");
                     printf("\n");
                     met_Node = 0;
