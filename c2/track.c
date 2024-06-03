@@ -157,7 +157,14 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
+                    cal_trial++;
                 }
+                pthread_mutex_lock(&lock);
+                if(cal_trial == 3){
+                    calculate = 1;
+                    cal_trial = 0;
+                }
+                pthread_mutex_unlock(&lock);
 
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
@@ -209,7 +216,14 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
+                    cal_trial++;
                 }
+                pthread_mutex_lock(&lock);
+                if(cal_trial == 3){
+                    calculate = 1;
+                    cal_trial = 0;
+                }
+                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -249,7 +263,14 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
+                    cal_trial++;
                 }
+                pthread_mutex_lock(&lock);
+                if(cal_trial == 3){
+                    calculate = 1;
+                    cal_trial = 0;
+                }
+                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -290,7 +311,14 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
+                    cal_trial++;
                 }
+                pthread_mutex_lock(&lock);
+                if(cal_trial == 3){
+                    calculate = 1;
+                    cal_trial = 0;
+                }
+                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -315,7 +343,14 @@ void line_following(YB_Pcb_Car* car) {
                     delay(100);
                     Car_Stop(car);
                     delay(300);
+                    cal_trial++;
                 }
+                pthread_mutex_lock(&lock);
+                if(cal_trial == 3){
+                    calculate = 1;
+                    cal_trial = 0;
+                }
+                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
