@@ -370,7 +370,6 @@ void* Run_Algorithm(void* arg) {
                     free(reachable_points);
                     free(Directions);
                     free(Dirs_for_Movs);
-                    free(new_max_score_point); // Free the dynamically allocated memory returned by Find_MaxScorePoint
                     printf("now max point6 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                 }
                 pthread_mutex_unlock(&lock);
