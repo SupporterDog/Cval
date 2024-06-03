@@ -142,7 +142,9 @@ void line_following(YB_Pcb_Car* car) {
 
     int buffer;
     while (1) {
-        
+        if (calculate == 1) {
+            break;
+        }
         left1 = read_sensor(SENSOR_LEFT1);
         left2 = read_sensor(SENSOR_LEFT2);
         right1 = read_sensor(SENSOR_RIGHT1);
@@ -687,13 +689,12 @@ void* threadFunction(void* arg) {
     }
 
     while (1) {
-            while (1) {
-                random_line_following(&car);
-                usleep(500000);
-            }
+        while (1) {
+            random_line_following(&car);
+            usleep(500000);
+        }
 
     }
     usleep(500000);
     return NULL;
 }
-
