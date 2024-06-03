@@ -1,11 +1,12 @@
 #include "all_header.h"
 
 int my_index;
+int start_row;
 
 int main(int argc, char *argv[]) {//MAIN THREAD
     //===================SETIING FOR SERVER CONNECTION===================
     
-    if (argc != 4) {
+    if (argc != 5) {
         fprintf(stderr, "Usage: %s <IP> <PORT>\n", argv[0]);
         return 1;
     }
@@ -13,6 +14,7 @@ int main(int argc, char *argv[]) {//MAIN THREAD
     const char* server_ip = argv[1];
     int server_port = atoi(argv[2]);
     my_index = atoi(argv[3]);
+    start_row = atoi(argv[4]);
     
     struct sockaddr_in serv_addr;
 
