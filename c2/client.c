@@ -66,7 +66,7 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
 	printf("==========PRINT DONE==========\n");
     pthread_mutex_unlock(&lock);
 }
-
+}
 
 // 클라이언트 액션을 서버로 전송하는 함수
 void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, int action) {
