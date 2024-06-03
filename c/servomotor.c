@@ -31,28 +31,49 @@ void Ctrl_Servo(YB_Pcb_Car* car, int angle) {
 
 
 
-void* servo(void* arg) {
+void smooth_move_servo(YB_Pcb_Car* car, int start_angle, int end_angle, int step_delay) {
+    if (start_angle < end_angle) {
+        for (int angle = start_angle; angle <= end_angle; ++angle) {
+            Ctrl_Servo(car, angle);
+            delay(step_delay);
+        }
+    }
+    else {
+        for (int angle = start_angle; angle >= end_angle; --angle) {
+            Ctrl_Servo(car, angle);
+            delay(step_delay);
+        }
+    }
+}
 
+void* servo(void* arg) {
     wiringPiSetup();  // wiringPi 초기화
     YB_Pcb_Car car;
     get_i2c_device_two(&car, I2C_ADDR);
- // 제어할 서보 모터의 ID
-    while (1) {
-        Ctrl_Servo(&car, 15); // 왼쪽 (30도 기준)
-        delay(250);
-        Ctrl_Servo(&car, 30); // 왼쪽 (30도 기준)
-        delay(250);
-        Ctrl_Servo(&car, 45); // 앞쪽 (0도 기준)
-        delay(250); 
-        Ctrl_Servo(&car, 60); // 오른쪽 (-30도 기준)
-        delay(250); 
-        Ctrl_Servo(&car, 75); // 왼쪽 (30도 기준)
-        delay(250);
-        Ctrl_Servo(&car, 60); // 왼쪽 (30도 기준)
-        delay(250);
-        Ctrl_Servo(&car, 45); // 앞쪽 (0도 기준)
-        delay(250); 
 
+    int current_angle = 45; // 시작 각도
+    while (1) {
+        smooth_move_servo(&car, current_angle, 15, 10); // 왼쪽 (30도 기준)
+        current_angle = 15;
+        delay(500);
+        smooth_move_servo(&car, current_angle, 30, 10); // 왼쪽 (30도 기준)
+        current_angle = 30;
+        delay(500);
+        smooth_move_servo(&car, current_angle, 45, 10); // 앞쪽 (0도 기준)
+        current_angle = 45;
+        delay(500);
+        smooth_move_servo(&car, current_angle, 60, 10); // 오른쪽 (-30도 기준)
+        current_angle = 60;
+        delay(500);
+        smooth_move_servo(&car, current_angle, 75, 10); // 왼쪽 (30도 기준)
+        current_angle = 75;
+        delay(500);
+        smooth_move_servo(&car, current_angle, 60, 10); // 왼쪽 (30도 기준)
+        current_angle = 60;
+        delay(500);
+        smooth_move_servo(&car, current_angle, 45, 10); // 앞쪽 (0도 기준)
+        current_angle = 45;
+        delay(500);
     }
 
     return NULL;
