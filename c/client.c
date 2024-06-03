@@ -20,7 +20,7 @@ void* receiveUpdates(void* arg) {
     if (updatedDgist == NULL) {
         updatedDgist = malloc(sizeof(DGIST));
     }
-    memcpy(updatedDgist, dgist, sizeof(DGIST));
+    memcpy(updatedDgist, &dgist, sizeof(DGIST));
 
     client_info client;
 
