@@ -153,7 +153,6 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            printf("hllh\n");
 
             Car_Run(car, 70, 70);
             delay(5);
@@ -165,7 +164,7 @@ void line_following(YB_Pcb_Car* car) {
             buffer = sensor_state;
             break;
         case 0b1101:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
-            printf("hhlh\n");
+
             while (sensor_state == 0b1101) {
                 Car_Right(car, 60, 60);
                 delay(5);
