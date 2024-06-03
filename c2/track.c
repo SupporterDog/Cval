@@ -64,7 +64,7 @@ int read_sensor(int pin) {
 }
 
 void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
-    
+    trial = 0;
     if (control == straight) {
         Car_Run(car, 60, 60);
         delay(150);
@@ -91,10 +91,10 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
             delay(10);
         }
-        
+
         delay(5);
     }
-    else if(control == turn){
+    else if (control == turn) {
         Car_Run(car, 60, 60);
         delay(150);
         Car_Right(car, 60, 60);
@@ -104,11 +104,11 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
             delay(10);
         }
-        
+
         delay(5);
     }
     else {
-        Car_Back(car,60,60);
+        Car_Back(car, 60, 60);
         delay(200);
         Car_Stop(car);
         delay(300);
@@ -116,7 +116,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     pthread_mutex_lock(&lock);
     met_Node++;
     printf("Current Met Node %d\n", met_Node);
-    if (met_Node == path_length-1) {
+    if (met_Node == path_length - 1) {
         printf("free(pMovements)\n");
         free(pMovements);
         pMovements = NULL;
@@ -139,18 +139,19 @@ void line_following(YB_Pcb_Car* car) {
         switch (sensor_state) {
         case 0b0000:  // (H L L L): 전진 후 다른 
             while (sensor_state == 0b0000) {
-                if(pMovements != NULL){
+                if (pMovements != NULL) {
                     pthread_mutex_lock(&lock);
                     control = pMovements[met_Node];
                     pthread_mutex_unlock(&lock);
                     perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
+                }
+                else {
+                    Car_Back(car, 60, 60);
                     delay(100);
                     Car_Stop(car);
                     delay(300);
                 }
-                
+
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -163,9 +164,19 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            Car_Run(car, 35, 35);
-            delay(5);
-            trial++;
+            if (trial < 50) {
+                Car_Run(car, 35, 35);
+                delay(5);
+                trial++;
+            }else if (trial == 50) {
+                Car_Stop(car);
+                delay(300);
+                trial++;
+            }
+            else {
+                Car_Run(car, 60, 60);
+                delay(5);
+            }
             left1 = read_sensor(SENSOR_LEFT1);
             left2 = read_sensor(SENSOR_LEFT2);
             right1 = read_sensor(SENSOR_RIGHT1);
@@ -190,15 +201,16 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1000:  // (H L L L): 전진 후 다른 것
-        
+
             while (sensor_state == 0b1000) {
-                if(pMovements != NULL){
+                if (pMovements != NULL) {
                     pthread_mutex_lock(&lock);
                     control = pMovements[met_Node];
                     pthread_mutex_unlock(&lock);
                     perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
+                }
+                else {
+                    Car_Back(car, 60, 60);
                     delay(100);
                     Car_Stop(car);
                     delay(300);
@@ -231,13 +243,14 @@ void line_following(YB_Pcb_Car* car) {
             break;
         case 0b1100:  // (H H L L): (H H L H) 될때까지 조금씩 우회전하기
             while (sensor_state == 0b1100) {
-                if(pMovements != NULL){
+                if (pMovements != NULL) {
                     pthread_mutex_lock(&lock);
                     control = pMovements[met_Node];
                     pthread_mutex_unlock(&lock);
                     perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
+                }
+                else {
+                    Car_Back(car, 60, 60);
                     delay(100);
                     Car_Stop(car);
                     delay(300);
@@ -271,13 +284,14 @@ void line_following(YB_Pcb_Car* car) {
             break;
         case 0b0001:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
             while (sensor_state == 0b0001) {
-                if(pMovements != NULL){
+                if (pMovements != NULL) {
                     pthread_mutex_lock(&lock);
                     control = pMovements[met_Node];
                     pthread_mutex_unlock(&lock);
                     perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
+                }
+                else {
+                    Car_Back(car, 60, 60);
                     delay(100);
                     Car_Stop(car);
                     delay(300);
@@ -295,13 +309,14 @@ void line_following(YB_Pcb_Car* car) {
             break;
         case 0b0011:
             while (sensor_state == 0b0011) {
-                if(pMovements != NULL){
+                if (pMovements != NULL) {
                     pthread_mutex_lock(&lock);
                     control = pMovements[met_Node];
                     pthread_mutex_unlock(&lock);
                     perform_car_run_and_turn(car, &sensor_state, control);
-                }else{
-                    Car_Back(car,60,60);
+                }
+                else {
+                    Car_Back(car, 60, 60);
                     delay(100);
                     Car_Stop(car);
                     delay(300);
@@ -354,7 +369,7 @@ void line_following(YB_Pcb_Car* car) {
 
 // 스레드에서 실행할 함수
 void* threadFunction(void* arg) {
-    
+
     if (wiringPiSetup() == -1) {
         printf("wiringPi setup failed\n");
         return NULL;
@@ -367,7 +382,7 @@ void* threadFunction(void* arg) {
     pinMode(SENSOR_RIGHT2, INPUT);
 
     printf("Sensors pinMode finished.\n");
-    
+
     YB_Pcb_Car car;
     get_i2c_device(&car, I2C_ADDR);
 
@@ -377,16 +392,16 @@ void* threadFunction(void* arg) {
     Car_Stop(&car);
     delay(3000);
     printf("Starting car....\n");
-    while(1){
-        if(pMovements != NULL){
+    while (1) {
+        if (pMovements != NULL) {
             while (1) {
-            line_following(&car);
-            usleep(500000);
+                line_following(&car);
+                usleep(500000);
             }
-        
+
         }
         usleep(500000);
     }
-    
+
     return NULL;
 }
