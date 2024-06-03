@@ -403,13 +403,13 @@ void line_following(YB_Pcb_Car* car) {
     }
 }
 
-void random_line_following(YB_Pcb_Car* car) {
+void AI_line_following(YB_Pcb_Car* car) {
     int left1, left2, right1, right2;
 
 
     int buffer;
     while (1) {
-        srand(time(NULL);
+        srand(time(NULL));
         int random_value = rand() % 2;
         left1 = read_sensor(SENSOR_LEFT1);
         left2 = read_sensor(SENSOR_LEFT2);
@@ -689,7 +689,7 @@ void* threadFunction(void* arg) {
 
     while (1) {
             while (1) {
-                random_line_following(&car);
+                AI_line_following(&car);
                 usleep(500000);
             }
 
