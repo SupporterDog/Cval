@@ -120,6 +120,8 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     if(cal_trial == 3){
         calculate = 1;
         cal_trial = 0;
+        free(pMovements);
+        pMovements = NULL;
     }
     met_Node++;
     printf("Current Met Node %d\n", met_Node);
