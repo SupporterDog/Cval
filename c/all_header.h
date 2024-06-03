@@ -171,4 +171,9 @@ int read_sensor(int pin);
 void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control);
 void line_following(YB_Pcb_Car* car);
 void* threadFunction(void* arg);
+//===============================SERVO :: RUN A SERVO MOTOR============================================
+void get_i2c_device_two(YB_Pcb_Car* car, int address);
+void write_array_two(YB_Pcb_Car* car, int reg, unsigned char* data, int length);
+void Ctrl_Servo(YB_Pcb_Car* car, int angle);
+void* servo(void*arg);
 #endif // ALL_HEADER_H
