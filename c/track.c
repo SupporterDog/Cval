@@ -77,8 +77,6 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
             delay(10);
         }
-        Car_Stop(car);
-        delay(95);
         delay(5);
     }
     else if (control == l_spin) {
@@ -91,8 +89,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
             delay(10);
         }
-        Car_Stop(car);
-        delay(95);
+        
         delay(5);
     }
     else {
@@ -105,8 +102,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
             delay(10);
         }
-        Car_Stop(car);
-        delay(95);
+        
         delay(5);
     }
     pthread_mutex_lock(&lock);
