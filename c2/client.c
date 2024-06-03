@@ -15,7 +15,6 @@ void* receiveUpdates(void* arg) {
       
         updateGlobalVariables(&dgist,sock);
         
-        usleep(50000);
     }
     return NULL;
 }
@@ -60,7 +59,6 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
             }
         }
         printf("\n");
-	printf("==========PRINT DONE==========\n");
     pthread_mutex_unlock(&lock);
 }
 }
