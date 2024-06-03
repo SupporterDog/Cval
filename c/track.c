@@ -5,6 +5,7 @@ pthread_mutex_t lock;
 int met_Node = 0;
 int path_length;
 int* pMovements;
+int trial = 0;
 
 void get_i2c_device(YB_Pcb_Car* car, int address) {
     car->_addr = address;
@@ -63,6 +64,7 @@ int read_sensor(int pin) {
 }
 
 void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
+    
     if (control == straight) {
         Car_Run(car, 60, 60);
         delay(150);
@@ -92,7 +94,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         
         delay(5);
     }
-    else {
+    else if(control == turn){
         Car_Run(car, 60, 60);
         delay(150);
         Car_Right(car, 60, 60);
@@ -104,6 +106,12 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         }
         
         delay(5);
+    }
+    else {
+        Car_Back(car,60,60);
+        delay(200);
+        Car_Stop(car);
+        delay(300);
     }
     pthread_mutex_lock(&lock);
     met_Node++;
@@ -155,9 +163,9 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-
-            Car_Run(car, 40, 40);
+            Car_Run(car, 30, 30);
             delay(5);
+            trial++;
             left1 = read_sensor(SENSOR_LEFT1);
             left2 = read_sensor(SENSOR_LEFT2);
             right1 = read_sensor(SENSOR_RIGHT1);
