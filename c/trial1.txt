@@ -82,27 +82,12 @@ RECENT HEAD DIRECTION : 3 <<Directions : Left(1) Up(2) Right(3) Down(4)>>
 now max point6 : (124,2)
 You haven't arrived at MaxScorePoint yet. now max point : (124,2)
 You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
-You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+
+========================CAMER ERROR============================
+> Invalid QR code source points (expected: 'contourArea(src_points) > 0.0'), where
+>     'contourArea(src_points)' is 0
+> must be greater than
+
 
 
 
