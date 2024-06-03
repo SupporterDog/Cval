@@ -159,7 +159,7 @@ void line_following(YB_Pcb_Car* car) {
                     perform_car_run_and_turn(car, &sensor_state, control);
                 }
                 else {
-                    Car_Back(car, 60, 60);
+                    Car_Back(car, 65, 65);
                     delay(100);
                     Car_Stop(car);
                     delay(300);
@@ -590,7 +590,6 @@ void random_line_following(YB_Pcb_Car* car) {
             break;
         case 0b0011:
             while (sensor_state == 0b0011) {
-                else if (control == l_spin) {
                 Car_Run(car, 60, 60);
                 delay(150);
                 Car_Left(car, 60, 60);
