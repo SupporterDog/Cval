@@ -7,9 +7,7 @@ void* receiveUpdates(void* arg) {
     DGIST dgist;
     while (1) {
         if (recv(sock, updatedDgist, sizeof(DGIST), 0) <= 0) {
-            printf("Connection closed by server.\n");
-            close(sock);
-            exit(0);
+		int a=1;
         }
 
         // 글로벌 변수 업데이트
