@@ -18,12 +18,13 @@
             if (!cap.isOpened()) {
                 throw std::runtime_error("카메라를 열 수 없습니다.");
             }
-            cap.set(cv::CAP_PROP_FRAME_WIDTH,320);
-            cap.set(cv::CAP_PROP_FRAME_HEIGHT,240);
-            cap.set(cv::CAP_PROP_FPS,120);
-            cap.set(cv::CAP_PROP_BRIGHTNESS,50);
-            cap.set(cv::CAP_PROP_CONTRAST, 70);
-            cap.set(cv::CAP_PROP_EXPOSURE,156);
+             // 카메라 설정 조정 (해상도 및 기타 파라미터)
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 해상도 높이기
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+        cap.set(cv::CAP_PROP_FPS, 30);
+        cap.set(cv::CAP_PROP_BRIGHTNESS, 50);
+        cap.set(cv::CAP_PROP_CONTRAST, 70);
+        cap.set(cv::CAP_PROP_EXPOSURE, -6);
 
             
             
