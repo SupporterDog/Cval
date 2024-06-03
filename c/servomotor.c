@@ -39,13 +39,13 @@ void* servo(void* arg) {
  // 제어할 서보 모터의 ID
     while (1) {
         Ctrl_Servo(&car, 30); // 왼쪽 (30도 기준)
-        delay(1000); // 1000ms 대기
+        delay(500); // 1000ms 대기
         Ctrl_Servo(&car, 45); // 앞쪽 (0도 기준)
-        delay(1000); // 1000ms 대기
+        delay(500); // 1000ms 대기
         Ctrl_Servo(&car, 60); // 오른쪽 (-30도 기준)
-        delay(1000); // 1000ms 대기
+        delay(500); // 1000ms 대기
         Ctrl_Servo(&car, 45); // 앞쪽 (0도 기준)
-        delay(1000); // 1000ms 대기
+        delay(500); // 1000ms 대기
 
     }
 
