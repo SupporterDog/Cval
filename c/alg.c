@@ -169,7 +169,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
     }
 }
 
-Point* find_best_road(Point* StartPoint,const Point* EndPoint, int* path_length) {
+Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
     int start_x = (*StartPoint).x;
     int start_y = (*StartPoint).y;
     int end_x = (*EndPoint).x;
