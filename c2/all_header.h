@@ -122,6 +122,7 @@ extern int start_row;
 extern int met_Node;
 extern int path_length;
 extern int* pMovements;
+extern int calculate;
 //-------------------------STURCTS---------------------------
 typedef struct {
     int x;
