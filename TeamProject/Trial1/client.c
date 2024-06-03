@@ -78,7 +78,7 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
     if (send(sock, &clientAction, sizeof(ClientAction), 0) <= 0) {
         printf("Failed to send action to server.\n");
     }
-
+    printf("SEND COMPLETE\n");
     // 뮤텍스 잠금 해제
     pthread_mutex_unlock(lock);
 }
