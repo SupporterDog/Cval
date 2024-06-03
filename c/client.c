@@ -16,7 +16,7 @@ void* receiveUpdates(void* arg) {
 	int me_index = (dgist.players[0].socket == sock) ? 0 : 1;	
 	printf("Server socket: %d my socket: %d\n",dgist.players[0].socket,sock);
         printf("my Index: %d\n",me_index);
-        updateGlobalVariables(&dgist,sock);
+        //updateGlobalVariables(&dgist,sock);
         
         //usleep(50000); Get Out of here
     }
