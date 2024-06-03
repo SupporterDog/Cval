@@ -165,16 +165,12 @@ void line_following(YB_Pcb_Car* car) {
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
             if (trial < 100) {
-                Car_Run(car, 35, 35);
+                Car_Run(car, 30, 30);
                 delay(5);
-                trial++;
-            }else if (trial == 100) {
-                Car_Stop(car);
-                delay(500);
                 trial++;
             }
             else {
-                Car_Run(car, 60, 60);
+                Car_Run(car, 120, 120);
                 delay(5);
             }
             left1 = read_sensor(SENSOR_LEFT1);
