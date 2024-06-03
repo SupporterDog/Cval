@@ -35,9 +35,6 @@
                 cv::Mat blurred;
                 cv::GaussianBlur(trap, blurred, cv::Size(5, 5), 0);
 
-                cv::Mat resized;
-                cv::resize(blurred, resized, cv::Size(), 2, 2, cv::INTER_LINEAR);
-
                 // QR 코드 디코딩
                 cv::Mat bbox, rectifiedImage;
                 qrData = qrDecoder.detectAndDecode(resized, bbox, rectifiedImage);
