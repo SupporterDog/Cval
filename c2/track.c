@@ -117,7 +117,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         cal_trial++;
     }
     pthread_mutex_lock(&lock);
-    if(cal_trial == 3){
+    if (cal_trial == 3) {
         calculate = 1;
         cal_trial = 0;
         free(pMovements);
@@ -133,12 +133,16 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     pthread_mutex_unlock(&lock);
 }
 
+
+
+
 void line_following(YB_Pcb_Car* car) {
     int left1, left2, right1, right2;
 
 
     int buffer;
     while (1) {
+        
         left1 = read_sensor(SENSOR_LEFT1);
         left2 = read_sensor(SENSOR_LEFT2);
         right1 = read_sensor(SENSOR_RIGHT1);
@@ -162,7 +166,7 @@ void line_following(YB_Pcb_Car* car) {
                     cal_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if(cal_trial == 3){
+                if (cal_trial == 3) {
                     calculate = 1;
                     cal_trial = 0;
                 }
@@ -180,7 +184,7 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            Car_Run(car,60,60);
+            Car_Run(car, 60, 60);
             left1 = read_sensor(SENSOR_LEFT1);
             left2 = read_sensor(SENSOR_LEFT2);
             right1 = read_sensor(SENSOR_RIGHT1);
@@ -221,7 +225,7 @@ void line_following(YB_Pcb_Car* car) {
                     cal_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if(cal_trial == 3){
+                if (cal_trial == 3) {
                     calculate = 1;
                     cal_trial = 0;
                 }
@@ -268,7 +272,7 @@ void line_following(YB_Pcb_Car* car) {
                     cal_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if(cal_trial == 3){
+                if (cal_trial == 3) {
                     calculate = 1;
                     cal_trial = 0;
                 }
@@ -316,7 +320,7 @@ void line_following(YB_Pcb_Car* car) {
                     cal_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if(cal_trial == 3){
+                if (cal_trial == 3) {
                     calculate = 1;
                     cal_trial = 0;
                 }
@@ -348,7 +352,7 @@ void line_following(YB_Pcb_Car* car) {
                     cal_trial++;
                 }
                 pthread_mutex_lock(&lock);
-                if(cal_trial == 3){
+                if (cal_trial == 3) {
                     calculate = 1;
                     cal_trial = 0;
                 }
@@ -399,6 +403,254 @@ void line_following(YB_Pcb_Car* car) {
     }
 }
 
+void random_line_following(YB_Pcb_Car* car) {
+    int left1, left2, right1, right2;
+
+
+    int buffer;
+    while (1) {
+        srand(time(NULL);
+        int random_value = rand() % 2;
+        left1 = read_sensor(SENSOR_LEFT1);
+        left2 = read_sensor(SENSOR_LEFT2);
+        right1 = read_sensor(SENSOR_RIGHT1);
+        right2 = read_sensor(SENSOR_RIGHT2);
+        int sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+        int num_before_terminate = 0;
+        switch (sensor_state) {
+        case 0b0000:  // (H L L L): 전진 후 다른 
+            while (sensor_state == 0b0000) {
+                if (random_value == 0) {
+                    // right turn~
+                    Car_Run(car, 60, 60);
+                    delay(150);
+                    Car_Right(car, 60, 60);
+                    delay(500);
+                    while ((*sensor_state & 0b0100) != 0b0100) {
+                        Car_Right(car, 40, 40);
+                        *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+                        delay(10);
+                    }
+                    delay(5);
+                }
+                else {
+                    //left turn~
+                    Car_Run(car, 60, 60);
+                    delay(150);
+                    Car_Left(car, 60, 60);
+                    delay(500);
+                    while ((*sensor_state & 0b0010) != 0b0010) {
+                        Car_Left(car, 40, 40);
+                        *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+                        delay(10);
+                    }
+
+                    delay(5);
+                }
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1000) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b1001:  // (H L L H) : 앞으로 직진
+            Car_Run(car, 60, 60);
+            left1 = read_sensor(SENSOR_LEFT1);
+            left2 = read_sensor(SENSOR_LEFT2);
+            right1 = read_sensor(SENSOR_RIGHT1);
+            right2 = read_sensor(SENSOR_RIGHT2);
+            sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+            buffer = sensor_state;
+            break;
+        case 0b1101:  // (H H L H): (H L L H ) 될때까지 조금씩 우회전하기
+
+            while (sensor_state == 0b1101) {
+                Car_Right(car, 60, 60);
+                delay(5);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b1000:  // (H L L L): 전진 후 다른 것
+
+            while (sensor_state == 0b1000) {
+                // right turn~
+                Car_Run(car, 60, 60);
+                delay(150);
+                Car_Right(car, 60, 60);
+                delay(500);
+                while ((*sensor_state & 0b0100) != 0b0100) {
+                    Car_Right(car, 40, 40);
+                    *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+                    delay(10);
+                }
+                delay(5);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b1110:  // (H H H L): (H H L H) 될때까지 조금씩 우회전하기
+            while (sensor_state == 0b1110) {
+                Car_Right(car, 60, 60);
+                delay(5);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b1100:  // (H H L L): (H H L H) 될때까지 조금씩 우회전하기
+            while (sensor_state == 0b1100) {
+                // right turn~
+                Car_Run(car, 60, 60);
+                delay(150);
+                Car_Right(car, 60, 60);
+                delay(500);
+                while ((*sensor_state & 0b0100) != 0b0100) {
+                    Car_Right(car, 40, 40);
+                    *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
+                    delay(10);
+                }
+                delay(5);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b0111:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
+            while (sensor_state == 0b0111) {
+                Car_Left(car, 60, 60);
+                delay(5);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+
+            }
+            break;
+        case 0b0001:  // (L H H H): (H L L H) 될때까지 조금씩 좌회전하기
+            while (sensor_state == 0b0001) {
+                Car_Run(car, 60, 60);
+                delay(150);
+                Car_Left(car, 60, 60);
+                delay(500);
+                while ((*sensor_state & 0b0010) != 0b0010) {
+                    Car_Left(car, 40, 40);
+                    *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+                    delay(10);
+                }
+
+                delay(5);
+
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b0011:
+            while (sensor_state == 0b0011) {
+                else if (control == l_spin) {
+                Car_Run(car, 60, 60);
+                delay(150);
+                Car_Left(car, 60, 60);
+                delay(500);
+                while ((*sensor_state & 0b0010) != 0b0010) {
+                    Car_Left(car, 40, 40);
+                    *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
+                    delay(10);
+                }
+
+                delay(5);
+
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b1011:  // (H L H H): (H L L H) 될때까지 조금씩 좌회전하기
+            while (sensor_state == 0b1011) {
+                Car_Left(car, 60, 60);
+                delay(5);
+                left1 = read_sensor(SENSOR_LEFT1);
+                left2 = read_sensor(SENSOR_LEFT2);
+                right1 = read_sensor(SENSOR_RIGHT1);
+                right2 = read_sensor(SENSOR_RIGHT2);
+                sensor_state = (left1 << 3) | (left2 << 2) | (right2 << 1) | right1;
+                if (sensor_state == 0b1001) {
+                    break;
+                }
+                buffer = sensor_state;
+            }
+            break;
+        case 0b1111: // (H H H H) : Stop
+            if (num_before_terminate > 4) {
+
+                Car_Stop(car);
+                break;
+            }
+
+            if (num_before_terminate <= 4) {
+                ++num_before_terminate;
+                sensor_state = buffer;
+                break;
+            }
+        default:
+            sensor_state = buffer;
+            break;
+        }
+        delay(5);
+    }
+}
+
+
+
 // 스레드에서 실행할 함수
 void* threadFunction(void* arg) {
 
@@ -420,14 +672,24 @@ void* threadFunction(void* arg) {
 
     printf("get_i2c_device finished.\n");
 
-    printf("Car will stop for 10 seconds.\n");
+    printf("Car will stop for 1 seconds.\n");
     Car_Stop(&car);
-    delay(3000);
+    delay(1000);
     printf("Starting car....\n");
     while (1) {
         if (pMovements != NULL) {
             while (1) {
                 line_following(&car);
+                usleep(500000);
+            }
+
+        }
+        usleep(500000);
+    }
+
+    while (1) {
+            while (1) {
+                random_line_following(&car);
                 usleep(500000);
             }
 
