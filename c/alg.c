@@ -293,14 +293,12 @@ void* Run_Algorithm(void* arg) {
             // 맨 처음에 놓는 위치를 정해 놓는다
             int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? RIGHT : UP;
             printf("Initial Recent Head Direction: %d [L1 U2 R3 D4]\n", RECENT_HEAD_DIRECTION);
-            Point* max_score_point = (Point*)malloc(sizeof(Point));
-            *max_score_point = (Point) {start_row, start_row};
-
-            printf("Initial max point: (%d,%d)\n", max_score_point->x, max_score_point->y);
+            Point max_score_point = {start_row, start_row}; // Changed to stack allocation
+            printf("Initial max point: (%d,%d)\n", max_score_point.x, max_score_point.y);
             pthread_mutex_unlock(&lock);
-            //int buffer[2] = {-1,-1};
+
             while (1) {
-                printf("You haven't arrived at MaxScorePoint yet. now max point : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                printf("You haven't arrived at MaxScorePoint yet. now max point : (%d,%d)\n", max_score_point.x, max_score_point.y);
                 pthread_mutex_lock(&lock);
                 int my_x; int my_y; int opp_x; int opp_y;
                 my_x =  updatedDgist->players[my_index].row; 
@@ -315,11 +313,10 @@ void* Run_Algorithm(void* arg) {
                 if (my_x == -1 && my_y == -1) {
                     my_x = start_row; my_y = start_row;   
                 }
-                Point* my_point = &(Point) {my_x, my_y};
+                Point my_point = {my_x, my_y}; // Changed to stack allocation
 
-                if (my_x == max_score_point->x && my_y == max_score_point->y ) {
+                if (my_x == max_score_point.x && my_y == max_score_point.y ) {
                     printf("Arrived at Max Score Point! Ready to Make Movement! Making,,,\n");
-                    //buffer[0] = my_x; buffer[1] = my_y;
                     int count = 0;
                      // 상대보다 빨리 접근 가능한 좌표들
                     Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count); 
@@ -329,22 +326,19 @@ void* Run_Algorithm(void* arg) {
                     }
                     printf("\n");
                     // 맥스 스코어 포인트
-                    Point* new_max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
-                    // 메모리 해제
-                    free(max_score_point);
-                    // 새로운 포인터 할당
-                    max_score_point = new_max_score_point;
-                    printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
-                    // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
+                    Point* new_max_score_point = Find_MaxScorePoint(&my_point, reachable_points, count); 
+                    max_score_point = *new_max_score_point; // Assign to stack variable
+                    printf("Max score point: (%d, %d) with score %d\n", max_score_point.x, max_score_point.y, updatedDgist->map[max_score_point.x][max_score_point.y].item.score);
                    
-                    Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
+                    int path_length;
+                    Point* local_optimal_path = find_best_road(&my_point, &max_score_point, &path_length);
                     printf("Local optimal path: of length %d \n", path_length);
-                    printf("now max point1 : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                    printf("now max point1 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                     for (int i = 0; i < path_length; ++i) {
                         printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
                     }
                     int* Directions = getDirection(local_optimal_path, path_length);
-                    printf("now max point2 : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                    printf("now max point2 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                     printf("Directions to go:\n");
                     for (int i = 0 ; i < path_length - 1; ++i) {
                         if (Directions[i] == 1) { printf("LEFT\t"); }
@@ -355,9 +349,9 @@ void* Run_Algorithm(void* arg) {
                     }
 
                     int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
-                    printf("now max point3 : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                    printf("now max point3 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                     pMovements =  getMovement(Dirs_for_Movs, path_length);
-                    printf("now max point4 : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                    printf("now max point4 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                     printf("Your Proposed Movements: \n");
                     for (int i = 0 ; i < path_length - 1; ++i) {
                         if (pMovements[i] == 1) { printf("l_spin\t"); }
@@ -367,7 +361,7 @@ void* Run_Algorithm(void* arg) {
                         printf("\n");
                     }
                     RECENT_HEAD_DIRECTION = Directions[path_length - 2];
-                    printf("now max point5 : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                    printf("now max point5 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                     printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
                     printf("\n");
                     printf("\n");
@@ -376,9 +370,8 @@ void* Run_Algorithm(void* arg) {
                     free(reachable_points);
                     free(Directions);
                     free(Dirs_for_Movs);
-                    //free(local_optimal_path);
-                    //free(max_score_point);
-                    printf("now max point6 : (%d,%d)\n", max_score_point->x, max_score_point->y);
+                    free(new_max_score_point); // Free the dynamically allocated memory returned by Find_MaxScorePoint
+                    printf("now max point6 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                 }
                 pthread_mutex_unlock(&lock);
                 usleep(100000);  
@@ -388,3 +381,4 @@ void* Run_Algorithm(void* arg) {
     }
     return NULL;
 }
+
