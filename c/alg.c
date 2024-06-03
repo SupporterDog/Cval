@@ -82,9 +82,7 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     queue[rear++] = (QueueNode){ *StartPoint, 0 };
     visited[(*StartPoint).x][(*StartPoint).y] = true;
 
-    Point* returnpoint = (Point*)malloc(sizeof(Point)); // 할당된 메모리로 변경
-    returnpoint->x = -1;
-    returnpoint->y = -1;
+    Point* returnpoint = (Point*)malloc(sizeof(Point)); 
     int currmaxscore = -1;
 
     while (front < rear) {
@@ -92,19 +90,15 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
         Point* currpoint = &(current.point);
 
         // 점수가 4면 해당 지점을 반환
-        if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
-            if (currpoint->x != StartPoint->x || currpoint->y != StartPoint->y) {
-                returnpoint->x = currpoint->x;
-                returnpoint->y = currpoint->y;
-                return returnpoint;
-            }
+        if (updatedDgist->map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
+            if ( currpoint->x == StartPoint->x && currpoint->y == StartPoint->y ) {}
+            else { return currpoint; }
         }
 
         // 현재 점수가 최고 점수보다 크면 갱신
-        if (DGIST_OBJ.map[currpoint->x][currpoint->y].item.score > currmaxscore) {
-            returnpoint->x = currpoint->x;
-            returnpoint->y = currpoint->y;
-            currmaxscore = DGIST_OBJ.map[currpoint->x][currpoint->y].item.score;
+        if (updatedDgist->map[currpoint->x][currpoint->y].item.score > currmaxscore) {
+            returnpoint = currpoint;
+            currmaxscore = updatedDgist->map[currpoint->x][currpoint->y].item.score;
         }
 
         // 다음 지점을 큐에 추가
@@ -116,7 +110,6 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
             }
         }
     }
-
     // 점수가 4인 게 없다면 최대 점수를 가진 포인트를 반환한다
     return returnpoint;
 }
@@ -377,6 +370,7 @@ void* Run_Algorithm(void* arg) {
                     free(reachable_points);
                     free(Directions);
                     free(Dirs_for_Movs);
+                    free(local_optimal_path);
                     free(max_score_point);
                     printf("now max point6 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                 }
