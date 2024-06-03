@@ -334,6 +334,7 @@ void* Run_Algorithm(void* arg) {
                     temp_maxpoint->x = max_score_point->x; temp_maxpoint->y = max_score_point->y;
                     Point* local_optimal_path = find_best_road(my_point, temp_maxpoint, &path_length);
                     printf("Local optimal path: of length %d \n", path_length);
+                    printf("temp point: (%d,%d)\n", temp_maxpoint->x, temp_maxpoint->y);
                     printf("now max point1 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     for (int i = 0; i < path_length; ++i) {
                         printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
