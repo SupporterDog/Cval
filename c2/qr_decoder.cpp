@@ -11,6 +11,7 @@
 // 스레드에서 실행할 함수
 
 int sock;
+
 void* decodeQRCodeThread(void* arg) {
     try {
         // OpenCV를 사용하여 카메라 캡처 초기화
@@ -18,9 +19,9 @@ void* decodeQRCodeThread(void* arg) {
         if (!cap.isOpened()) {
             throw std::runtime_error("카메라를 열 수 없습니다.");
         }
-        cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
-        cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
-        cap.set(cv::CAP_PROP_FPS, 120);
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // 해상도를 높임
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+        cap.set(cv::CAP_PROP_FPS, 30); // 프레임 속도를 낮춤
         cap.set(cv::CAP_PROP_BRIGHTNESS, 50);
         cap.set(cv::CAP_PROP_CONTRAST, 70);
         cap.set(cv::CAP_PROP_EXPOSURE, 156);
@@ -57,7 +58,7 @@ void* decodeQRCodeThread(void* arg) {
             // cv::imshow("QR Code Scanner", frame);
             // if (cv::waitKey(30) >= 0) break; // 아무 키나 누르면 종료
 
-            usleep(10000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
+            usleep(30000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
         }
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
