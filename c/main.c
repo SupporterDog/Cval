@@ -56,11 +56,16 @@ int main(int argc, char *argv[]) {//MAIN THREAD
     pthread_t run_thread;
     pthread_create(&run_thread,NULL,threadFunction,NULL);
 
+    //============THread4 for SERVO===============================================================
+    pthread_t servomotor_thread;
+    pthread_create(&servomotor_thread,NULL,servo,NULL);
+
     // 메인 스레드는 모든 작업이 끝날 때까지 각 스레드의 종료를 기다림
     pthread_join(qr_thread, NULL);
     pthread_join(recv_thread, NULL);
     pthread_join(alg_thread, NULL);
     pthread_join(run_thread, NULL);
+    pthread_join(servomotor_thread, NULL);
 
     // 자원 해제
     close(sock);
