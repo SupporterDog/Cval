@@ -32,3 +32,76 @@ client.c:40:24: error: invalid type argument of '->' (have 'int')
                         ^~
 make: *** [Makefile:32: client.o] Error 1
 
+
+Connected to server 127.0.0.1:8080
+Inside Run Algorithm Function,,,
+WiringPi Car Setup Finished.
+Sensors pinMode finished.
+I2C device initialized at address 0x16
+get_i2c_device finished.
+Car will stop for 10 seconds.
+SCANNING QR CODE: 00  BEFORE QR CODE:
+=========SENDING INFORMATION TO SERVER==========
+SEND COMPLETE
+Server socket: 4 my socket: 3
+my Index: 1
+=========Updated NEW INFORMATION!!==========
+++++++++++Player 1++++++++++
+Location: (0,0)
+Score: 0
+Bomb: 4
+++++++++++Player 2++++++++++
+Location: (-1225504975,-1094867964)
+Score: -1094868052
+Bomb: -1224878816
+==========PRINT DONE==========
+UpdatedDgist not Null Detected,,,
+Initial Recent Head Direction: 3 [L1 U2 R3 D4]
+Initial max point: (0,0)
+You haven't arrived at MaxScorePoint yet. now max point : (0,0)
+Arrived at Max Score Point! Ready to Make Movement! Making,,,
+All reachable points: (0,0), (0,1), (0,2), (0,3), (0,4), (1,0), (1,1), (1,2), (1,3), (1,4), (2,0), (2,1), (2,2), (2,3), (2,4), (3,0), (3,1), (3,2), (3,3), (3,4), (4,0), (4,1), (4,2), (4,3), (4,4),
+Max score point: (0, 2) with score 4
+Local optimal path: of length 3
+now max point1 : (124,2)
+(0, 0)
+(0, 1)
+(0, 2)
+now max point2 : (124,2)
+Directions to go:
+RIGHT
+RIGHT
+now max point3 : (124,2)
+now max point4 : (124,2)
+Your Proposed Movements:
+straight
+straight
+now max point5 : (124,2)
+RECENT HEAD DIRECTION : 3 <<Directions : Left(1) Up(2) Right(3) Down(4)>>
+
+now max point6 : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+You haven't arrived at MaxScorePoint yet. now max point : (124,2)
+
+
