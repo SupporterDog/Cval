@@ -10,6 +10,7 @@ int path_length =0;
 int* pMovements = NULL;
 int met_Node;
 int start_row;
+int calculate = 0;
 
 Point* Bangaljook(int opp_x, int opp_y, int my_x, int my_y, int* count) {
     static Point all_points[25] = {
@@ -315,7 +316,10 @@ void* Run_Algorithm(void* arg) {
                 }
                 Point my_point = {my_x, my_y}; // Changed to stack allocation
 
-                if (my_x == max_score_point.x && my_y == max_score_point.y ) {
+                if (my_x == max_score_point.x && my_y == max_score_point.y){
+                    calculate = 1;
+                }
+                if ( calculate == 1) {
                     printf("Arrived at Max Score Point! Ready to Make Movement! Making,,,\n");
                     int count = 0;
                      // 상대보다 빨리 접근 가능한 좌표들
@@ -371,6 +375,7 @@ void* Run_Algorithm(void* arg) {
                     free(Directions);
                     free(Dirs_for_Movs);
                     //printf("now max point6 : (%d,%d)\n", max_score_point.x, max_score_point.y);
+                    calculate = 0;
                 }
                 pthread_mutex_unlock(&lock);
                 usleep(100000);  
