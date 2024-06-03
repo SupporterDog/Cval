@@ -11,7 +11,7 @@ TARGET = my_program
 
 # 소스 파일 목록
 CPPSRCS = qr_decoder.cpp
-CSRCS = alg.c main.c track.c client.c
+CSRCS = alg.c main.c track.c client.c servomotor.c
 
 
 # 오브젝트 파일 목록
