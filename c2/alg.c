@@ -134,39 +134,39 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
     }
     //x방향 양의 이동
     if (row_moves > 0) {
-        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x + 1, (*path).points[(*path).length - 1].y };
+        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y +1};
         (*path).length++;
-        start_x++;
+        start_y++;
         find_paths(row_moves - 1, column_moves, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
-        start_x--;
+        start_y--;
     }
     //y방향 양의 이동
     if (column_moves > 0) {
-        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y + 1 };
-        (*path).length++;
-        start_y++;
-        find_paths(row_moves, column_moves - 1, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
-        (*path).length--;
-        start_y--;
-    }
-    //x방향 음의 이동
-    if (row_moves < 0) {
-        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x - 1, (*path).points[(*path).length - 1].y };
+        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x-1, (*path).points[(*path).length - 1].y };
         (*path).length++;
         start_x--;
-        find_paths(row_moves + 1, column_moves, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
+        find_paths(row_moves, column_moves - 1, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
         start_x++;
     }
-    //y방향 음의 이동
-    if (column_moves < 0) {
-        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y - 1 };
+    //x방향 음의 이동
+    if (row_moves < 0) {
+        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x , (*path).points[(*path).length - 1].y -1 };
         (*path).length++;
         start_y--;
-        find_paths(row_moves, column_moves + 1, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
+        find_paths(row_moves + 1, column_moves, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
         (*path).length--;
         start_y++;
+    }
+    //y방향 음의 이동
+    if (column_moves < 0) {
+        (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x+1, (*path).points[(*path).length - 1].y };
+        (*path).length++;
+        start_x++;
+        find_paths(row_moves, column_moves + 1, path, current_score + updatedDgist->map[start_x][start_y].item.score, best_path, start_x, start_y);
+        (*path).length--;
+        start_x--;
     }
 }
 
