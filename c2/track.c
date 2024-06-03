@@ -6,9 +6,9 @@ int met_Node = 0;
 int path_length;
 int* pMovements;
 int trial = 0;
-int calculate;
 int cal_trial = 0;
 int spin_trial = 0;
+int evolution = 0;
 
 void get_i2c_device(YB_Pcb_Car* car, int address) {
     car->_addr = address;
@@ -114,7 +114,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(5);
         spin_trial++;
         if (spin_trial > 3) {
-            calculate = 1;
+            evolution = 1;
         }
     }
     else {
@@ -126,7 +126,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     }
     pthread_mutex_lock(&lock);
     if (cal_trial == 3) {
-        calculate = 1;
+        evolution = 1;
         cal_trial = 0;
         free(pMovements);
         pMovements = NULL;
@@ -150,7 +150,7 @@ void line_following(YB_Pcb_Car* car) {
 
     int buffer;
     while (1) {
-        if (calculate == 1) {
+        if (evolution == 1) {
             break;
         }
         left1 = read_sensor(SENSOR_LEFT1);
@@ -177,7 +177,7 @@ void line_following(YB_Pcb_Car* car) {
                 }
                 pthread_mutex_lock(&lock);
                 if (cal_trial == 3) {
-                    calculate = 1;
+                    evolution = 1;
                     cal_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
@@ -236,7 +236,7 @@ void line_following(YB_Pcb_Car* car) {
                 }
                 pthread_mutex_lock(&lock);
                 if (cal_trial == 3) {
-                    calculate = 1;
+                    evolution = 1;
                     cal_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
@@ -283,7 +283,7 @@ void line_following(YB_Pcb_Car* car) {
                 }
                 pthread_mutex_lock(&lock);
                 if (cal_trial == 3) {
-                    calculate = 1;
+                    evolution = 1;
                     cal_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
@@ -331,7 +331,7 @@ void line_following(YB_Pcb_Car* car) {
                 }
                 pthread_mutex_lock(&lock);
                 if (cal_trial == 3) {
-                    calculate = 1;
+                    evolution = 1;
                     cal_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
@@ -363,7 +363,7 @@ void line_following(YB_Pcb_Car* car) {
                 }
                 pthread_mutex_lock(&lock);
                 if (cal_trial == 3) {
-                    calculate = 1;
+                    evolution = 1;
                     cal_trial = 0;
                 }
                 pthread_mutex_unlock(&lock);
@@ -413,7 +413,7 @@ void line_following(YB_Pcb_Car* car) {
     }
 }
 
-void random_line_following(YB_Pcb_Car* car) {
+void second_phase_following(YB_Pcb_Car* car) {
     int left1, left2, right1, right2;
 
 
@@ -698,7 +698,7 @@ void* threadFunction(void* arg) {
 
     while (1) {
         while (1) {
-            random_line_following(&car);
+            second_phase_following(&car);
             usleep(500000);
         }
 
