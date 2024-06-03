@@ -15,9 +15,9 @@ void* receiveUpdates(void* arg) {
         pthread_mutex_unlock(&lock);
 
         // 글로벌 변수 업데이트
-	  int my_index = (dgist.players[0].socket == sock) ? 0 : 1;
+	  int me_index = (dgist.players[0].socket == sock) ? 0 : 1;
         // 글로벌 변수 업데이트
-        if(dgist.players[my_index].row>=0 && dgist.players[my_index].col>=0){
+        if(dgist.players[me_index].row>=0 && dgist.players[me_index].col>=0){
             updateGlobalVariables(&dgist,sock);
         }
         usleep(500000);
