@@ -6,6 +6,8 @@ int met_Node = 0;
 int path_length;
 int* pMovements;
 int trial = 0;
+int calculate;
+int cal_trial = 0;
 
 void get_i2c_device(YB_Pcb_Car* car, int address) {
     car->_addr = address;
@@ -112,8 +114,13 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(200);
         Car_Stop(car);
         delay(300);
+        cal_trial++;
     }
     pthread_mutex_lock(&lock);
+    if(cal_trial == 3){
+        calculate = 1;
+        cal_trial = 0;
+    }
     met_Node++;
     printf("Current Met Node %d\n", met_Node);
     if (met_Node == path_length - 1) {
@@ -164,19 +171,7 @@ void line_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            if (trial < 70) {
-                Car_Run(car, 60, 60);
-                delay(5);
-                trial++;
-            }else if(trial == 70){
-                Car_Stop(car);
-                delay(800);
-                trial++;
-            }
-            else {
-                Car_Run(car, 100, 100);
-                delay(5);
-            }
+            Car_Run(car,60,60);
             left1 = read_sensor(SENSOR_LEFT1);
             left2 = read_sensor(SENSOR_LEFT2);
             right1 = read_sensor(SENSOR_RIGHT1);
