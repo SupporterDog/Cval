@@ -470,7 +470,7 @@ void second_phase_following(YB_Pcb_Car* car) {
             }
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
-            Car_Run(car, 60, 60);
+            Car_Run(car, 120, 120);
             left1 = read_sensor(SENSOR_LEFT1);
             left2 = read_sensor(SENSOR_LEFT2);
             right1 = read_sensor(SENSOR_RIGHT1);
