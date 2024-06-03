@@ -48,7 +48,7 @@ void* decodeQRCodeThread(void* arg) {
             cv::Mat bbox, rectifiedImage;
             qrData = qrDecoder.detectAndDecode(equalizedFrame, bbox, rectifiedImage);
                 printf("QR CODE READING: ");
-                printf(before_xy);
+                printf(before_xy.c_str());
                 printf("\n");
 
             if (!qrData.empty() && qrData != before_xy) {
