@@ -70,8 +70,8 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     else if (control == r_spin) {
         Car_Run(car, 60, 60);
         delay(150);
-        Car_Right(car, 60, 60);
-        delay(500);
+        Car_Right(car, 150, 150);
+        delay(200);
         while ((*sensor_state & 0b0100) != 0b0100) {
             Car_Right(car, 60, 60);
             *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
@@ -82,8 +82,8 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     else if (control == l_spin) {
         Car_Run(car, 60, 60);
         delay(150);
-        Car_Left(car, 60, 60);
-        delay(500);
+        Car_Left(car, 150, 150);
+        delay(200);
         while ((*sensor_state & 0b0010) != 0b0010) {
             Car_Left(car, 60, 60);
             *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
@@ -94,8 +94,8 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     else {
         Car_Run(car, 60, 60);
         delay(150);
-        Car_Right(car, 60, 60);
-        delay(1500);
+        Car_Right(car, 150, 150);
+        delay(800);
         while ((*sensor_state & 0b0100) != 0b0100) {
             Car_Right(car, 60, 60);
             *sensor_state = *sensor_state + (read_sensor(SENSOR_LEFT2) << 2);
