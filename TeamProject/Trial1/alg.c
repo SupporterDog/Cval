@@ -293,7 +293,7 @@ void* Run_Algorithm(void* arg) {
             // 맨 처음에 놓는 위치를 정해 놓는다
             int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? RIGHT : UP;
             printf("Initial Recent Head Direction: %d [L1 U2 R3 D4]\n", RECENT_HEAD_DIRECTION);
-            Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
+            Point* max_score_point = &(Point) {start_row, start_row};
             printf("Initial max point: (%d,%d)\n", max_score_point->x, max_score_point->y);
             pthread_mutex_unlock(&lock);
             //int buffer[2] = {-1,-1};
