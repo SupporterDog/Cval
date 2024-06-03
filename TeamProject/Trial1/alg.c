@@ -5,7 +5,7 @@ bool do_we_set_trap = false;
 int sock;
 pthread_mutex_t lock;
 DGIST* updatedDgist;
-int my_index = 0;
+int my_index;
 int path_length =0;
 int* pMovements = NULL;
 int met_Node;
