@@ -381,7 +381,7 @@ void* threadFunction(void* arg) {
         if(pMovements != NULL){
             while (1) {
             line_following(&car);
-            usleep(500000);
+            //usleep(500000);
             }
         
         }
