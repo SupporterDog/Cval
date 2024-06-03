@@ -18,7 +18,7 @@ void* receiveUpdates(void* arg) {
         printf("my Index: %d\n",me_index);
         updateGlobalVariables(&dgist,sock);
         
-        usleep(50000);
+        //usleep(50000); Get Out of here
     }
     return NULL;
 }
