@@ -39,11 +39,12 @@
                     throw std::runtime_error("프레임을 캡처할 수 없습니다.");
                 }
 
-
+                cv::Mat grayFrame;
+                cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
                 
                 // QR 코드 디코딩
                 cv::Mat bbox, rectifiedImage;
-                qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
+                qrData = qrDecoder.detectAndDecode(grayFrame, bbox, rectifiedImage);
                 printf("SCANNING QR CODE: ");
                 printf(qrData.c_str());
                 printf("  BEFORE QR CODE: ");
