@@ -114,7 +114,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         delay(5);
         spin_trial++;
         if (spin_trial > 3) {
-            printf("EVOLUTION");
+            printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             evolution = 1;
         }
     }
@@ -176,12 +176,11 @@ void line_following(YB_Pcb_Car* car) {
                     delay(300);
                     evolution_trial++;
                 }
-                pthread_mutex_lock(&lock);
                 if (evolution_trial == 3) {
+                    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     evolution = 1;
                     evolution_trial = 0;
                 }
-                pthread_mutex_unlock(&lock);
 
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
@@ -235,12 +234,11 @@ void line_following(YB_Pcb_Car* car) {
                     delay(300);
                     evolution_trial++;
                 }
-                pthread_mutex_lock(&lock);
                 if (evolution_trial == 3) {
+                    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     evolution = 1;
                     evolution_trial = 0;
                 }
-                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -282,12 +280,11 @@ void line_following(YB_Pcb_Car* car) {
                     delay(300);
                     evolution_trial++;
                 }
-                pthread_mutex_lock(&lock);
                 if (evolution_trial == 3) {
+                    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     evolution = 1;
                     evolution_trial = 0;
                 }
-                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -330,12 +327,11 @@ void line_following(YB_Pcb_Car* car) {
                     delay(300);
                     evolution_trial++;
                 }
-                pthread_mutex_lock(&lock);
                 if (evolution_trial == 3) {
+                    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     evolution = 1;
                     evolution_trial = 0;
                 }
-                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
@@ -362,12 +358,11 @@ void line_following(YB_Pcb_Car* car) {
                     delay(300);
                     evolution_trial++;
                 }
-                pthread_mutex_lock(&lock);
                 if (evolution_trial == 3) {
+                    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     evolution = 1;
                     evolution_trial = 0;
                 }
-                pthread_mutex_unlock(&lock);
                 left1 = read_sensor(SENSOR_LEFT1);
                 left2 = read_sensor(SENSOR_LEFT2);
                 right1 = read_sensor(SENSOR_RIGHT1);
