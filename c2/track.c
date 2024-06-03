@@ -690,8 +690,15 @@ void* threadFunction(void* arg) {
             while (1) {
                 line_following(&car);
                 usleep(500000);
+                if(evolution == 1){
+                    break;
+                }
             }
+            
 
+        }
+        if(evolution == 1){
+            break;
         }
         usleep(500000);
     }
