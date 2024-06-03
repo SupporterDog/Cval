@@ -288,7 +288,6 @@ void* Run_Algorithm(void* arg) {
         if (updatedDgist != NULL) {
             printf("UpdatedDgist not Null Detected,,,\n");
             pthread_mutex_lock(&lock);
-            my_index = (updatedDgist->players[0].socket == sock) ? 0 : 1;
             
             // 맨 처음에 놓는 위치를 정해 놓는다
             int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
@@ -301,10 +300,10 @@ void* Run_Algorithm(void* arg) {
                 printf("You haven't arrived at MaxScorePoint yet\n");
                 pthread_mutex_lock(&lock);
                 int my_x; int my_y; int opp_x; int opp_y;
-                my_x = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row; 
-                my_y = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col;
-                opp_x = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row;
-                opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
+                my_x =  updatedDgist->players[my_index].row; 
+                my_y = updatedDgist->players[my_index].col; 
+                opp_x = updatedDgist->players[!(my_index)].row; 
+                opp_y = updatedDgist->players[!(my_index)].col; 
 
                 // 적 위치가 음수면 그냥 내 위치로 만들어준다.
                 if (opp_x < 0 || opp_y < 0) {
