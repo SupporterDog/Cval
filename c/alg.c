@@ -169,7 +169,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
     }
 }
 
-Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
+Point* find_best_road(Point* StartPoint,const Point* EndPoint, int* path_length) {
     int start_x = (*StartPoint).x;
     int start_y = (*StartPoint).y;
     int end_x = (*EndPoint).x;
@@ -330,11 +330,9 @@ void* Run_Algorithm(void* arg) {
                     max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
                     printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
                     // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
-                    Point* temp_maxpoint = (Point*)malloc(sizeof(Point));
-                    temp_maxpoint->x = max_score_point->x; temp_maxpoint->y = max_score_point->y;
-                    Point* local_optimal_path = find_best_road(my_point, temp_maxpoint, &path_length);
+                   
+                    Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
                     printf("Local optimal path: of length %d \n", path_length);
-                    printf("temp point: (%d,%d)\n", temp_maxpoint->x, temp_maxpoint->y);
                     printf("now max point1 : (%d,%d)\n", max_score_point->x, max_score_point->y);
                     for (int i = 0; i < path_length; ++i) {
                         printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
