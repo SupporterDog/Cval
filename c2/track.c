@@ -170,7 +170,7 @@ void line_following(YB_Pcb_Car* car) {
                 trial++;
             }
             else {
-                Car_Run(car, 120, 120);
+                Car_Run(car, 90, 90);
                 delay(5);
             }
             left1 = read_sensor(SENSOR_LEFT1);
