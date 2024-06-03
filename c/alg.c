@@ -293,7 +293,9 @@ void* Run_Algorithm(void* arg) {
             // 맨 처음에 놓는 위치를 정해 놓는다
             int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? RIGHT : UP;
             printf("Initial Recent Head Direction: %d [L1 U2 R3 D4]\n", RECENT_HEAD_DIRECTION);
-            Point* max_score_point = &(Point) {start_row, start_row};
+            Point* max_score_point = (Point*)malloc(sizeof(Point));
+            *max_score_point = (Point) {start_row, start_row};
+
             printf("Initial max point: (%d,%d)\n", max_score_point->x, max_score_point->y);
             pthread_mutex_unlock(&lock);
             //int buffer[2] = {-1,-1};
@@ -327,7 +329,11 @@ void* Run_Algorithm(void* arg) {
                     }
                     printf("\n");
                     // 맥스 스코어 포인트
-                    max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
+                    Point* new_max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
+                    // 메모리 해제
+                    free(max_score_point);
+                    // 새로운 포인터 할당
+                    max_score_point = new_max_score_point;
                     printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
                     // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
                    
