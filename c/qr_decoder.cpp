@@ -44,13 +44,14 @@
                 // QR 코드 디코딩
                 cv::Mat bbox, rectifiedImage;
                 qrData = qrDecoder.detectAndDecode(frame, bbox, rectifiedImage);
-
+                printf("SCANNING QR CODE: ");
+                printf(qrData.c_str());
+                printf("  BEFORE QR CODE: ");
+                printf(before_xy.c_str());
+                printf("\n");
                 if (!qrData.empty() and qrData!=before_xy) {
-                    printf("SCANNING QR CODE: ");
-                    printf(qrData.c_str());
-                    printf("  BEFORE QR CODE: ");
-                    printf(before_xy.c_str());
-                    printf("\n");
+                   
+                    
                     // 디코딩된 QR 코드 데이터를 처리
                     before_xy=qrData;
                     sendClientAction(sock, &lock, qrData.c_str(), 0);
@@ -61,7 +62,7 @@
                 // cv::imshow("QR Code Scanner", frame);
                 // if (cv::waitKey(30) >= 0) break; // 아무 키나 누르면 종료
 
-                usleep(5000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
+                usleep(10000); // 약간의 지연을 추가하여 CPU 사용량을 줄입니다.
                 //sleep(1)
             }
         } catch (const std::exception& e) {
