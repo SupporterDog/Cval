@@ -131,7 +131,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
             copy_path(best_path, path);
         }
     }
-    //x방향 양의 이동
+    //row방향 양의 이동
     if (row_moves > 0) {
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x + 1, (*path).points[(*path).length - 1].y };
         (*path).length++;
@@ -140,7 +140,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).length--;
         start_x--;
     }
-    //y방향 양의 이동
+    //column방향 양의 이동
     if (column_moves > 0) {
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y + 1 };
         (*path).length++;
@@ -149,7 +149,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).length--;
         start_y--;
     }
-    //x방향 음의 이동
+    //row방향 음의 이동
     if (row_moves < 0) {
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x - 1, (*path).points[(*path).length - 1].y };
         (*path).length++;
@@ -158,7 +158,7 @@ void find_paths(int row_moves, int column_moves, Path* path, int current_score, 
         (*path).length--;
         start_x++;
     }
-    //y방향 음의 이동
+    //column방향 음의 이동
     if (column_moves < 0) {
         (*path).points[(*path).length] = (Point){ (*path).points[(*path).length - 1].x, (*path).points[(*path).length - 1].y - 1 };
         (*path).length++;
