@@ -364,6 +364,7 @@ void* Run_Algorithm(void* arg) {
                 usleep(500000);
             }
         } 
+        usleep(500000);
     }
     return NULL;
 }
