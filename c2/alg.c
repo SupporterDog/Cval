@@ -72,7 +72,7 @@ bool isValid(Point p, Point* points, int count) {
     return false;
 }
 
-// StartPoint로부터 BFS 를 통해 points 배열에 있는 포인트 struct 중 가까운 점부터 차례대로 방문하여 주어진 지점의 점수가 4면 해당 지점을 즉시 반환하고 
+// StartPoint로부터 BFS를 통해 points 배열에 있는 포인트 struct 중 가까운 점부터 차례대로 방문하여 주어진 지점의 점수가 4면 해당 지점을 즉시 반환하고
 // 그렇지 않으면 최고 점수를 가진 지점을 반환하는 함수
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
@@ -81,19 +81,29 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     int front = 0, rear = 0;
 
     queue[rear++] = (QueueNode){ *StartPoint, 0 };
-    visited[(*StartPoint).x][(*StartPoint).y] = true;
+    visited[StartPoint->x][StartPoint->y] = true;
 
-    Point* returnpoint = (Point*)malloc(sizeof(Point)); 
+    Point* returnpoint = NULL;
     int currmaxscore = -1;
 
     while (front < rear) {
         QueueNode current = queue[front++];
-        Point* currpoint = &(current.point);
+        Point* currpoint = &current.point;
+
+        pthread_mutex_lock(&lock);
+
+        // updatedDgist가 NULL이면 루프를 종료
+        if (updatedDgist == NULL) {
+            pthread_mutex_unlock(&lock);
+            return NULL;
+        }
 
         // 점수가 4면 해당 지점을 반환
         if (updatedDgist->map[currpoint->x][currpoint->y].item.score == MAX_SCORE) {
-            if ( currpoint->x == StartPoint->x && currpoint->y == StartPoint->y ) {}
-            else { return currpoint; }
+            if (!(currpoint->x == StartPoint->x && currpoint->y == StartPoint->y)) {
+                pthread_mutex_unlock(&lock);
+                return currpoint;
+            }
         }
 
         // 현재 점수가 최고 점수보다 크면 갱신
@@ -101,6 +111,8 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
             returnpoint = currpoint;
             currmaxscore = updatedDgist->map[currpoint->x][currpoint->y].item.score;
         }
+
+        pthread_mutex_unlock(&lock);
 
         // 다음 지점을 큐에 추가
         for (int i = 0; i < 4; ++i) {
