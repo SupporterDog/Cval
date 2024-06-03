@@ -36,6 +36,8 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
     memcpy(updatedDgist, dgist, sizeof(DGIST));
 	
     client_info client;
+    Item tmpItem;
+
 
     printf("=========Updated NEW INFORMATION!!==========\n");
 	for(int i=0; i < MAX_CLIENTS; i++){
@@ -45,6 +47,22 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
 		printf("Score: %d\n",client.score);
 		printf("Bomb: %d\n",client.bomb);
 	}
+	for (int i = 0; i < MAP_ROW; i++) {
+		for (int j = 0; j < MAP_COL; j++) {
+            tmpItem = (updatedDgist->map[i][j]).item;
+            switch (tmpItem.status) {
+                case nothing:
+                    printf("- ");
+                    break;
+                case item:
+                    printf("%d ", tmpItem.score);
+                    break;
+                case trap:
+                    printf("x ");
+                    break;
+            }
+        }
+        printf("\n");
 	printf("==========PRINT DONE==========\n");
     pthread_mutex_unlock(&lock);
 }
