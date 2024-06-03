@@ -373,10 +373,10 @@ void* Run_Algorithm(void* arg) {
                     //printf("now max point6 : (%d,%d)\n", max_score_point.x, max_score_point.y);
                 }
                 pthread_mutex_unlock(&lock);
-                usleep(100000);  
+                //usleep(100000);  
             }
         } 
-        usleep(100000);
+        //usleep(100000);
     }
     return NULL;
 }
