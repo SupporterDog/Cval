@@ -175,5 +175,6 @@ void* threadFunction(void* arg);
 void get_i2c_device_two(YB_Pcb_Car* car, int address);
 void write_array_two(YB_Pcb_Car* car, int reg, unsigned char* data, int length);
 void Ctrl_Servo(YB_Pcb_Car* car, int angle);
+void smooth_move_servo(YB_Pcb_Car* car, int start_angle, int end_angle, int step_delay);
 void* servo(void*arg);
 #endif // ALL_HEADER_H
