@@ -105,7 +105,9 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     }
     pthread_mutex_lock(&lock);
     met_Node++;
+    printf("Current Met Node %d\n", met_Node);
     if (met_Node == path_length-1) {
+        printf("free(pMovements)\n");
         free(pMovements);
         pMovements = NULL;
     }
@@ -368,7 +370,6 @@ void* threadFunction(void* arg) {
     printf("Starting car....\n");
     while(1){
         if(pMovements != NULL){
-            printf("pMovement is NOT NULL now. Car started.\n");
             while (1) {
             line_following(&car);
             usleep(500000);
