@@ -180,7 +180,7 @@ Point* find_best_road(Point* StartPoint, Point* EndPoint, int* path_length) {
     Path best_path;
     Path initial_path;
     initial_path.length = 1;
-    initial_path.points[0] = *StartPoint;
+    initial_path.points[0] = {*StartPoint.x, *StartPoint.y};
     initial_path.score = 0;
     //경로 찾아서 best_path에 저장
     find_paths(row_move, column_move, &initial_path, 0, &best_path, start_x, start_y);
