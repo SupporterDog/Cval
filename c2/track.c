@@ -8,6 +8,7 @@ int* pMovements;
 int trial = 0;
 int calculate;
 int cal_trial = 0;
+int spin_trial = 0;
 
 void get_i2c_device(YB_Pcb_Car* car, int address) {
     car->_addr = address;
@@ -70,6 +71,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
     if (control == straight) {
         Car_Run(car, 60, 60);
         delay(150);
+        spin_trial = 0;
     }
     else if (control == r_spin) {
         Car_Run(car, 60, 60);
@@ -82,6 +84,8 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             delay(10);
         }
         delay(5);
+        spin_trial = 0;
+        
     }
     else if (control == l_spin) {
         Car_Run(car, 60, 60);
@@ -93,7 +97,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
             *sensor_state = *sensor_state + (read_sensor(SENSOR_RIGHT2) << 1);
             delay(10);
         }
-
+        spin_trial = 0;
         delay(5);
     }
     else if (control == turn) {
@@ -108,6 +112,10 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
         }
 
         delay(5);
+        spin_trial++;
+        if (spin_trial > 3) {
+            calculate = 1;
+        }
     }
     else {
         Car_Back(car, 60, 60);
