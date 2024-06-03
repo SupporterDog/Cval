@@ -47,7 +47,10 @@ void* decodeQRCodeThread(void* arg) {
             // QR 코드 디코딩
             cv::Mat bbox, rectifiedImage;
             qrData = qrDecoder.detectAndDecode(equalizedFrame, bbox, rectifiedImage);
-        
+                printf("QR CODE READING: ");
+                printf(before_xy);
+                printf("\n");
+
             if (!qrData.empty() && qrData != before_xy) {
                 // 디코딩된 QR 코드 데이터를 처리
                 printf("QR CODE READING: ");
