@@ -298,7 +298,7 @@ void* Run_Algorithm(void* arg) {
             pthread_mutex_unlock(&lock);
             //int buffer[2] = {-1,-1};
             while (1) {
-                printf("You haven't arrived at MaxScorePoint yet\n");
+                printf("You haven't arrived at MaxScorePoint yet. now max point : (%d,%d)\n", max_score_point->x, max_score_point->y);
                 pthread_mutex_lock(&lock);
                 int my_x; int my_y; int opp_x; int opp_y;
                 my_x =  updatedDgist->players[my_index].row; 
@@ -366,10 +366,10 @@ void* Run_Algorithm(void* arg) {
                     free(Dirs_for_Movs);
                 }
                 pthread_mutex_unlock(&lock);
-                usleep(500000);  
+                usleep(100000);  
             }
         } 
-        usleep(500000);
+        usleep(100000);
     }
     return NULL;
 }
