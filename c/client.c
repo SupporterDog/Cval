@@ -6,7 +6,7 @@ DGIST* updatedDgist = NULL;
 void* receiveUpdates(void* arg) {
     DGIST dgist;
     while (1) {
-        if (recv(sock, updateDgist, sizeof(DGIST), 0) <= 0) {
+        if (recv(sock, updatedDgist, sizeof(DGIST), 0) <= 0) {
             printf("Connection closed by server.\n");
             close(sock);
             exit(0);
