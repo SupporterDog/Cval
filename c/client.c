@@ -4,53 +4,39 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 DGIST* updatedDgist = NULL;
 
 void* receiveUpdates(void* arg) {
-    updatedDgist = malloc(sizeof(DGIST));  // 메모리 할당
-    if (updatedDgist == NULL) {
-        printf("Memory allocation failed.\n");
-        return NULL;
-    }
-
+    DGIST dgist;
     while (1) {
-        pthread_mutex_lock(&lock);
-
-        if (recv(sock, updatedDgist, sizeof(DGIST), 0) <= 0) {
-            printf("Failed to receive updates.\n");
-            // 오류 발생 시 적절한 처리 (예: 스레드 종료)
+        // 데이터를 수신할 때 뮤텍스를 잠그지 않음
+        if (recv(sock, &dgist, sizeof(DGIST), 0) <= 0) {
+            printf("Connection closed by server.\n");
+            close(sock);
+            exit(0);
         }
 
-        pthread_mutex_unlock(&lock);
-
-        // 글로벌 변수 업데이트 (필요 시)
-    }
-
-    return NULL;
-}
-
-
-
-//좌표축과 아이템 점수를 업데이트
-void updateGlobalVariables(DGIST* dgist,int my_sock) {
-    pthread_mutex_lock(&lock);
-    //DGIST객체 업데이트
+        // 글로벌 변수 업데이트
+     pthread_mutex_lock(&lock);
+    // DGIST 객체 업데이트
     // 깊은 복사
     if (updatedDgist == NULL) {
         updatedDgist = malloc(sizeof(DGIST));
     }
     memcpy(updatedDgist, dgist, sizeof(DGIST));
-	
+
     client_info client;
 
-    printf("=========Updated NEW INFORMATION!!==========\n");
-	for(int i=0; i < MAX_CLIENTS; i++){
-		client = updatedDgist->players[i];
-		printf("++++++++++Player %d++++++++++\n",i+1);
-		printf("Location: (%d,%d)\n",client.row, client.col);
-		printf("Score: %d\n",client.score);
-		printf("Bomb: %d\n",client.bomb);
-	}
-	printf("==========PRINT DONE==========\n");
-    pthread_mutex_unlock(&lock);
+    printf("==========PRINT PLAYERS==========\n");
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        client = updatedDgist->players[i];
+        printf("++++++++++Player %d++++++++++\n", i + 1);
+        printf("Location: (%d,%d)\n", client.row, client.col);
+        printf("Score: %d\n", client.score);
+        printf("Bomb: %d\n", client.bomb);
+    }
+    printf("==========PRINT DONE==========\n");
+    pthread_mutex_unlock(&lock);    }
+    return NULL;
 }
+
 
 
 // 클라이언트 액션을 서버로 전송하는 함수
@@ -75,12 +61,12 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
 
     // 뮤텍스 잠금
     pthread_mutex_lock(lock);
-    printf("=========SENDING INFORMATION TO SERVER==========\n");
+
     // 서버로 데이터 전송
     if (send(sock, &clientAction, sizeof(ClientAction), 0) <= 0) {
         printf("Failed to send action to server.\n");
     }
-    printf("SEND COMPLETE\n");
+
     // 뮤텍스 잠금 해제
     pthread_mutex_unlock(lock);
 }
