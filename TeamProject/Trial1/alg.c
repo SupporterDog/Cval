@@ -285,83 +285,85 @@ int SetBomb_Checker(Point* currpoint, Point* opponentpoint) {
 void* Run_Algorithm(void* arg) {
     printf("Inside Run Algorithm Function,,,\n");
     while (1) {
-        if (updatedDgist != NULL) {
+        if ((updatedDgist != NULL) ) {
             printf("UpdatedDgist not Null Detected,,,\n");
             pthread_mutex_lock(&lock);
             my_index = (updatedDgist->players[0].socket == sock) ? 0 : 1;
-            // 맨 처음에 놓는 위치를 정해 놓는다
-            int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
-            printf("Initial Recent Head Direction: %d [L1 U2 R3 D4]\n", RECENT_HEAD_DIRECTION);
-            Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
-            printf("Initial max point: (%d,%d)\n", max_score_point->x, max_score_point->y);
-            pthread_mutex_unlock(&lock);
-            //int buffer[2] = {-1,-1};
-            while (1) {
-                printf("You haven't arrived at MaxScorePoint yet\n");
-                pthread_mutex_lock(&lock);
-                int my_x; int my_y; int opp_x; int opp_y;
-                my_x = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row; 
-                my_y = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col;
-                opp_x = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row;
-                opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
-                
-                if (opp_x < 0 || opp_y < 0) {
-                    opp_x = my_x; opp_y = my_y;
-                }
-                Point* my_point = &(Point) {my_x, my_y};
-
-                if (my_x == max_score_point->x && my_y == max_score_point->y ) {
-                    printf("Arrived at Max Score Point! Ready to Make Movement! Making,,,\n");
-                    //buffer[0] = my_x; buffer[1] = my_y;
-                    int count = 0;
-                    // 상대보다 빨리 접근 가능한 좌표들
-                    Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count); 
-                    printf("All reachable points: ");
-                    for (int i = 0; i < count; ++i) {
-                        printf("(%d,%d), ", reachable_points[i].x, reachable_points[i].y);
-                    }
-                    printf("\n");
-                    // 맥스 스코어 포인트
-                    max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
-                    printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
-                    // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
-                    Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
-                    printf("Local optimal path: of length %d \n", path_length);
-                    for (int i = 0; i < path_length; ++i) {
-                        printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
-                    }
-                    int* Directions = getDirection(local_optimal_path, path_length);
-                    printf("Directions to go:\n");
-                    for (int i = 0 ; i < path_length - 1; ++i) {
-                        if (Directions[i] == 1) { printf("LEFT\t"); }
-                        if (Directions[i] == 2) { printf("UP\t"); }
-                        if (Directions[i] == 3) { printf("RIGHT\t"); }
-                        if (Directions[i] == 4) { printf("DOWN\t"); }
-                        printf("\n");
-                    }
-
-                    int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
-                    pMovements =  getMovement(Dirs_for_Movs, path_length);
-                    printf("Your Proposed Movements: \n");
-                    for (int i = 0 ; i < path_length - 1; ++i) {
-                        if (pMovements[i] == 1) { printf("l_spin\t"); }
-                        if (pMovements[i] == 2) { printf("straight\t"); }
-                        if (pMovements[i] == 3) { printf("r_spin\t"); }
-                        if (pMovements[i] == 4) { printf("turn\t"); }
-                        printf("\n");
-                    }
-                    RECENT_HEAD_DIRECTION = Directions[path_length - 2];
-                    printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
-                    printf("\n");
-                    printf("\n");
-                    met_Node = 0;
-
-                    free(reachable_points);
-                    free(Directions);
-                    free(Dirs_for_Movs);
-                }
+            if ((updatedDgist->players[my_index].row == 0 && updatedDgist->players[my_index].col == 0 ) || (updatedDgist->players[my_index].row == 4 && updatedDgist->players[my_index].col == 4)) {
+                // 맨 처음에 놓는 위치를 정해 놓는다
+                int RECENT_HEAD_DIRECTION = (updatedDgist->players[my_index].row == 0) ? DOWN : UP;
+                printf("Initial Recent Head Direction: %d [L1 U2 R3 D4]\n", RECENT_HEAD_DIRECTION);
+                Point* max_score_point = &(Point) {updatedDgist->players[my_index].row, updatedDgist->players[my_index].col};
+                printf("Initial max point: (%d,%d)\n", max_score_point->x, max_score_point->y);
                 pthread_mutex_unlock(&lock);
-                usleep(500000);
+                //int buffer[2] = {-1,-1};
+                while (1) {
+                    printf("You haven't arrived at MaxScorePoint yet\n");
+                    pthread_mutex_lock(&lock);
+                    int my_x; int my_y; int opp_x; int opp_y;
+                    my_x = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row; 
+                    my_y = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col;
+                    opp_x = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row;
+                    opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
+                
+                    if (opp_x < 0 || opp_y < 0) {
+                        opp_x = my_x; opp_y = my_y;
+                    }
+                    Point* my_point = &(Point) {my_x, my_y};
+
+                    if (my_x == max_score_point->x && my_y == max_score_point->y ) {
+                        printf("Arrived at Max Score Point! Ready to Make Movement! Making,,,\n");
+                        //buffer[0] = my_x; buffer[1] = my_y;
+                        int count = 0;
+                        // 상대보다 빨리 접근 가능한 좌표들
+                        Point* reachable_points = Bangaljook(opp_x, opp_y, my_x, my_y, &count); 
+                        printf("All reachable points: ");
+                        for (int i = 0; i < count; ++i) {
+                            printf("(%d,%d), ", reachable_points[i].x, reachable_points[i].y);
+                        }
+                        printf("\n");
+                        // 맥스 스코어 포인트
+                        max_score_point = Find_MaxScorePoint(&(Point) { my_x, my_y }, reachable_points, count); 
+                        printf("Max score point: (%d, %d) with score %d\n", (*max_score_point).x, (*max_score_point).y, updatedDgist->map[(*max_score_point).x][(*max_score_point).y].item.score);
+                        // 맥스 스코어 포인트로 가는 옵티멀 길 찾기
+                        Point* local_optimal_path = find_best_road(my_point, max_score_point, &path_length);
+                        printf("Local optimal path: of length %d \n", path_length);
+                        for (int i = 0; i < path_length; ++i) {
+                            printf("(%d, %d)\n", local_optimal_path[i].x, local_optimal_path[i].y);
+                        }
+                        int* Directions = getDirection(local_optimal_path, path_length);
+                        printf("Directions to go:\n");
+                        for (int i = 0 ; i < path_length - 1; ++i) {
+                            if (Directions[i] == 1) { printf("LEFT\t"); }
+                            if (Directions[i] == 2) { printf("UP\t"); }
+                            if (Directions[i] == 3) { printf("RIGHT\t"); }
+                            if (Directions[i] == 4) { printf("DOWN\t"); }
+                            printf("\n");
+                        }
+
+                        int* Dirs_for_Movs = getDirection_for_Mov(Directions, path_length, RECENT_HEAD_DIRECTION);
+                        pMovements =  getMovement(Dirs_for_Movs, path_length);
+                        printf("Your Proposed Movements: \n");
+                        for (int i = 0 ; i < path_length - 1; ++i) {
+                            if (pMovements[i] == 1) { printf("l_spin\t"); }
+                            if (pMovements[i] == 2) { printf("straight\t"); }
+                            if (pMovements[i] == 3) { printf("r_spin\t"); }
+                            if (pMovements[i] == 4) { printf("turn\t"); }
+                            printf("\n");
+                        }
+                        RECENT_HEAD_DIRECTION = Directions[path_length - 2];
+                        printf("RECENT HEAD DIRECTION : %d <<Directions : Left(1) Up(2) Right(3) Down(4)>>", RECENT_HEAD_DIRECTION);
+                        printf("\n");
+                        printf("\n");
+                        met_Node = 0;
+
+                        free(reachable_points);
+                        free(Directions);
+                        free(Dirs_for_Movs);
+                    }
+                    pthread_mutex_unlock(&lock);
+                    usleep(500000);
+                }
             }
         } 
         usleep(500000);
