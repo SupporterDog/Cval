@@ -50,6 +50,9 @@ void* decodeQRCodeThread(void* arg) {
         
             if (!qrData.empty() && qrData != before_xy) {
                 // 디코딩된 QR 코드 데이터를 처리
+                printf("QR CODE READING: ");
+                printf(qrData.c_str());
+                printf("\n");
                 before_xy = qrData;
                 sendClientAction(sock, &lock, qrData.c_str(), 0);
             }
