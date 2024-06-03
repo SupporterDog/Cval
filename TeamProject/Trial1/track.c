@@ -375,6 +375,7 @@ void* threadFunction(void* arg) {
             }
         
         }
+        usleep(500000);
     }
     
     return NULL;
