@@ -15,7 +15,11 @@ void* receiveUpdates(void* arg) {
         pthread_mutex_unlock(&lock);
 
         // 글로벌 변수 업데이트
-        updateGlobalVariables(&dgist,sock);
+	  int my_index = (dgist.players[0].socket == sock) ? 0 : 1;
+        // 글로벌 변수 업데이트
+        if(dgist.players[my_index].row>=0 and dgist.players[my_index].col>=0){
+            updateGlobalVariables(&dgist,sock);
+        }
         usleep(500000);
     }
     return NULL;
@@ -35,7 +39,7 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
 	
     client_info client;
 
-    printf("=========RECIEVED NEW INFORMATION!!==========\n");
+    printf("=========Updated NEW INFORMATION!!==========\n");
 	for(int i=0; i < MAX_CLIENTS; i++){
 		client = updatedDgist->players[i];
 		printf("++++++++++Player %d++++++++++\n",i+1);
