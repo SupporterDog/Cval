@@ -5,7 +5,7 @@ int my_index;
 int main(int argc, char *argv[]) {//MAIN THREAD
     //===================SETIING FOR SERVER CONNECTION===================
     
-    if (argc != 3) {
+    if (argc != 4) {
         fprintf(stderr, "Usage: %s <IP> <PORT>\n", argv[0]);
         return 1;
     }
