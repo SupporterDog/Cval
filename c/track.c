@@ -156,7 +156,7 @@ void line_following(YB_Pcb_Car* car) {
             break;
         case 0b1001:  // (H L L H) : 앞으로 직진
 
-            Car_Run(car, 60, 60);
+            Car_Run(car, 30, 30);
             delay(5);
             left1 = read_sensor(SENSOR_LEFT1);
             left2 = read_sensor(SENSOR_LEFT2);
@@ -367,7 +367,7 @@ void* threadFunction(void* arg) {
 
     printf("Car will stop for 10 seconds.\n");
     Car_Stop(&car);
-    delay(10000);
+    delay(3000);
     printf("Starting car....\n");
     while(1){
         if(pMovements != NULL){
