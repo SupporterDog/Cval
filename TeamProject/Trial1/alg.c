@@ -303,6 +303,10 @@ void* Run_Algorithm(void* arg) {
                 my_y = (updatedDgist->players[0].socket == sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col;
                 opp_x = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].row : updatedDgist->players[1].row;
                 opp_y = (updatedDgist->players[0].socket != sock) ? updatedDgist->players[0].col : updatedDgist->players[1].col; 
+                
+                if (opp_x < 0 || opp_y < 0) {
+                    opp_x = my_x; opp_y = my_y;
+                }
                 Point* my_point = &(Point) {my_x, my_y};
 
                 if (my_x == max_score_point->x && my_y == max_score_point->y ) {
