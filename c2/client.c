@@ -12,10 +12,7 @@ void* receiveUpdates(void* arg) {
             exit(0);
         }
 
-        // 글로벌 변수 업데이트
-	int me_index = (dgist.players[0].socket == sock) ? 0 : 1;	
-	printf("Server socket: %d my socket: %d\n",dgist.players[0].socket,sock);
-        printf("my Index: %d\n",me_index);
+      
         updateGlobalVariables(&dgist,sock);
         
         usleep(50000);
