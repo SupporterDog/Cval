@@ -17,7 +17,7 @@ void* receiveUpdates(void* arg) {
         // 글로벌 변수 업데이트
 	  int my_index = (dgist.players[0].socket == sock) ? 0 : 1;
         // 글로벌 변수 업데이트
-        if(dgist.players[my_index].row>=0 and dgist.players[my_index].col>=0){
+        if(dgist.players[my_index].row>=0 && dgist.players[my_index].col>=0){
             updateGlobalVariables(&dgist,sock);
         }
         usleep(500000);
