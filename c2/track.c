@@ -113,7 +113,7 @@ void perform_car_run_and_turn(YB_Pcb_Car* car, int* sensor_state, int control) {
 
         delay(5);
         spin_trial++;
-        if (spin_trial > 3) {
+        if (spin_trial > 2) {
             printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~EVOLUTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             evolution = 1;
         }
