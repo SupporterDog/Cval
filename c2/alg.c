@@ -121,8 +121,11 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
 
         // 현재 점수가 최고 점수보다 크면 갱신
         if (updatedDgist->map[currpoint->x][currpoint->y].item.score > currmaxscore) {
-            memcpy(returnpoint, currpoint, sizeof(Point));
-            currmaxscore = updatedDgist->map[currpoint->x][currpoint->y].item.score;
+            if ( currpoint->x == StartPoint->x && currpoint->y == StartPoint->y ) { }
+            else {
+                memcpy(returnpoint, currpoint, sizeof(Point));
+                currmaxscore = updatedDgist->map[currpoint->x][currpoint->y].item.score;
+            }
         }
 
         // 다음 지점을 큐에 추가    
