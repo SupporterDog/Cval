@@ -83,6 +83,12 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
     Point* returnpoint = malloc(sizeof(Point));
     Point point;
     for (int i = 0 ; i < 4; ++i ) {
+        if (Startpoint->x + directions[i].x < 0 || Startpoint->x + directions[i].x > 4) {
+            continue;
+        }
+        if (Startpoint->y + directions[i].y < 0 || Startpoint->y + directions[i].y > 4) {
+            continue;
+        }        
         point.x = StartPoint->x + directions[i].x;
         point.y = StartPoint->y + directions[i].y;
         if (updatedDgist->map[point->x][point->y].item.score > score) {
