@@ -14,7 +14,7 @@ void* receiveUpdates(void* arg) {
 
    	pthread_mutex_lock(&lock);
         updateGlobalVariables(&dgist,sock);
-        pthread_mutex_unlock(lock);
+        pthread_mutex_unlock(&lock);
 
     }
     return NULL;
