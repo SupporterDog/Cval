@@ -83,7 +83,7 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
     }
 
     // 뮤텍스 잠금
-    pthread_mutex_lock(lock);
+    pthread_mutex_lock(&lock);
     printf("=========SENDING INFORMATION TO SERVER==========\n");
     // 서버로 데이터 전송
     if (send(sock, &clientAction, sizeof(ClientAction), 0) <= 0) {
@@ -91,4 +91,6 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
     }
     printf("SEND COMPLETE\n");
     // 뮤텍스 잠금 해제
+    pthread_mutex_unlock(&lock);
+
 }
