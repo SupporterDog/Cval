@@ -90,9 +90,8 @@ Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
             returnpoint->y = point.y;
         }
     }
-    */
-
     return returnpoint;
+    */
     
     bool visited[MAP_ROW][MAP_COL] = { false };
     QueueNode queue[MAX_QUEUE_SIZE];
