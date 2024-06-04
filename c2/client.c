@@ -12,9 +12,10 @@ void* receiveUpdates(void* arg) {
             exit(0);
         }
 
-      
+   	pthread_mutex_lock(&lock);
         updateGlobalVariables(&dgist,sock);
-        
+        pthread_mutex_unlock(lock);
+
     }
     return NULL;
 }
@@ -23,7 +24,6 @@ void* receiveUpdates(void* arg) {
 
 //좌표축과 아이템 점수를 업데이트
 void updateGlobalVariables(DGIST* dgist,int my_sock) {
-    pthread_mutex_lock(&lock);
     //DGIST객체 업데이트
     // 깊은 복사
     if (updatedDgist == NULL) {
@@ -58,8 +58,7 @@ void updateGlobalVariables(DGIST* dgist,int my_sock) {
                     break;
             }
         }
-        printf("\n");
-    pthread_mutex_unlock(&lock);
+    printf("\n");
 }
 }
 
@@ -92,5 +91,4 @@ void sendClientAction(int sock, pthread_mutex_t* lock, const char* coordinates, 
     }
     printf("SEND COMPLETE\n");
     // 뮤텍스 잠금 해제
-    pthread_mutex_unlock(lock);
 }
