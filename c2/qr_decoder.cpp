@@ -9,7 +9,7 @@
 #include <string>
 
 // 스레드에서 실행할 함수
-bool do_we_set_trap;
+
 int sock;
 void* decodeQRCodeThread(void* arg) {
     try {
