@@ -341,7 +341,9 @@ void* Run_Algorithm(void* arg) {
                     my_x = start_row; my_y = start_row;   
                 }
                 Point my_point = {my_x, my_y}; // Changed to stack allocation
-
+                Point opp_point = {opp_x, opp_y};
+                do_we_set_trap = SetBomb_Checker(&my_point, &opp_point);
+                
                 if (my_x == max_score_point.x && my_y == max_score_point.y){
                     calculate = 1;
                 }
