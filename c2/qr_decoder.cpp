@@ -9,7 +9,7 @@
 #include <string>
 
 // 스레드에서 실행할 함수
-
+bool do_we_set_trap;
 int sock;
 void* decodeQRCodeThread(void* arg) {
     try {
@@ -51,7 +51,7 @@ void* decodeQRCodeThread(void* arg) {
                 if (!qrData.empty() && qrData != before_xy) {
                     // 디코딩된 QR 코드 데이터를 처리
                     before_xy = qrData;
-                    sendClientAction(sock, &lock, qrData.c_str(), 0);
+                    sendClientAction(sock, &lock, qrData.c_str(), do_we_set_trap);
                 }
             } catch (const cv::Exception& e) {
                 std::cerr << "OpenCV Exception: " << e.what() << std::endl;
