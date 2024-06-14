@@ -75,30 +75,8 @@ bool isValid(Point p, Point* points, int count) {
 // StartPoint로부터 BFS를 통해 points 배열에 있는 포인트 struct 중 가까운 점부터 차례대로 방문하여 주어진 지점의 점수가 4면 해당 지점을 즉시 반환하고
 // 그렇지 않으면 최고 점수를 가진 지점을 반환하는 함수
 Point* Find_MaxScorePoint(Point* StartPoint, Point* points, int count) {
-
-    /*
-    Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
-
-    int score = -1;
-    Point* returnpoint = malloc(sizeof(Point));
-    Point point;
-    for (int i = 0 ; i < 4; ++i ) {
-        if (Startpoint->x + directions[i].x < 0 || Startpoint->x + directions[i].x > 4) {
-            continue;
-        }
-        if (Startpoint->y + directions[i].y < 0 || Startpoint->y + directions[i].y > 4) {
-            continue;
-        }        
-        point.x = StartPoint->x + directions[i].x;
-        point.y = StartPoint->y + directions[i].y;
-        if (updatedDgist->map[point->x][point->y].item.score > score) {
-            returnpoint->x = point.x;
-            returnpoint->y = point.y;
-        }
-    }
-    return returnpoint;
-    */
     
+    Point directions[4] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
     bool visited[MAP_ROW][MAP_COL] = { false };
     QueueNode queue[MAX_QUEUE_SIZE];
     int front = 0, rear = 0;
